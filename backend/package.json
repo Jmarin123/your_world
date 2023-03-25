@@ -12,10 +12,12 @@
   "dependencies": {
     "bad-words": "^3.0.4",
     "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^7.0.3",
+    "nodemon": "^2.0.22",
     "passport": "^0.6.0"
   }
 }
