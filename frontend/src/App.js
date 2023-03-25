@@ -1,8 +1,12 @@
-
+import Map from './Map.js';
 
 function App() {
   return (
-    <div>HEy</div>
+    <div>
+
+      <Map></Map>
+
+    </div>
   );
 }
 
