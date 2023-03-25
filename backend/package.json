@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed erat sed lectus viverra consequat. Nullam a arcu eros. Nullam volutpat ultrices consectetur. Quisque nec orci interdum, pharetra mi vel, luctus ante. Mauris viverra eu turpis eget pellentesque. Praesent posuere metus vel tortor convallis, non varius turpis accumsan. Fusce at placerat ipsum. Cras id efficitur nibh, vel tincidunt metus. Duis sodales diam ac lectus placerat, at ullamcorper diam hendrerit. Aenean suscipit ex et tincidunt placerat. Integer non sapien ut turpis rhoncus dapibus. Pellentesque suscipit auctor tortor, ultrices vulputate est. In massa lacus, ornare vitae pharetra at, consequat a risus. Quisque aliquam sollicitudin tellus vel viverra. Suspendisse viverra risus ac justo rhoncus placerat.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bad-words": "^3.0.4",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "helmet": "^6.0.1",
+    "mongo-sanitize": "^1.1.0",
+    "mongoose": "^7.0.3",
+    "passport": "^0.6.0"
+  }
+}
