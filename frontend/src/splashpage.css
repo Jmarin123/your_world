@@ -1,0 +1,348 @@
+@import url('https://fonts.googleapis.com/css?family=Italiana&display=swap');
+
+:root {
+    position: relative;
+    height: 125%; 
+    background: linear-gradient(239.25deg, #ECF2FF -9.78%, #756060 16.21%, #756060 85.49%, #ECF2FF 110.24%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+}
+
+body {
+    overscroll-behavior: none;
+}
+
+/* #splashScreenBackground {
+    position: relative;
+    width: 1440px;
+    height: 1024px;
+
+    background: linear-gradient(180deg, #000000 0%, #ECF2FF 0.01%, #ECF2FF 100%);
+    border-radius: 10px;
+} */
+
+#box {
+    box-sizing: border-box;
+    position: absolute;
+    width: 90%;
+    height: 80%;
+    left: 7%;
+    top: 150px;
+
+    background: rgba(217, 217, 217, 0.78);
+    border: 1px solid #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+img { 
+    position: absolute;
+    width: 111.26px;
+    height: 113.26px;
+    left: 695px;
+    top: 15px;
+}
+
+#mainlogo {
+    position: absolute;
+width: 124.26px;
+height: 131.26px;
+left: 933px;
+top: 41px;
+}
+
+#account {
+    position: absolute;
+    width: 437px;
+    height: 66px;
+    left: 7%;
+    top: 100px;
+
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 50px;
+    line-height: 59px;
+    text-align: center;
+
+    color: #000000;
+}
+
+#login {
+    position: absolute;
+    width: 437px;
+    height: 66px;
+    left: 750px;
+    top: 100px;
+
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 50px;
+    line-height: 59px;
+    text-align: center;
+
+    color: #000000;
+}
+
+#line {
+    position: absolute;
+    width: 40%;
+    min-height: 0px;
+    left: 30%;
+    top: 50%;
+
+    border: 1px solid #ECF2FF;
+    transform: rotate(89.9deg);
+    transform-origin: center;
+}
+
+#line2 {
+    position: absolute;
+    width: 40%;
+    min-height: 0px;
+    left: 30%;
+    top: 65%;
+    
+    border: 1px solid #000000;
+    transform: rotate(90deg);
+}
+
+section {
+    position: absolute;
+    width: 631px;
+    height: 113px;
+    left: 345px;
+    top: 59px;
+
+    font-family: 'Italiana';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 100px;
+    line-height: 118px;
+    text-align: center;
+
+    color: #000000;
+}
+
+#subtitle {
+    position: absolute;
+width: 573px;
+height: 51px;
+left: 32px;
+top: 286px;
+
+font-family: 'Italiana';
+font-style: normal;
+font-weight: 500;
+font-size: 38px;
+line-height: 45px;
+text-decoration-line: underline;
+
+color: #000000;
+}
+
+#subtext {
+    position: absolute;
+    width: 548px;
+    height: 107px;
+    left: 36px;
+    top: 337px;
+
+    font-family: 'Italiana';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 33px;
+    line-height: 39px;
+    text-align: left;
+    color: #000000;
+
+}
+
+#navBar {
+    position: absolute;
+width: 1443.93px;
+height: 236px;
+left: -2px;
+top: 0px;
+}
+
+#firstName {
+    position: absolute;
+    width: 169px;
+    height: 10px;
+    left: 75px;
+    top: 225px;
+
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#lastName {
+    position: absolute;
+    width: 169px;
+    height: 10px;
+    left: 375px;
+    top: 225px;
+
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#username {
+    position: absolute;
+width: 260px;
+height: 10px;
+left: 175px;
+top: 300px;
+
+background: #ECF2FF;
+border-radius: 5px;
+}
+
+#email {
+    position: absolute;
+    width: 260px;
+    height: 10px;
+    left: 175px;
+    top: 375px;
+    
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#password {
+    position: absolute;
+    width: 260px;
+    height: 10px;
+    left: 175px;
+    top: 450px;
+    
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#repassword {
+    position: absolute;
+    width: 260px;
+    height: 10px;
+    left: 175px;
+    top: 525px;
+    
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#register {
+    position: absolute;
+    width: 144px;
+    height: 41px;
+    left: 250px;
+    top: 85%;
+    background: #FDE66B;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+#loginButton {
+    position: absolute;
+    width: 144px;
+    height: 41px;
+    left: 900px;
+    top: 85%;
+    
+    background: #FDE66B;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+#loginInput {
+    position: absolute;
+    width: 260px;
+    height: 10px;
+    left: 825px;
+    top: 245px;
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#loginPassword {
+    position: absolute;
+    width: 260px;
+    height: 10px;
+    left: 825px;
+    top: 350px;
+
+    background: #ECF2FF;
+    border-radius: 5px;
+}
+
+#text {
+
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 26px;
+    text-align: center;
+    color: #000000;
+
+}
+
+#guestButton {
+
+box-sizing: border-box;
+
+position: absolute;
+width: 247px;
+height: 70px;
+left: 184px;
+top: 550px;
+
+background: #E5D1FA;
+border: 1px solid #000000;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 5px;
+}
+
+#logButton {
+
+    position: absolute;
+    width: 247px;
+    height: 70px;
+    left: 184px;
+    top: 650px;
+    
+    background: #E5D1FA;
+    border: 1px solid #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    }
+
+    
+#regButton {
+
+        box-sizing: border-box;
+
+        position: absolute;
+        width: 247px;
+        height: 70px;
+        left: 184px;
+        top: 750px;
+        
+        background: #E5D1FA;
+        border: 1px solid #000000;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 5px;
+        }
+
+#globeLogo {
+    position: absolute;
+width: 525px;
+height: 675px;
+left: 754px;
+top: 150px;
+
+}
+        
+

@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import RegisterORLogin from './RegisterORLogin';
+import SplashScreen from './SplashScreen';
+import './splashpage.css';
+
 
 import {
   createBrowserRouter,
@@ -9,9 +13,13 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
+    path: "/registerORlogin",
+    element: <RegisterORLogin />,
   },
+  {
+    path: "/",
+    element: <SplashScreen />,
+  }
 ]);
 
 
@@ -19,6 +27,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
+    {/* <RouterProvider router={router2} /> */}
   </React.StrictMode>
 );
 
