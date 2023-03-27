@@ -1,12 +1,8 @@
-import Map from './Map2.js';
+import Map from './Map.js';
 
 function App() {
   return (
-    <div>
-
-      <Map></Map>
-
-    </div>
+    <Map></Map>
   );
 }
 
