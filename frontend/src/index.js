@@ -6,6 +6,8 @@ import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import './splashpage.css';
 
+import Map from './components/Map';
+
 
 import {
   createBrowserRouter,
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <HomePage />,
+  },
+  {
+    path: "/map",
+    element: <Map />,
   }
 ]);
 
