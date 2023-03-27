@@ -2,24 +2,22 @@
 
 :root {
     position: relative;
-    height: 125%; 
+    height: 100%;   /* it was 125% before */
     background: linear-gradient(239.25deg, #ECF2FF -9.78%, #756060 16.21%, #756060 85.49%, #ECF2FF 110.24%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
 }
 
 body {
     overscroll-behavior: none;
+    margin: 0;
 }
 
-/* #splashScreenBackground {
+#splashScreenBackground {
     position: relative;
-    width: 1440px;
+    width: 100%;
     height: 1024px;
-
     background: linear-gradient(180deg, #000000 0%, #ECF2FF 0.01%, #ECF2FF 100%);
-    border-radius: 10px;
-} */
+}
 
 #box {
     box-sizing: border-box;
@@ -102,7 +100,7 @@ top: 41px;
     width: 40%;
     min-height: 0px;
     left: 30%;
-    top: 65%;
+    top: 55%;
     
     border: 1px solid #000000;
     transform: rotate(90deg);
@@ -127,19 +125,19 @@ section {
 
 #subtitle {
     position: absolute;
-width: 573px;
-height: 51px;
-left: 32px;
-top: 286px;
+    width: 573px;
+    height: 51px;
+    left: 32px;
+    top: 286px;
 
-font-family: 'Italiana';
-font-style: normal;
-font-weight: 500;
-font-size: 38px;
-line-height: 45px;
-text-decoration-line: underline;
+    font-family: 'Italiana';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 45px;
+    text-decoration-line: underline;
 
-color: #000000;
+    color: #000000;
 }
 
 #subtext {
@@ -159,13 +157,6 @@ color: #000000;
 
 }
 
-#navBar {
-    position: absolute;
-width: 1443.93px;
-height: 236px;
-left: -2px;
-top: 0px;
-}
 
 #firstName {
     position: absolute;
@@ -338,11 +329,19 @@ border-radius: 5px;
 
 #globeLogo {
     position: absolute;
-width: 525px;
-height: 675px;
-left: 754px;
-top: 150px;
+width: 700px;
+height: 775px;
+left: 750px;
+top: 200px;
 
+}
+
+#navBar {
+    position: absolute;
+    width: 100%;
+    height: 236px;
+
+    background: linear-gradient(180deg, #756060 81.46%, #ECF2FF 100%);
 }
         
 

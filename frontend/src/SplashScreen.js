@@ -7,10 +7,11 @@ function SplashScreen() {
         <body id="splashScreenBackground">
             <div id="navBar">
                 <section>Your World</section>
+                <img id="mainlogo" src={logo} alt="earthlogo"/>
             </div>
 
-            <img id="mainlogo" src={logo} alt="earthlogo"/>
-            <section id="subtitle">Your Choice, Your Map, Your World</section>
+            
+              <section id="subtitle">Your Choice, Your Map, Your World</section>
             <section id="subtext">An interactive map design site, used to create your own custom maps and share with others! </section>
             <div id="line2"></div>
 
