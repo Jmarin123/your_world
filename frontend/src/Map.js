@@ -14,8 +14,8 @@ const center = {
 function Map() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "" // API KEY NEEDED TO RENDER MAP
-  })
+    googleMapsApiKey: "AIzaSyD6Fivbezamnj1WHEBFeJiO5mGjF-KB3m4", // API KEY NEEDED TO RENDER MAP
+  });
 
   const [map, setMap] = React.useState(null)
 
@@ -32,16 +32,16 @@ function Map() {
   }, [])
 
   return isLoaded ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        { /* Child components, such as markers, info windows, etc. */ }
-        <></>
-      </GoogleMap>
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={10}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
+    >
+      { /* Child components, such as markers, info windows, etc. */}
+      <></>
+    </GoogleMap>
   ) : <></>
 }
 

@@ -1,4 +1,4 @@
-import Map from './Map.js';
+import Map from './Map2.js';
 
 function App() {
   return (
