@@ -1,4 +1,3 @@
-import Map from './Map.js';
 import logo from './earthlogo.png'
 import { Button } from '@mui/material';
 import { Grid } from '@mui/material';

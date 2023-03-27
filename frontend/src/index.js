@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import RegisterORLogin from './RegisterORLogin';
-import SplashScreen from './SplashScreen';
+import RegisterORLogin from './components/RegisterORLogin';
+import SplashScreen from './components/SplashScreen';
+import HomePage from './components/HomePage';
 import './splashpage.css';
 
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <SplashScreen />,
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
   }
 ]);
 
