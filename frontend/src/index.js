@@ -13,7 +13,7 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "/registerORlogin",
+    path: "registerORlogin",
     element: <RegisterORLogin />,
   },
   {
