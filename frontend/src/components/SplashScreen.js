@@ -6,7 +6,7 @@ import { Outlet, Link } from "react-router-dom";
 function SplashScreen() {
 
     return (
-        <body id="splashScreenBackground">
+        <div id="splashScreenBackground">
             <div id="navBar">
                 <section>Your World</section>
                 <img id="mainlogo" src={logo} alt="earthlogo"/>
@@ -36,7 +36,7 @@ function SplashScreen() {
             </Link>
 
             <img id="globeLogo" src={globeLogo} alt="globeLogo"/>
-        </body>
+        </div>
     );
 
 }
