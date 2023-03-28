@@ -1,11 +1,10 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
-
+import Map from './Map.js';
 
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,7 +13,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import { Grid } from '@mui/material';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 
 export default function AppBanner() {
@@ -127,7 +125,9 @@ export default function AppBanner() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Box id="box"></Box>
+            <Box id="box">
+                <Map></Map>
+            </Box>
             {
                 menu
             }
