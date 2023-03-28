@@ -5,6 +5,7 @@ import RegisterORLogin from './components/RegisterORLogin';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import './splashpage.css';
+import { GlobalStoreContextProvider } from './store'
 
 import Map from './components/Map';
 
@@ -37,8 +38,11 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+  <GlobalStoreContextProvider>
+    <RouterProvider router={router}>
     {/* <RouterProvider router={router2} /> */}
+    </RouterProvider>
+    </GlobalStoreContextProvider>
   </React.StrictMode>
 );
 

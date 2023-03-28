@@ -1,7 +1,9 @@
 import { useContext, useState } from 'react';
+import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import Map from './Map.js';
 
+import UploadModal from './UploadModal'
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,11 +18,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 
 export default function AppBanner() {
+    const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
 
+    const [anchorE2, setAnchorE2] = useState(null);
+    const isUploadMenuOpen = Boolean(anchorE2);
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleUploadMenuOpen = (event) => {
+        setAnchorE2(event.currentTarget);
     };
 
     const handleMenuClose = () => {
@@ -31,19 +41,62 @@ export default function AppBanner() {
         handleMenuClose();
     }
 
+    const handleShowUpload = () => {
+        store.showUpload();
+    }
+
+    const handleUploadMenuClose = () => {
+        setAnchorE2(null);
+    };
+
+    const handleUploadShapefile = () => {
+        console.log("shp/dbf")
+        setAnchorE2(null);
+        store.showUpload("shp/dbf")
+    };
+
+    const handleUploadGeojson = () => {
+        console.log("geojson")
+        setAnchorE2(null);
+        store.showUpload("geojson")
+    };
+
     const menuId = 'primary-search-account-menu';
+    const uploadMenuId = 'upload-account-menu';
+
+    const uploadMenu = (
+        <Menu
+            anchorE2={anchorE2}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            id={uploadMenuId}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isUploadMenuOpen}
+            onClose={handleUploadMenuClose}
+        >
+            <MenuItem onClick={handleUploadShapefile}> Upload Shapefile/DBF Combo</MenuItem>
+            <MenuItem onClick={handleUploadGeojson}> Upload GeoJSON</MenuItem>
+        </Menu>
+    );
+
     const loggedOutMenu = (
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'left',
             }}
             id={menuId}
             keepMounted
             transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'left',
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
@@ -73,6 +126,7 @@ export default function AppBanner() {
 
     let editToolbar = "";
     let menu = loggedOutMenu;
+    let menu2 = uploadMenu;
     // if (auth.loggedIn) {
     //     console.log("we are loggioned in so menu should change");
     //     menu = loggedInMenu;
@@ -80,7 +134,7 @@ export default function AppBanner() {
 
     function getAccountMenu(loggedIn) {
         let userInitials = 'JD'
-        console.log("userInitials: " + 'JD');
+        // console.log("userInitials: " + "JD");
         if (loggedIn)
             return <div>{userInitials}</div>;
         // else
@@ -116,7 +170,7 @@ export default function AppBanner() {
                             aria-label="account of current user"
                             aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
+                            onClick={handleUploadMenuOpen}
                             fontSize='large'
                             style={{ textDecoration: 'none', color: 'black' }}
                         >
@@ -130,6 +184,12 @@ export default function AppBanner() {
             </Box>
             {
                 menu
+            }
+            {
+                menu2
+            }
+            {
+                <UploadModal/>
             }
         </Box>
     );
