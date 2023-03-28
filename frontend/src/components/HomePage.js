@@ -126,7 +126,7 @@ export default function AppBanner() {
                 </Toolbar>
             </AppBar>
             <Box id="box">
-                <Map></Map>
+                <Map/>
             </Box>
             {
                 menu

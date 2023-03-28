@@ -1,55 +1,74 @@
-import React, { useState, useCallback } from 'react';
-import { withGoogleMap, GoogleMap, Polygon, useJsApiLoader } from '@react-google-maps/api';
-import customGeoJSON from './custom.json';
+import React, { Component } from "react";
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import mapData from "./custom.json";
+import "leaflet/dist/leaflet.css";
 
-const containerStyle = {
-  width: '100%',
-  height: '100%'
-};
+class Map extends Component {
+  state = { color: "#ffff00" };
 
-const center = {
-  lat: -28, lng: 137
-};
+  colors = ["green", "blue", "yellow", "orange", "grey"];
 
-function Map() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: '' // API KEY NEEDED TO RENDER MAP
-  });
+  componentDidMount() {
+    console.log(mapData);
+  }
 
-  const [map, setMap] = useState(null);
+  countryStyle = {
+    fillColor: "red",
+    fillOpacity: 1,
+    color: "black",
+    weight: 2,
+  };
 
-  const onLoad = useCallback(function callback(map) {
-    map.data.addGeoJson(customGeoJSON);
-    setMap(map);
-  }, []);
+  printMesssageToConsole = (event) => {
+    console.log("Clicked");
+  };
 
-  const onUnmount = useCallback(function callback(map) {
-    setMap(null);
-  }, []);
+  changeCountryColor = (event) => {
+    event.target.setStyle({
+      color: "green",
+      fillColor: this.state.color,
+      fillOpacity: 1,
+    });
+  };
 
-  return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={10}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-    >
-      <Polygon
-        paths={customGeoJSON.features[0].geometry.coordinates[0]}
-        options={{
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#FF0000',
-          fillOpacity: 0.35
-        }}
-      />
-    </GoogleMap>
-  ) : (
-    <></>
-  );
+  onEachCountry = (country, layer) => {
+    const countryName = country.properties.ADMIN;
+    console.log(countryName);
+    layer.bindPopup(countryName);
+
+    layer.options.fillOpacity = Math.random(); //0-1 (0.1, 0.2, 0.3)
+    // const colorIndex = Math.floor(Math.random() * this.colors.length);
+    // layer.options.fillColor = this.colors[colorIndex]; //0
+
+    layer.on({
+      click: this.changeCountryColor,
+    });
+  };
+
+  colorChange = (event) => {
+    this.setState({ color: event.target.value });
+  };
+
+  render() {
+    return (
+      <div>
+        <h1 style={{ textAlign: "center" }}>Your World</h1>
+        <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <GeoJSON
+            style={this.countryStyle}
+            data={mapData.features}
+            onEachFeature={this.onEachCountry}
+          />
+        </MapContainer>
+        <input
+          type="color"
+          value={this.state.color}
+          onChange={this.colorChange}
+        />
+      </div>
+    );
+  }
 }
 
-export default React.memo(Map)
+export default Map;
