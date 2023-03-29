@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [color, setCtate] = useState("#ffff00");
+  const [color, setColor] = useState("#ffff00");
 
 
   // colors = ["green", "blue", "yellow", "orange", "grey"];

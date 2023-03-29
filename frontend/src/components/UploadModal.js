@@ -6,6 +6,8 @@ import Modal from '@mui/material/Modal';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 
+var shapefile = require("shapefile");
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -33,12 +35,31 @@ export default function UploadModal() {
         })
       }
 
+    async function parseInputFile(file) {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader()
+        fileReader.readAsArrayBuffer(file);
+        fileReader.onload = function() {
+            var arrayBuffer = fileReader.result
+            var bytes = new Uint8Array(arrayBuffer);
+            resolve(bytes);
+            }
+        fileReader.onerror = error => reject(error)
+        })
+    }
+
       async function handleSubmit(event) {
         if(store.uploadType === "shp/dbf"){
-            store.createNewMap(file1)
+            const shpArray = await parseInputFile(file1)
+            const dbfArray = await parseInputFile(file2)
+
+            const object = await shapefile.read(shpArray, dbfArray)
+            
+            store.createNewMap(object)
         }
         else{
             const object = await parseJsonFile(file1)
+            // assignName(object)
 
             store.createNewMap(object)
         }
