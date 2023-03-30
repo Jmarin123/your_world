@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Italiana&display=swap');
+@import url('//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css');
+@import url('//cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css');
 
 :root {
     position: relative;
@@ -355,5 +357,9 @@ top: 200px;
 
 background: #756060;
 }
+
+.sr-only {
+    display: none;
+  }
         
 

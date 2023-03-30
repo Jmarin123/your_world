@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { MapContainer, GeoJSON } from 'react-leaflet';
 import mapData from "./custom.json";
 import "leaflet/dist/leaflet.css";
+import { TileLayer, FeatureGroup } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw"
 
 class Map extends Component {
+
   state = { color: "#ffff00" };
-
   colors = ["green", "blue", "yellow", "orange", "grey"];
-
   componentDidMount() {
     console.log(mapData);
   }
@@ -36,9 +37,7 @@ class Map extends Component {
     console.log(countryName);
     layer.bindPopup(countryName);
 
-    layer.options.fillOpacity = Math.random(); //0-1 (0.1, 0.2, 0.3)
-    // const colorIndex = Math.floor(Math.random() * this.colors.length);
-    // layer.options.fillColor = this.colors[colorIndex]; //0
+    layer.options.fillOpacity = Math.random(); 
 
     layer.on({
       click: this.changeCountryColor,
@@ -48,6 +47,7 @@ class Map extends Component {
   colorChange = (event) => {
     this.setState({ color: event.target.value });
   };
+
 
   render() {
     return (
@@ -60,6 +60,18 @@ class Map extends Component {
             data={mapData.features}
             onEachFeature={this.onEachCountry}
           />
+          <FeatureGroup>
+          <EditControl
+            position='topright'
+            onEdited={this._onEditPath}
+            onCreated={this._onCreate}
+            onDeleted={this._onDeleted}
+            draw={{
+              rectangle: false
+            }}
+          />
+
+        </FeatureGroup>
         </MapContainer>
         <input
           type="color"
