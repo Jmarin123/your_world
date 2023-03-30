@@ -1,7 +1,7 @@
 import logo from './earthlogo.png'
 import { Button } from '@mui/material';
 import globeLogo from './globelogo.png';
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function SplashScreen() {
 

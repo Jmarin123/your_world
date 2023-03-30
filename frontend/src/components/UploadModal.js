@@ -3,7 +3,7 @@ import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 
 var shapefile = require("shapefile");

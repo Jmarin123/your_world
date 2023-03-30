@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+// import App from './App';
 import RegisterORLogin from './components/RegisterORLogin';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';

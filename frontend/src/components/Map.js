@@ -1,20 +1,18 @@
-import React, { Component } from "react";
-import { MapContainer, GeoJSON } from 'react-leaflet';
-import mapData from "./custom.json";
+import React from "react";
+//Component
+import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+// import mapData from "./custom.json";
 import "leaflet/dist/leaflet.css";
 import { GlobalStoreContext } from '../store'
-import { useContext, useState } from 'react'
+import { useContext, useState} from 'react'
+import { FeatureGroup } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw"
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [color, setColor] = useState("#ffff00");
+  const [color] = useState("#ffff00");
+  //setColor
 
-
-  // colors = ["green", "blue", "yellow", "orange", "grey"];
-
-  // componentDidMount() {
-  //   console.log(mapData);
-  // }
 
   const countryStyle = {
     fillColor: "red",
@@ -23,17 +21,17 @@ export default function Map() {
     weight: 2,
   };
 
-  function printMesssageToConsole(event){
-    console.log("Clicked");
-  };
+  // function printMesssageToConsole(event){
+  //   console.log("Clicked");
+  // };
 
-  function changeCountryColor(event){
-    event.target.setStyle({
-      color: "green",
-      fillColor: color,
-      fillOpacity: 1,
-    });
-  };
+  // function changeCountryColor(event){
+  //   event.target.setStyle({
+  //     color: "green",
+  //     fillColor: color,
+  //     fillOpacity: 1,
+  //   });
+  // };
 
   function onEachCountry(country, layer){
     const countryName = country.properties.ADMIN;
@@ -66,6 +64,11 @@ export default function Map() {
         {
           store.currentMap ? renderedMap : <div></div>
         }
+        <FeatureGroup>
+        <EditControl
+          position='topright'
+        />
+        </FeatureGroup>
         </MapContainer>
         <input
           type="color"

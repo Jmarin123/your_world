@@ -37,13 +37,13 @@ export default function AppBanner() {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        handleMenuClose();
-    }
+    // const handleLogout = () => {
+    //     handleMenuClose();
+    // }
 
-    const handleShowUpload = () => {
-        store.showUpload();
-    }
+    // const handleShowUpload = () => {
+    //     store.showUpload();
+    // }
 
     const handleUploadMenuClose = () => {
         setAnchorE2(null);
@@ -105,24 +105,24 @@ export default function AppBanner() {
             <MenuItem component={Link} to="/registerORlogin" onClick={handleMenuClose}><Link to='/registerORlogin'>Create New Account</Link></MenuItem>
         </Menu>
     );
-    const loggedInMenu =
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
+    // const loggedInMenu =
+    //     <Menu
+    //         anchorEl={anchorEl}
+    //         anchorOrigin={{
+    //             vertical: 'top',
+    //             horizontal: 'right',
+    //         }}
+    //         id={menuId}
+    //         keepMounted
+    //         transformOrigin={{
+    //             vertical: 'top',
+    //             horizontal: 'right',
+    //         }}
+    //         open={isMenuOpen}
+    //         onClose={handleMenuClose}
+    //     >
+    //         <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    //     </Menu>
 
     let editToolbar = "";
     let menu = loggedOutMenu;
@@ -132,14 +132,14 @@ export default function AppBanner() {
     //     menu = loggedInMenu;
     // }
 
-    function getAccountMenu(loggedIn) {
-        let userInitials = 'JD'
-        // console.log("userInitials: " + "JD");
-        if (loggedIn)
-            return <div>{userInitials}</div>;
-        // else
-        //     return <AccountCircle />;
-    }
+    // function getAccountMenu(loggedIn) {
+    //     let userInitials = 'JD'
+    //     // console.log("userInitials: " + "JD");
+    //     if (loggedIn)
+    //         return <div>{userInitials}</div>;
+    //     // else
+    //     //     return <AccountCircle />;
+    // }
 
     function handleHomescreen() {
         // store.closeCurrentList();
