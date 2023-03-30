@@ -19,15 +19,20 @@ db.once("open", function () {
 
 
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new passportLocal(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new passportLocal(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 
+app.use(express.static(path.join(__dirname, 'build')));
 
-const port = process.env.PORT || 3000;
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+const port = process.env.PORT || 80;
 app.listen(port, () => {
     console.log(`Serving on port ${port}`);
 })
