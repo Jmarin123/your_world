@@ -2,37 +2,40 @@ import React, { Component } from "react";
 import { MapContainer, GeoJSON } from 'react-leaflet';
 import mapData from "./custom.json";
 import "leaflet/dist/leaflet.css";
-import { TileLayer, FeatureGroup } from 'react-leaflet';
-import { EditControl } from "react-leaflet-draw"
+import { GlobalStoreContext } from '../store'
+import { useContext, useState } from 'react'
 
-class Map extends Component {
+export default function Map() {
+  const { store } = useContext(GlobalStoreContext);
+  const [color, setColor] = useState("#ffff00");
 
-  state = { color: "#ffff00" };
-  colors = ["green", "blue", "yellow", "orange", "grey"];
-  componentDidMount() {
-    console.log(mapData);
-  }
 
-  countryStyle = {
+  // colors = ["green", "blue", "yellow", "orange", "grey"];
+
+  // componentDidMount() {
+  //   console.log(mapData);
+  // }
+
+  const countryStyle = {
     fillColor: "red",
     fillOpacity: 1,
     color: "black",
     weight: 2,
   };
 
-  printMesssageToConsole = (event) => {
+  function printMesssageToConsole(event){
     console.log("Clicked");
   };
 
-  changeCountryColor = (event) => {
+  function changeCountryColor(event){
     event.target.setStyle({
       color: "green",
-      fillColor: this.state.color,
+      fillColor: color,
       fillOpacity: 1,
     });
   };
 
-  onEachCountry = (country, layer) => {
+  function onEachCountry(country, layer){
     const countryName = country.properties.ADMIN;
     console.log(countryName);
     layer.bindPopup(countryName);
@@ -44,43 +47,33 @@ class Map extends Component {
     });
   };
 
-  colorChange = (event) => {
+  function colorChange(event){
     this.setState({ color: event.target.value });
   };
 
 
-  render() {
+  let renderedMap = <GeoJSON
+            style={countryStyle}
+            data={store.currentMap ? store.currentMap.features : null}
+            onEachFeature={onEachCountry}
+          />
+
     return (
       <div>
         <h1 style={{ textAlign: "center" }}>Your World</h1>
         <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <GeoJSON
-            style={this.countryStyle}
-            data={mapData.features}
-            onEachFeature={this.onEachCountry}
-          />
-          <FeatureGroup>
-          <EditControl
-            position='topright'
-            onEdited={this._onEditPath}
-            onCreated={this._onCreate}
-            onDeleted={this._onDeleted}
-            draw={{
-              rectangle: false
-            }}
-          />
-
-        </FeatureGroup>
+        {
+          store.currentMap ? renderedMap : <div></div>
+        }
         </MapContainer>
         <input
           type="color"
-          value={this.state.color}
-          onChange={this.colorChange}
+          value={color}
+          onChange={colorChange}
         />
       </div>
     );
-  }
 }
 
-export default Map;
+// export default Map;
