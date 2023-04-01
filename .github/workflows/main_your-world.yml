@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v2
 
@@ -20,13 +20,65 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '18.x'
-      - name: npm install, build, and test frontend
+
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: npm install and build frontend
         run: |
           cd frontend
           npm install
           npm run build --if-present
           mv build ../backend/
-      - name: npm install, build, and test backend
+
+
+      - name: npm install and build backend
+        run: |
+          cd backend
+          npm install
+          npm run build --if-present
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        working-directory: ./frontend/
+
+  build:
+    runs-on: ubuntu-latest
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+
+
+      - name: npm install and build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build --if-present
+          mv build ../backend/
+
+
+      - name: npm install and build backend
+        run: |
+          cd backend
+          npm install
+          npm run build --if-present
+      
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - name: npm install and build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build --if-present
+          mv build ../backend/
+      - name: npm install and build backend
         run: |
           cd backend
           npm install
