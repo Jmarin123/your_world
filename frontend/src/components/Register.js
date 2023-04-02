@@ -2,18 +2,20 @@ import logo from './earthlogo.png'
 import { Button } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Box } from '@mui/material';
+import { Link } from "react-router-dom";
 
-function RegisterORLogin() {
+function Register() {
   return (
-    <body>
-      <img src={logo} alt="earthlogo" />
-      <Box id="box">
-        <section id="account">Create an Account</section>
-        <section id="login">Log into Account</section>
+        <body>
+          <Link to={`/`}>
+          <img src={logo} alt="earthlogo"/>
+          </Link>
+          <Box id="box">
+            <section id="account">Create an Account</section>
+      
+            {/* <div id="line"></div> */}
 
-        <div id="line"></div>
-
-        <TextField id='firstName' placeholder='first name' sx={{
+            <TextField id='firstName' placeholder='first name' sx={{
           "& fieldset": { border: 'none' },
         }} data-cy='firstNameForm'></TextField>
         <TextField id='lastName' placeholder='last name' sx={{
@@ -36,20 +38,20 @@ function RegisterORLogin() {
         </Button>
 
 
-        <TextField id='loginInput' placeholder='username/email' sx={{
-          "& fieldset": { border: 'none' },
-        }}></TextField>
-        <TextField id='loginPassword' placeholder='password' sx={{
-          "& fieldset": { border: 'none' },
-        }}></TextField>
+            {/* <TextField id='loginInput' placeholder='username/email' sx={{
+              "& fieldset": { border: 'none' },
+            }}></TextField>
+            <TextField id='loginPassword' placeholder='password' sx={{
+              "& fieldset": { border: 'none' },
+            }}></TextField>
 
 
-        <Button id="loginButton" sx={{ textTransform: `none` }}>
-          <p id="text">Login</p>
-        </Button>
-      </Box>
-    </body>
+            <Button id="loginButton" sx={{textTransform: `none`}}>
+              <p id="text">Login</p>
+            </Button> */}
+          </Box>
+      </body>
   );
 }
 
-export default RegisterORLogin;
+export default Register;

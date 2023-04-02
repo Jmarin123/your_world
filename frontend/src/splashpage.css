@@ -61,7 +61,7 @@ top: 41px;
     position: absolute;
     width: 437px;
     height: 66px;
-    left: 7%;
+    left: 35%;
     top: 100px;
 
     font-family: 'Italiana', serif;
@@ -74,22 +74,7 @@ top: 41px;
     color: #000000;
 }
 
-#login {
-    position: absolute;
-    width: 437px;
-    height: 66px;
-    left: 750px;
-    top: 100px;
 
-    font-family: 'Italiana', serif;
-    font-style: normal;
-    font-weight: 900;
-    font-size: 50px;
-    line-height: 59px;
-    text-align: center;
-
-    color: #000000;
-}
 
 #line {
     position: absolute;
@@ -170,7 +155,8 @@ section {
     position: absolute;
     width: 169px;
     height: 10px;
-    left: 75px;
+    /* left: 75px; */
+    transform: translateX(230%);
     top: 225px;
 
     background: #ECF2FF;
@@ -181,7 +167,8 @@ section {
     position: absolute;
     width: 169px;
     height: 10px;
-    left: 375px;
+    /* left: 375px; */
+    transform: translateX(365%);
     top: 225px;
 
     background: #ECF2FF;
@@ -190,20 +177,20 @@ section {
 
 #username {
     position: absolute;
-width: 260px;
-height: 10px;
-left: 175px;
-top: 300px;
+    width: 260px;
+    height: 10px;
+    transform: translateX(190%);
+    top: 300px;
 
-background: #ECF2FF;
-border-radius: 5px;
+    background: #ECF2FF;
+    border-radius: 5px;
 }
 
 #email {
     position: absolute;
     width: 260px;
     height: 10px;
-    left: 175px;
+    transform: translateX(190%);
     top: 375px;
     
     background: #ECF2FF;
@@ -214,7 +201,7 @@ border-radius: 5px;
     position: absolute;
     width: 260px;
     height: 10px;
-    left: 175px;
+    transform: translateX(190%);
     top: 450px;
     
     background: #ECF2FF;
@@ -225,7 +212,7 @@ border-radius: 5px;
     position: absolute;
     width: 260px;
     height: 10px;
-    left: 175px;
+    transform: translateX(190%);
     top: 525px;
     
     background: #ECF2FF;
@@ -236,18 +223,35 @@ border-radius: 5px;
     position: absolute;
     width: 144px;
     height: 41px;
-    left: 250px;
+    left: 47%;
     top: 85%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
 }
 
+#login {
+    position: absolute;
+    width: 437px;
+    height: 66px;
+    /* left: 750px; */
+    top: 100px;
+    left: 35%;
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 50px;
+    line-height: 59px;
+    text-align: center;
+
+    color: #000000;
+}
+
 #loginButton {
     position: absolute;
     width: 144px;
     height: 41px;
-    left: 900px;
+    left: 46%;
     top: 85%;
     
     background: #FDE66B;
@@ -256,21 +260,22 @@ border-radius: 5px;
 }
 
 #loginInput {
-    position: absolute;
+    position:absolute;
     width: 260px;
     height: 10px;
-    left: 825px;
-    top: 245px;
+    transform: translateX(185%);
+    top: 250px;
     background: #ECF2FF;
     border-radius: 5px;
+    display: grid;
 }
 
 #loginPassword {
     position: absolute;
     width: 260px;
     height: 10px;
-    left: 825px;
-    top: 350px;
+    transform: translateX(185%);
+    top: 355px;
 
     background: #ECF2FF;
     border-radius: 5px;

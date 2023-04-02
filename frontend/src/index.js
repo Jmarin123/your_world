@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 // import App from './App';
-import RegisterORLogin from './components/RegisterORLogin';
+import Register from './components/Register';
+import Login from './components/Login';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import './splashpage.css';
@@ -17,8 +18,8 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "/registerORlogin",
-    element: <RegisterORLogin />,
+    path: "/register",
+    element: <Register />,
   },
   {
     path: "/",
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/map",
     element: <Map />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   }
 ]);
 
@@ -38,10 +43,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <GlobalStoreContextProvider>
-      <RouterProvider router={router}>
-        {/* <RouterProvider router={router2} /> */}
-      </RouterProvider>
+  <GlobalStoreContextProvider>
+    <RouterProvider router={router}>
+    {/* <RouterProvider router={router2} /> */}
+    </RouterProvider>
     </GlobalStoreContextProvider>
   </React.StrictMode>
 );
