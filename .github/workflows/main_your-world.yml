@@ -42,11 +42,9 @@ jobs:
       - name: wait on server to start
         run: npx wait-on http://localhost:3000
       - name: Cypress run
-        uses: cypress-io/github-action@v5
-        with: 
-          working-directory: ./frontend
-          wait-on: 'http://localhost:3000'
-          browser: chrome
+        run: |
+          cd frontend
+          npx cypress run
 
   build:
     runs-on: ubuntu-latest
