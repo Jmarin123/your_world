@@ -35,11 +35,12 @@ jobs:
           npm install
           npm run build --if-present
           
-      - name: run pm2
+      - name: run node
         run: |
           cd backend
-          npm install pm2 -g
-          pm2 start index.js
+          node index.js &
+      - name: wait on server to start
+        run: npx wait-on http://localhost:80
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with: 
