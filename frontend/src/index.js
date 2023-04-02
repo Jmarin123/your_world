@@ -17,7 +17,7 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "registerORlogin",
+    path: "/registerORlogin",
     element: <RegisterORLogin />,
   },
   {
@@ -38,10 +38,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  <GlobalStoreContextProvider>
-    <RouterProvider router={router}>
-    {/* <RouterProvider router={router2} /> */}
-    </RouterProvider>
+    <GlobalStoreContextProvider>
+      <RouterProvider router={router}>
+        {/* <RouterProvider router={router2} /> */}
+      </RouterProvider>
     </GlobalStoreContextProvider>
   </React.StrictMode>
 );
