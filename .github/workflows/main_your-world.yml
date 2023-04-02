@@ -38,7 +38,7 @@ jobs:
       - name: run node
         run: |
           cd backend
-          node index.js &
+          sudo node index.js &
       - name: wait on server to start
         run: npx wait-on http://localhost:80
       - name: Cypress run
