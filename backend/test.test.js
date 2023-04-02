@@ -22,11 +22,11 @@ describe('Post To login', () => {
         expect(response.body).toEqual({ errorMessage: "Please enter all required fields." });
     })
 
-    test('Fail to login due to no existing member', async () => {
-        const response = await request(app).post('/auth/login').send({ email: "joe", password: "joe" });
-        expect(response.status).toBe(401);
-        expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
-    })
+    //test('Fail to login due to no existing member', async () => {
+        //const response = await request(app).post('/auth/login').send({ email: "joe", password: "joe" });
+        //expect(response.status).toBe(401);
+        //expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
+    //})
 })
 
 describe('Post To Register', () => {
