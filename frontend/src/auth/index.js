@@ -24,7 +24,7 @@ function AuthContextProvider(props) {
 
     useEffect(() => {
         auth.getLoggedIn();
-    }, []);
+    }, [auth]);
 
     const authReducer = (action) => {
         const { type, payload } = action;
@@ -82,18 +82,18 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, username, email, password, passwordVerify) {
+    auth.registerUser = async function (firstName, lastName, username, email, password, passwordVerify) {
         console.log("First name here")
         console.log(firstName)
-        const response = await api.registerUser(firstName, lastName, username, email, password, passwordVerify).catch(function(error){
-            
+        const response = await api.registerUser(firstName, lastName, username, email, password, passwordVerify).catch(function (error) {
+
             authReducer({
                 type: AuthActionType.REGISTER_USER_ERROR,
                 payload: {
                     errorMessage: error.response.data.errorMessage
                 }
-        })
-        });      
+            })
+        });
         if (response && response.status === 200) {
             authReducer({
                 type: AuthActionType.REGISTER_USER,
@@ -101,19 +101,19 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-
-            const resp = await auth.loginUser(email, password);
+            //const resp = 
+            await auth.loginUser(email, password);
         }
     }
 
-    auth.loginUser = async function(email, password) {
-        const response = await api.loginUser(email, password).catch(function(error){
+    auth.loginUser = async function (email, password) {
+        const response = await api.loginUser(email, password).catch(function (error) {
             authReducer({
                 type: AuthActionType.REGISTER_USER_ERROR,
                 payload: {
                     errorMessage: error.response.data.errorMessage
                 }
-        })
+            })
         });
         if (response && response.status === 200) {
             authReducer({
@@ -127,10 +127,10 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.logoutUser = async function() {
+    auth.logoutUser = async function () {
         const response = await api.logoutUser();
         if (response.status === 200) {
-            authReducer( {
+            authReducer({
                 type: AuthActionType.LOGOUT_USER,
                 payload: null
             })
@@ -149,7 +149,7 @@ function AuthContextProvider(props) {
     // }
 
     auth.resolveErrorMessage = function () {
-        authReducer( {
+        authReducer({
             type: AuthActionType.REGISTER_USER_ERROR,
             payload: {
                 errorMessage: null
@@ -163,7 +163,7 @@ function AuthContextProvider(props) {
             auth
         }}>
             {props.children}
-            <Outlet/>
+            <Outlet />
         </AuthContext.Provider>
     );
 }

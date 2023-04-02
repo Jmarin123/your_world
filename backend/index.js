@@ -7,6 +7,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const request = require('supertest');
 
 const cors = require('cors')
 app.use(express.urlencoded({ extended: true }))
@@ -28,11 +29,6 @@ db.once("open", function () {
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(new passportLocal(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
 
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -48,3 +44,18 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Serving on port ${port}`);
 })
+
+if (process.env.NODE_ENV === "CI") {
+    describe('Bad Post to /auth/login', function () {
+        it('responds with json', function (done) {
+            request(app)
+                .post('/auth/login')
+                .send("firstname=joe")
+                .expect(500)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    return done();
+                });
+        })
+    })
+}

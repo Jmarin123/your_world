@@ -12,7 +12,14 @@ on:
 jobs:
   all_tests:
     runs-on: ubuntu-latest
-    
+    services:
+      mongodb:
+        image: mongo
+        ports:
+          - 27017/tcp
+        options: --health-cmd "mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
+    env:
+      NODE_ENV: CI
     steps:
       - uses: actions/checkout@v2
 
@@ -21,8 +28,6 @@ jobs:
         with:
           node-version: '18.x'
 
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
       - name: npm install and build frontend
         run: |
           cd frontend
@@ -35,11 +40,11 @@ jobs:
           npm install
           npm run build --if-present
           
-      - name: run node
+      - name: Run node and test backend
         run: |
           cd backend
           sudo node index.js &
-      - name: wait on server to start
+      - name: Wait on server to start
         run: npx wait-on http://localhost:3000
       - name: Cypress run
         run: |

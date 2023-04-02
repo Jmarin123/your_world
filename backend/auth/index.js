@@ -43,7 +43,7 @@ function authManager() {
     signToken = (userId) => {
         return jwt.sign({
             userId: userId
-        }, '{process.env.JWT_SECRET_KEY}');
+        }, `${process.env.JWT_SECRET_KEY}`);
     }
 
     return this;
