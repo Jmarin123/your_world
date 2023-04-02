@@ -7,6 +7,7 @@ import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import './splashpage.css';
 import { GlobalStoreContextProvider } from './store'
+import { AuthContextProvider } from './auth'
 
 import Map from './components/Map';
 
@@ -14,40 +15,35 @@ import Map from './components/Map';
 import {
   createBrowserRouter,
   RouterProvider,
+  Route,
+  createRoutesFromElements,
 } from "react-router-dom";
 
-const router = createBrowserRouter([
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/",
-    element: <SplashScreen />,
-  },
-  {
-    path: "/home",
-    element: <HomePage />,
-  },
-  {
-    path: "/map",
-    element: <Map />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  }
-]);
+
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<AuthContextProvider />}>
+    <Route element={<GlobalStoreContextProvider />}>
+      <Route path="/" element={<SplashScreen />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/map" element={<Map />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* More Routes here... */}
+    </Route>
+    </Route>
+  ));
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  <GlobalStoreContextProvider>
     <RouterProvider router={router}>
     {/* <RouterProvider router={router2} /> */}
-    </RouterProvider>
-    </GlobalStoreContextProvider>
+  </RouterProvider>
   </React.StrictMode>
 );
 

@@ -1,9 +1,10 @@
 import { createContext, useState } from 'react'
+import { Outlet } from 'react-router-dom'
 //useContext
 // import { useHistory } from 'react-router-dom'
 
 export const GlobalStoreContext = createContext({});
-console.log("Creating store")
+console.log("Creating GlobalStoreContext")
 
 export const GlobalStoreActionType = {
     CHANGE_MAP_NAME: "CHANGE_MAP_NAME",
@@ -38,8 +39,6 @@ function GlobalStoreContextProvider(props) {
         currentMap: null
     });
     // const history = useHistory();
-
-    console.log("inside useGlobalStore");
 
     // const { auth } = useContext(AuthContext);
     // console.log("auth: " + auth);
@@ -108,6 +107,7 @@ function GlobalStoreContextProvider(props) {
             store
         }}>
             {props.children}
+            <Outlet/>
         </GlobalStoreContext.Provider>
     );
 }
