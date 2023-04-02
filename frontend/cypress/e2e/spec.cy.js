@@ -11,7 +11,7 @@ describe('Goto register and type information', () => {
   it('passes', () => {
     cy.visit('/')
     cy.get('[data-cy="registerButton"]').click()
-    cy.location('pathname').should('eq', '/registerORlogin')
+    cy.location('pathname').should('eq', '/register')
     cy.get("#username").type("Water")
     cy.get('#firstName').type("John")
     cy.get('#lastName').type("Smith")
