@@ -38,6 +38,7 @@ jobs:
       - name: run pm2
         run: |
           cd backend
+          npm install pm2 -g
           pm2 start index.js
       - name: Cypress run
         uses: cypress-io/github-action@v5
