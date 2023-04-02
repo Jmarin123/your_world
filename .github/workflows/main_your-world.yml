@@ -39,11 +39,14 @@ jobs:
           cd backend
           npm install
           npm run build --if-present
-          
-      - name: Run node and test backend
+      - name: Run front-end tests
         run: |
           cd backend
-          sudo node index.js &
+          npx jest --forceExit
+      - name: Run node
+        run: |
+          cd backend
+          sudo node server.js &
       - name: Wait on server to start
         run: npx wait-on http://localhost:3000
       - name: Cypress run

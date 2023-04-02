@@ -4,7 +4,7 @@ import api from './auth-request-api'
 import { Outlet } from 'react-router-dom'
 
 const AuthContext = createContext();
-console.log("create AuthContext");
+//console.log("create AuthContext");
 
 export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
@@ -83,8 +83,8 @@ function AuthContextProvider(props) {
     }
 
     auth.registerUser = async function (firstName, lastName, username, email, password, passwordVerify) {
-        console.log("First name here")
-        console.log(firstName)
+        // console.log("First name here")
+        // console.log(firstName)
         const response = await api.registerUser(firstName, lastName, username, email, password, passwordVerify).catch(function (error) {
 
             authReducer({
@@ -122,7 +122,7 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-            console.log("Logged in")
+            //console.log("Logged in")
             navigate("/home");
         }
     }
