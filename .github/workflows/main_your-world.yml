@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests:
+  all_tests:
     runs-on: ubuntu-latest
     
     steps:
@@ -42,7 +42,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with: 
-          cache-dependency-path: ./frontend/
+          path: ./frontend/
 
   build:
     runs-on: ubuntu-latest    
