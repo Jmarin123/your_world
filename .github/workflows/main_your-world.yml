@@ -47,33 +47,3 @@ jobs:
         run: |
           cd frontend
           npx cypress run
-  deploy:
-    runs-on: ubuntu-latest
-    needs: all_tests
-    env:
-      REACT_APP_API_URL: https://your-world.herokuapp.com/auth
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v1
-        with:
-          node-version: '18.x'
-      - name: npm install and build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          mv build ../backend/checking
-      - name: npm install and build backend
-        run: |
-          cd backend
-          npm install
-      - uses: akhileshns/heroku-deploy@v3.12.13 
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "your-world"
-          heroku_email: "waterdude50@gmail.com"
-          appdir: "backend"
-        env:
-          test: watch
