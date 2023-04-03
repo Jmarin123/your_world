@@ -72,7 +72,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "your-world" #Must be unique in Heroku
           heroku_email: "waterdude50@gmail.com"
-          appdir: "backend" # <- This will point to the api folder in your proje
+          path: "./backend"
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
           REACT_APP_API_URL: https://your-world.herokuapp.com/auth
