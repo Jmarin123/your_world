@@ -23,13 +23,6 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: 6.0
-
-      - name: npm install and build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          mv build ../backend/
       - name: npm install and build backend
         run: |
           cd backend
@@ -59,16 +52,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '18.x'
-      - name: npm install and build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          mv build ../backend/
-      - name: npm install and build backend
-        run: |
-          cd backend
-          npm install
       - uses: akhileshns/heroku-deploy@v3.12.13 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
