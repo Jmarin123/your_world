@@ -62,7 +62,7 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv /build ../backend/
+          mv build ../backend/
       - name: npm install and build backend
         run: |
           cd backend
