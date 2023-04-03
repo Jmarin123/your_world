@@ -15,14 +15,13 @@ app.use(express.urlencoded({ extended: true }))
 
 const dbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/your_world';
 
-(async () => {
-    try {
-        await mongoose.connect(dbUrl);
-        console.log("Connected successfully");
-    } catch (error) {
-        console.error("connection error:", error);
-    }
-})();
+mongoose.connect(dbUrl);
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+    console.log("Connected successfully");
+});
 
 
 
