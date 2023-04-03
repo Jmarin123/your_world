@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.686bdf69.css",
-    "main.js": "/static/js/main.748c5761.js",
+    "main.js": "/static/js/main.f9635072.js",
     "static/media/earthlogo.png": "/static/media/earthlogo.79cb7356dd596bf52276.png",
     "static/media/globelogo.png": "/static/media/globelogo.c3bf6e2dfad9e3e15e76.png",
     "index.html": "/index.html",
     "main.686bdf69.css.map": "/static/css/main.686bdf69.css.map",
-    "main.748c5761.js.map": "/static/js/main.748c5761.js.map"
+    "main.f9635072.js.map": "/static/js/main.f9635072.js.map"
   },
   "entrypoints": [
     "static/css/main.686bdf69.css",
-    "static/js/main.748c5761.js"
+    "static/js/main.f9635072.js"
   ]
 }

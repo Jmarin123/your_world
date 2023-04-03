@@ -6,7 +6,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 
-const cors = require('cors')
+//const cors = require('cors')
 app.use(express.urlencoded({ extended: true }))
 // app.use(cors({
 //     origin: ["http://localhost:3001"],
