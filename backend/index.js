@@ -1,6 +1,6 @@
-// if (process.env.NODE_ENV !== "production") {
-require('dotenv').config();
-// }
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 //     credentials: true
 // }))
 
-const dbUrl = process.env.APPSETTING_MONGO_URL || 'mongodb://localhost:27017/your_world';
+const dbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/your_world';
 
 (async () => {
     try {
