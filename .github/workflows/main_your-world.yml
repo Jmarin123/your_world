@@ -17,6 +17,7 @@ jobs:
         image: mongo
         ports:
           - 27017/tcp
+        options: --health-cmd "mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
     env:
       NODE_ENV: CI
     steps:
@@ -41,7 +42,7 @@ jobs:
       - name: Run front-end tests
         run: |
           cd backend
-          npx jest --forceExit
+          npx jest
       - name: Run node
         run: |
           cd backend

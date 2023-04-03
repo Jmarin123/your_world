@@ -8,12 +8,12 @@ const mongoose = require('mongoose');
 
 const cors = require('cors')
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({
-    origin: ["http://localhost:3001"],
-    credentials: true
-}))
+// app.use(cors({
+//     origin: ["http://localhost:3001"],
+//     credentials: true
+// }))
 
-const dbUrl = process.env.APPSETTING_MONGO_URL || "mongodb://localhost:27017/your_world";
+const dbUrl = process.env.APPSETTING_MONGO_URL || 'mongodb://localhost:27017/your_world';
 
 (async () => {
     try {
