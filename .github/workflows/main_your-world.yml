@@ -75,3 +75,5 @@ jobs:
           heroku_app_name: "your-world"
           heroku_email: "waterdude50@gmail.com"
           appdir: "backend"
+        env:
+          test: watch
