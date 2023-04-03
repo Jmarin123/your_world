@@ -71,12 +71,12 @@ jobs:
         run: |
           cd backend
           ls
-      - uses: akhileshns/heroku-deploy@v3.12.13 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.12.13 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "your-world" #Must be unique in Heroku
+          heroku_app_name: "your-world"
           heroku_email: "waterdude50@gmail.com"
-          appdir: "./backend"
+          appdir: "backend"
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
           REACT_APP_API_URL: https://your-world.herokuapp.com/auth
