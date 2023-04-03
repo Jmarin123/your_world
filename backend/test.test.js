@@ -14,6 +14,13 @@ afterAll(async () => {
     await mongoose.connection.close();
 })
 
+describe("Get To Splash", () => {
+    test("Get Splash Screen", async () => {
+        const response = await request(app).get('/');
+        expect(response.status).toEqual(200);
+    })
+})
+
 describe('Post To login', () => {
     test('Fail to login due to missing fields', async () => {
         const response = await request(app).post('/auth/login').send({ email: "joe" });
