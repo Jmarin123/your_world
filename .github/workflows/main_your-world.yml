@@ -50,6 +50,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: all_tests
+    env:
+      REACT_APP_API_URL: https://your-world.herokuapp.com/auth
     steps:
       - uses: actions/checkout@v2
 
