@@ -21,22 +21,25 @@ export const GlobalStoreActionType = {
     RENAME_SUBREGION: "RENAME_SUBREGION",
     SET_SEARCH: "SET_SEARCH",
     SET_SORT: "SET_SORT",
-    UPLOAD_FILE: "UPLOAD_FILE"
+    UPLOAD_FILE: "UPLOAD_FILE",
+    OPEN_COMMENT: "OPEN_COMMENT",
+    CLOSE_COMMENT: "CLOSE_COMMENT",
 }
 
 export const CurrentModal = {
-    NONE : "NONE",
-    DELETE_MAP : "DELETE_MAP",
-    EDIT_MAP : "EDIT_MAP",
-    RENAME_SUBREGION : "RENAME_SUBREGION",
-    UPLOAD_FILE : "UPLOAD_FILE"
+    NONE: "NONE",
+    DELETE_MAP: "DELETE_MAP",
+    EDIT_MAP: "EDIT_MAP",
+    RENAME_SUBREGION: "RENAME_SUBREGION",
+    UPLOAD_FILE: "UPLOAD_FILE"
 }
 
 function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
-        currentModal : CurrentModal.NONE,
-        uploadType : "",
-        currentMap: null
+        currentModal: CurrentModal.NONE,
+        uploadType: "",
+        currentMap: null,
+        openComment: false,
     });
     // const history = useHistory();
 
@@ -51,23 +54,42 @@ function GlobalStoreContextProvider(props) {
             // LIST UPDATE OF ITS NAME
             case GlobalStoreActionType.CREATE_NEW_MAP: {
                 return setStore({
-                    currentModal : CurrentModal.UPLOAD_FILE,
+                    currentModal: CurrentModal.UPLOAD_FILE,
                     uploadType: payload.type,
-                    currentMap: store.currentMap
+                    currentMap: store.currentMap,
+                    openComment: false,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal: CurrentModal.NONE,
                     uploadType: "",
-                    currentMap: store.currentMap
+                    currentMap: store.currentMap,
+                    openComment: false,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal: CurrentModal.NONE,
                     uploadType: "",
-                    currentMap: payload.currentMap
+                    currentMap: payload.currentMap,
+                    openComment: false,
+                });
+            }
+            case GlobalStoreActionType.OPEN_COMMENT: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: true,
+                });
+            }
+            case GlobalStoreActionType.CLOSE_COMMENT: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: true,
                 });
             }
             default:
@@ -92,7 +114,7 @@ function GlobalStoreContextProvider(props) {
             }
         });
     }
-      
+
     store.createNewMap = async function (obj) {
         storeReducer({
             type: GlobalStoreActionType.SET_CURRENT_MAP,
@@ -102,12 +124,43 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.updateCurrentMap = function () {
+        // async function asyncUpdateCurrentList() {
+        //     const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+        //     if (response.data.success) {
+        //         console.log("store.updateCurrentList");
+        storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_MAP,
+            payload: { currentMap: store.currentMap, counter: store.newListCounter }
+        });
+
+        //     }
+        // }
+        // asyncUpdateCurrentList();
+
+    }
+
+    store.openCommentView = function () {
+        storeReducer({
+            type: GlobalStoreActionType.OPEN_COMMENT,
+            payload: { currentMap: store.currentMap, counter: store.newListCounter, }
+        });
+    }
+
+    store.closeCommentView = function () {
+        storeReducer({
+            type: GlobalStoreActionType.close_COMMENT,
+            payload: { currentMap: store.currentMap, counter: store.newListCounter, }
+        });
+    }
+
+
     return (
         <GlobalStoreContext.Provider value={{
             store
         }}>
             {props.children}
-            <Outlet/>
+            <Outlet />
         </GlobalStoreContext.Provider>
     );
 }
