@@ -5,17 +5,17 @@ const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
 })
 
-export const getLoggedIn = () => api.get(`/auth/loggedIn`);
+export const getLoggedIn = () => api.get(`/loggedIn`);
 export const loginUser = (email, password) => {
-    return api.post(`/auth/login`, {
+    return api.post(`/login`, {
         email: email,
         password: password
     })
 }
-export const logoutUser = () => api.get(`/auth/logout`)
+export const logoutUser = () => api.get(`/logout`)
 export const registerUser = (firstName, lastName, username, email, password, passwordVerify) => {
     console.log(firstName)
-    return api.post(`/auth/register`, {
+    return api.post(`/register`, {
         firstName: firstName,
         lastName: lastName,
         username: username,
