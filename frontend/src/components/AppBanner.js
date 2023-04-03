@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
-import Map from './Map.js';
 import { useLocation } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
@@ -190,7 +189,7 @@ export default function AppBanner() {
                                     onKeyPress={(e) => {
                                         if (e.key === 'Enter') {
                                             e.preventDefault();
-                                            let search = e.target.value;
+                                            // let search = e.target.value;
                                             // store.setSearch(search);
                                             e.target.value = "";
 
