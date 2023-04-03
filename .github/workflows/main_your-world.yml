@@ -73,9 +73,13 @@ jobs:
         run: |
           cd backend
           ls
+          sleep 3
       - uses: akhileshns/heroku-deploy@v3.12.13 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "your-world"
           heroku_email: "waterdude50@gmail.com"
           appdir: "backend"
+        env:
+          MONGO_URL: ${{secrets.MONGO_URL}}
+          JWT_KEY: ${{secrets.JWT_KEY}}
