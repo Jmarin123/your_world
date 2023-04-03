@@ -42,7 +42,7 @@ jobs:
       - name: Run node
         run: |
           cd backend
-          npm start
+          node server.js &
       - name: Wait on server to start
         run: npx wait-on http://localhost:3000
       - name: Cypress run
