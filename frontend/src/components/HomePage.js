@@ -1,5 +1,3 @@
-// import { useContext, useState } from 'react';
-// import { GlobalStoreContext } from '../store'
 import Map from './Map.js';
 import Box from '@mui/material/Box';
 
