@@ -28,7 +28,7 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv build ../backend/checking
+          mv build ../backend/what
       - name: npm install and build backend
         run: |
           cd backend
@@ -64,7 +64,7 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv build ../backend/checking
+          mv build ../backend/what
       - name: npm install and build backend
         run: |
           cd backend
