@@ -1,14 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 
-let url;
-if (process.env.NODE_ENV == "production") {
-    url = 'https://your-world.herokuapp.com/auth'
-} else {
-    url = 'http://localhost:3000/auth'
-}
 const api = axios.create({
-    baseURL: url,
+    baseURL: process.env.REACT_APP_API_URL,
 })
 
 export const getLoggedIn = () => api.get(`/loggedIn/`);

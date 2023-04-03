@@ -9,9 +9,14 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  REACT_APP_API_URL: 'http://localhost:3000/auth'
+
 jobs:
   all_tests:
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_API_URL
     steps:
       - uses: actions/checkout@v2
 
