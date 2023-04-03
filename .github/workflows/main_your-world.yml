@@ -23,6 +23,10 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: 6.0
+      - name: npm install in frontend
+        run: |
+          cd frontend
+          npm install
       - name: npm install and build backend
         run: |
           cd backend
