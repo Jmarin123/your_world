@@ -79,6 +79,3 @@ jobs:
           heroku_app_name: "your-world"
           heroku_email: "waterdude50@gmail.com"
           appdir: "backend"
-        env:
-          MONGO_URL: ${{secrets.MONGO_URL}}
-          JWT_KEY: ${{secrets.JWT_KEY}}
