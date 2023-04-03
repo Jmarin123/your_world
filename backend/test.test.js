@@ -1,21 +1,21 @@
 const request = require('supertest');
 const assert = require('assert');
+const mongoose = require('mongoose');
 const { app } = require('./index');
+let server;
 
+beforeAll(async () => {
+    server = app.listen(3000, () => {
+        console.log("Hey started!");
+    })
+});
+
+afterAll(async () => {
+    await server.close()
+    await mongoose.connection.close();
+})
 
 describe('Post To login', () => {
-    let server;
-
-    beforeEach(async () => {
-        // Start the server
-        server = app.listen(3000, () => {
-        });
-    });
-    afterEach(async () => {
-        // Close the server
-        await server.close()
-    });
-
     test('Fail to login due to missing fields', async () => {
         const response = await request(app).post('/auth/login').send({ email: "joe" });
         expect(response.status).toBe(400);
@@ -32,15 +32,6 @@ describe('Post To login', () => {
 describe('Post To Register', () => {
     let server;
 
-    beforeEach(async () => {
-        // Start the server
-        server = app.listen(3000, () => {
-        });
-    });
-    afterEach(async () => {
-        // Close the server
-        await server.close()
-    });
 
     test('Fail to register due to missing fields', async () => {
         const response = await request(app).post('/auth/register').send({ email: "joe" });
@@ -54,4 +45,6 @@ describe('Post To Register', () => {
         expect(response.body).toEqual({ errorMessage: "Please enter a password of at least 8 characters." });
     })
 })
+
+
 

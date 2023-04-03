@@ -8,20 +8,22 @@ const mongoose = require('mongoose');
 
 const cors = require('cors')
 app.use(express.urlencoded({ extended: true }))
-// app.use(cors({
-//     origin: ["http://localhost:3001"],
-//     credentials: true
-// }))
+app.use(cors({
+    origin: ["http://localhost:3001"],
+    credentials: true
+}))
 
-const dbUrl = process.env.MONGO_URL || "mongodb://localhost:27017/your_world"
+const dbUrl = process.env.APPSETTING_MONGO_URL || "mongodb://localhost:27017/your_world";
 
-mongoose.connect(dbUrl);
+(async () => {
+    try {
+        await mongoose.connect(dbUrl);
+        console.log("Connected successfully");
+    } catch (error) {
+        console.error("connection error:", error);
+    }
+})();
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
-db.once("open", function () {
-    console.log("Connected successfully");
-});
 
 
 const bodyParser = require('body-parser');
