@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongodb:
-        image: mongo
-        ports:
-          - 27017/tcp
-        options: --health-cmd "mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
-    env:
-      NODE_ENV: CI
+        # Use the `healthcheck` option to check the health of the MongoDB container
+        healthcheck:
+          test: ["CMD-SHELL", "mongo --eval \"db.runCommand({ ping: 1 })\""]
+          interval: 10s
+          timeout: 5s
+          retries: 3
     steps:
       - uses: actions/checkout@v2
 
@@ -46,7 +46,7 @@ jobs:
       - name: Run node
         run: |
           cd backend
-          sudo node server.js &
+          npm start
       - name: Wait on server to start
         run: npx wait-on http://localhost:3000
       - name: Cypress run
