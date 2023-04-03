@@ -62,17 +62,21 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv build ../backend/
+          mv /build ../backend/
       - name: npm install and build backend
         run: |
           cd backend
           npm install
+      - name: I just wanna print backend
+        run: |
+          cd backend
+          ls
       - uses: akhileshns/heroku-deploy@v3.12.13 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "your-world" #Must be unique in Heroku
           heroku_email: "waterdude50@gmail.com"
-          path: "./backend"
+          appdir: "./backend"
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
           REACT_APP_API_URL: https://your-world.herokuapp.com/auth
