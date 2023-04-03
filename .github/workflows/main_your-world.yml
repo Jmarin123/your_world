@@ -81,4 +81,4 @@ jobs:
           appdir: "backend"
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
-          REACT_APP_API_URL: https://your-world.herokuapp.com/auth
+          JWT_KEY: ${{secrets.JWT_KEY}}
