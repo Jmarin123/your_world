@@ -4,7 +4,8 @@
 
 :root {
     position: relative;
-    height: 125%;   /* it was 125% before */
+    height: 95%;
+    /* it was 125% before */
     background: linear-gradient(239.25deg, #ECF2FF -9.78%, #756060 16.21%, #756060 85.49%, #ECF2FF 110.24%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
@@ -41,7 +42,7 @@ body {
     border-radius: 5px;
 }
 
-img { 
+img {
     position: absolute;
     width: 111.26px;
     height: 113.26px;
@@ -51,10 +52,10 @@ img {
 
 #mainlogo {
     position: absolute;
-width: 124.26px;
-height: 131.26px;
-left: 933px;
-top: 41px;
+    width: 124.26px;
+    height: 131.26px;
+    left: 933px;
+    top: 41px;
 }
 
 #account {
@@ -94,7 +95,7 @@ top: 41px;
     min-height: 0px;
     left: 30%;
     top: 55%;
-    
+
     border: 1px solid #000000;
     transform: rotate(90deg);
 }
@@ -192,7 +193,7 @@ section {
     height: 10px;
     transform: translateX(190%);
     top: 375px;
-    
+
     background: #ECF2FF;
     border-radius: 5px;
 }
@@ -203,7 +204,7 @@ section {
     height: 10px;
     transform: translateX(190%);
     top: 450px;
-    
+
     background: #ECF2FF;
     border-radius: 5px;
 }
@@ -214,7 +215,7 @@ section {
     height: 10px;
     transform: translateX(190%);
     top: 525px;
-    
+
     background: #ECF2FF;
     border-radius: 5px;
 }
@@ -253,14 +254,14 @@ section {
     height: 41px;
     left: 46%;
     top: 85%;
-    
+
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
 }
 
 #loginInput {
-    position:absolute;
+    position: absolute;
     width: 260px;
     height: 10px;
     transform: translateX(185%);
@@ -295,18 +296,18 @@ section {
 
 #guestButton {
 
-box-sizing: border-box;
+    box-sizing: border-box;
 
-position: absolute;
-width: 247px;
-height: 70px;
-left: 184px;
-top: 550px;
+    position: absolute;
+    width: 247px;
+    height: 70px;
+    left: 184px;
+    top: 550px;
 
-background: #E5D1FA;
-border: 1px solid #000000;
-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-border-radius: 5px;
+    background: #E5D1FA;
+    border: 1px solid #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
 }
 
 #logButton {
@@ -316,36 +317,36 @@ border-radius: 5px;
     height: 70px;
     left: 184px;
     top: 650px;
-    
+
     background: #E5D1FA;
     border: 1px solid #000000;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-    }
+}
 
-    
+
 #regButton {
 
-        box-sizing: border-box;
+    box-sizing: border-box;
 
-        position: absolute;
-        width: 247px;
-        height: 70px;
-        left: 184px;
-        top: 750px;
-        
-        background: #E5D1FA;
-        border: 1px solid #000000;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 5px;
-        }
+    position: absolute;
+    width: 247px;
+    height: 70px;
+    left: 184px;
+    top: 750px;
+
+    background: #E5D1FA;
+    border: 1px solid #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
 
 #globeLogo {
     position: absolute;
-width: 700px;
-height: 775px;
-left: 750px;
-top: 200px;
+    width: 700px;
+    height: 775px;
+    left: 750px;
+    top: 200px;
 
 }
 
@@ -360,11 +361,23 @@ top: 200px;
 #appBar {
     position: absolute;
 
-background: #756060;
+    background: #756060;
 }
 
 .sr-only {
     display: none;
-  }
-        
+}
 
+#map-statusbar {
+    position: absolute;
+    left: 0%;
+    top: 95%;
+    width: 100%;
+    height: 10%;
+    background-color: #d8e2dc;
+    color: black;
+    display: flex;
+    align-items: center;
+    font-size: 25pt;
+    justify-content: center;
+}

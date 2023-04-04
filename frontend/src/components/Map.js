@@ -4,7 +4,7 @@ import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 // import mapData from "./custom.json";
 import "leaflet/dist/leaflet.css";
 import { GlobalStoreContext } from '../store'
-import { useContext, useState} from 'react'
+import { useContext, useState } from 'react'
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 
@@ -33,50 +33,50 @@ export default function Map() {
   //   });
   // };
 
-  function onEachCountry(country, layer){
+  function onEachCountry(country, layer) {
     const countryName = country.properties.ADMIN;
     console.log(countryName);
     layer.bindPopup(countryName);
 
-    layer.options.fillOpacity = Math.random(); 
+    layer.options.fillOpacity = Math.random();
 
     layer.on({
       click: this.changeCountryColor,
     });
   };
 
-  function colorChange(event){
+  function colorChange(event) {
     this.setState({ color: event.target.value });
   };
 
 
   let renderedMap = <GeoJSON
-            style={countryStyle}
-            data={store.currentMap ? store.currentMap.features : null}
-            onEachFeature={onEachCountry}
-          />
+    style={countryStyle}
+    data={store.currentMap ? store.currentMap.features : null}
+    onEachFeature={onEachCountry}
+  />
 
-    return (
-      <div>
-        <h1 style={{ textAlign: "center" }}>Your World</h1>
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+  return (
+    <div>
+      <h1 style={{ textAlign: "center" }}>Your World</h1>
+      <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {
           store.currentMap ? renderedMap : <div></div>
         }
         <FeatureGroup>
-        <EditControl
-          position='topright'
-        />
+          <EditControl
+            position='topright'
+          />
         </FeatureGroup>
-        </MapContainer>
-        <input
-          type="color"
-          value={color}
-          onChange={colorChange}
-        />
-      </div>
-    );
+      </MapContainer>
+      <input
+        type="color"
+        value={color}
+        onChange={colorChange}
+      />
+    </div>
+  );
 }
 
 // export default Map;

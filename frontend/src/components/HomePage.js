@@ -6,9 +6,9 @@ export default function AppBanner() {
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
-            <Box id="box">
+            {/* <Box id="box">
                 <Map />
-            </Box>
+            </Box> */}
 
         </Box>
     );

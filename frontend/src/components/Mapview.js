@@ -13,7 +13,7 @@ export default function Mapview() {
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
             <Box id="box">
-                <Map />
+                {/* <Map /> */}
             </Box>
 
         </Box>
@@ -21,25 +21,24 @@ export default function Mapview() {
     if (store.openComment) {
         mapViewMenu =
             <div >
-                <Grid container spacing={1} >
-                    <Grid item xs={8}
+                <Grid container spacing={0.5} >
+                    <Grid item xs={9}
                         style={{
                             paddingLeft: '1%',
                             top: '50px',
                             left: '10px',
-                            height: '850px',
+                            height: '1000px',
                             // overflowY: 'auto',
                         }}
                     >
                         <Map />
                     </Grid>
 
-                    <Grid item xs={4}
+                    <Grid item xs={3}
                         style={{
                             paddingRight: '1%',
                             top: '50px',
-                            left: '0px',
-                            height: '850px',
+                            height: '90px',
                             // overflowY: 'auto',
                         }}
                     >

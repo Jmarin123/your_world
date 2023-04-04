@@ -89,7 +89,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal: CurrentModal.NONE,
                     uploadType: "",
                     currentMap: payload.currentMap,
-                    openComment: true,
+                    openComment: false,
                 });
             }
             default:
@@ -147,9 +147,9 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.closeCommentView = function () {
+    store.closeComment = function () {
         storeReducer({
-            type: GlobalStoreActionType.close_COMMENT,
+            type: GlobalStoreActionType.CLOSE_COMMENT,
             payload: { currentMap: store.currentMap, counter: store.newListCounter, }
         });
     }

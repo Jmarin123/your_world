@@ -52,6 +52,12 @@ function Comment(props) {
         }
     }
 
+    function handleCloseComment() {
+        store.closeComment();
+        console.log(store.openComment);
+    }
+
+
     //Make sure newest comments are at the top by reversing the comments list
     let reversed = [];
     if (map) {
@@ -65,15 +71,14 @@ function Comment(props) {
     if (!map) {
         disabled = true;
     }
-
     return (
 
         <Card sx={{
-            width: '600px',
+            width: '410px',
             position: 'relative',
             top: '70px',
             backgroundColor: '#edede9',
-            height: '780px',
+            height: '800px',
         }}>
             <CardContent>
                 <StyledIconButton
@@ -81,11 +86,11 @@ function Comment(props) {
                     color="inherit"
                     aria-label="open drawer"
                     sx={{ mr: 2 }}
-                // disabled={disabled}
-                // onClick={() => handleClick("/home")}
+                    // disabled={disabled}
+                    onClick={() => handleCloseComment()}
                 >
                     <CloseOutlinedIcon
-                        style={{ fontSize: "45px", float: "left" }}
+                        style={{ fontSize: "25px", float: "left" }}
 
                     ></CloseOutlinedIcon>
                 </StyledIconButton>
@@ -141,7 +146,7 @@ function Comment(props) {
                             <TextField
                                 sx={{
                                     backgroundColor: "#f8f9fa",
-                                    top: '250px',
+                                    top: '220px',
 
                                     // borderRadius: "20px",
                                     // borderColor: '#ffe5ec',
