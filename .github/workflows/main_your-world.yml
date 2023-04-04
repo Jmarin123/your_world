@@ -33,7 +33,7 @@ jobs:
         run: |
           cd backend
           npm install
-      - name: Run front-end tests
+      - name: Run back-end tests
         run: |
           cd backend
           npx jest
@@ -69,11 +69,6 @@ jobs:
         run: |
           cd backend
           npm install
-      - name: I just wanna print backend
-        run: |
-          cd backend
-          ls
-          sleep 3
       - uses: akhileshns/heroku-deploy@v3.12.13 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
