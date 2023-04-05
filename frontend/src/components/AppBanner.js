@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
 
@@ -29,9 +29,9 @@ export default function AppBanner() {
     const [anchorE2, setAnchorE2] = useState(null);
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
-    const navigate = useNavigate();
-    let disabled = false;
-    const map = store.currentMap;
+    // const navigate = useNavigate();
+    // let disabled = false;
+    // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
         '&:hover': {
@@ -53,11 +53,11 @@ export default function AppBanner() {
         setAnchorEl(null);
     };
 
-    function handleClick(path) {
-        navigate(path);
-        disabled = false;
-        // store.setSearch("");
-    }
+    // function handleClick(path) {
+    //     navigate(path);
+    //     disabled = false;
+    //     // store.setSearch("");
+    // }
 
     function handleComment() {
         store.openCommentView();

@@ -1,5 +1,5 @@
 import { GlobalStoreContext } from '../store'
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Map from './Map.js';
 import Comment from './Comment';
 import Box from '@mui/material/Box';
@@ -11,10 +11,10 @@ export default function Mapview() {
 
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
-
-            <Box id="box">
-                {/* <Map /> */}
-            </Box>
+            <Map />
+            {/* <Box id="box">
+               
+            </Box> */}
 
         </Box>
 

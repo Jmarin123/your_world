@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 import { Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
-import IconButton from '@mui/material/IconButton';
+// import AddIcon from '@mui/icons-material/Add';
+// import IconButton from '@mui/material/IconButton';
 import { useLocation } from 'react-router-dom'
-import AuthContext from '../auth'
+// import AuthContext from '../auth'
 // import { useHistory } from 'react-router-dom'
 
 /*
@@ -24,7 +24,7 @@ function Statusbar() {
     let text = "";
 
     if (
-        // location.pathname === "/map" ||
+        location.pathname === "/map" ||
         // auth.type !== "guest" &&
         location.pathname === "/mapview"
     ) {
