@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
 
@@ -18,15 +19,28 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import TextField from '@mui/material/TextField';
 import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
-
     const [anchorE2, setAnchorE2] = useState(null);
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
+    // const navigate = useNavigate();
+    // let disabled = false;
+    // const map = store.currentMap;
+    let StyledIconButton = styled(IconButton)({
+        color: "black",
+        '&:hover': {
+            border: '2px solid green',
+            backgroundColor: "transparent",
+            padding: "3px 3px 3px 3px",
+            borderRadius: "1px 1px",
+        }
+    });
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -38,6 +52,22 @@ export default function AppBanner() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    // function handleClick(path) {
+    //     navigate(path);
+    //     disabled = false;
+    //     // store.setSearch("");
+    // }
+
+    function handleComment() {
+        store.openCommentView();
+        console.log(store.openComment);
+    }
+
+    // disable the comment button
+    // if (map && map.published.isPublished === true) {
+    //     disabled = true;
+    // }
 
     // const handleLogout = () => {
     //     handleMenuClose();
@@ -107,24 +137,6 @@ export default function AppBanner() {
             <MenuItem component={Link} to="/register" onClick={handleMenuClose}><Link to='/register'>Create New Account</Link></MenuItem>
         </Menu>
     );
-    // const loggedInMenu =
-    //     <Menu
-    //         anchorEl={anchorEl}
-    //         anchorOrigin={{
-    //             vertical: 'top',
-    //             horizontal: 'right',
-    //         }}
-    //         id={menuId}
-    //         keepMounted
-    //         transformOrigin={{
-    //             vertical: 'top',
-    //             horizontal: 'right',
-    //         }}
-    //         open={isMenuOpen}
-    //         onClose={handleMenuClose}
-    //     >
-    //         <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    //     </Menu>
 
     let editToolbar = "";
     let menu = loggedOutMenu;
@@ -147,7 +159,6 @@ export default function AppBanner() {
         // store.closeCurrentList();
     }
 
-
     let editToolbarMenu = "";
     // if (auth.user || auth.type) {
     if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login') {
@@ -162,17 +173,56 @@ export default function AppBanner() {
                             sx={{ display: { xs: 'none', sm: 'block' }, zIndex: 3 }}
                             onClick={handleHomescreen}
                         >
-                            <PublicIcon fontSize='large' style={{ textDecoration: 'none', color: 'black' }} onClick={handleProfileMenuOpen}></PublicIcon>
-                            <HomeIcon fontSize='large' style={{ textDecoration: 'none', color: 'black' }} ></HomeIcon>
-                            <MenuIcon fontSize='large' style={{ textDecoration: 'none', color: 'black' }}></MenuIcon>
-                            <SearchIcon fontSize='large' style={{ textDecoration: 'none', color: 'black' }}></SearchIcon>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/home")}
+                            >
+                                <PublicIcon style={{ fontSize: "45px", float: "right" }} onClick={handleProfileMenuOpen}></PublicIcon>
+                            </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/home")}
+                            >
+                                <HomeIcon style={{ fontSize: "45px", float: "right" }} ></HomeIcon>
+                            </StyledIconButton>
+
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/home")}
+                            >
+                                <MenuIcon style={{ fontSize: "45px", float: "right" }}></MenuIcon>
+                            </StyledIconButton>
+
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/home")}
+                            >
+                                <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+                            </StyledIconButton>
+
                             <Box
                                 component="form"
                                 sx={{
                                     '& > :not(style)': { width: '40ch', backgroundColor: "white" },
                                     display: 'inline',
                                     fontSize: "40px",
-                                    marginLeft: 'auto'
+                                    marginLeft: 'auto',
                                 }}
                             >
                                 <TextField
@@ -200,22 +250,39 @@ export default function AppBanner() {
 
                         </Typography>
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/mapview-comment")}
+                            onClick={() => handleComment()}
+                        >
+                            <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
+                        </StyledIconButton>
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <TextsmsOutlinedIcon fontSize='large' style={{ textDecoration: 'none', color: 'black' }}>
-
-                            </TextsmsOutlinedIcon>
-                            <AddToPhotosIcon
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                onClick={handleUploadMenuOpen}
-                                fontSize='large'
-                                style={{ textDecoration: 'none', color: 'black' }}
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/user-lists")}
                             >
-                                {/* {getAccountMenu(auth.loggedIn)} */}
-                            </AddToPhotosIcon>
+                                <AddToPhotosIcon
+                                    size="large"
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={menuId}
+                                    aria-haspopup="true"
+                                    onClick={handleUploadMenuOpen}
+                                    fontSize='large'
+                                    style={{ fontSize: "45px", color: "black" }}
+                                >
+                                    {/* {getAccountMenu(auth.loggedIn)} */}
+                                </AddToPhotosIcon>
+                            </StyledIconButton>
                         </Box>
                     </Toolbar>
                 </AppBar>

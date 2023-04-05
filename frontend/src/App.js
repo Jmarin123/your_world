@@ -10,6 +10,7 @@ import HomePage from './components/HomePage';
 import Map from './components/Map';
 import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
+import Statusbar from './components/Statusbar';
 /*
     This is our application's top-level component.
     
@@ -35,11 +36,11 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/mapview" element={<Mapview />} />
           </Routes>
-          {/* <Statusbar />
-          <MUIDeleteModal />
-          <MUIErrorModal />
-          <MUIAlertModal />
-          <MUIRemoveSongModal /> */}
+          <Statusbar />
+          {/* <MUIDeleteModal /> */}
+          {/* <MUIErrorModal /> */}
+          {/* <MUIAlertModal /> */}
+          {/* <MUIRemoveSongModal /> */}
 
         </GlobalStoreContextProvider>
       </AuthContextProvider>
