@@ -1,4 +1,4 @@
-import Map from './Map.js';
+// import Map from './Map.js';
 import Box from '@mui/material/Box';
 
 export default function AppBanner() {
