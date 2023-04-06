@@ -1,15 +1,17 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth'
 
-import React, { useContext, useState, useRef } from 'react';
-import { Typography, TextField, Button, ListItemText } from '@mui/material';
+// import React, { useContext, useState, useRef } from 'react';
+import React, { useContext } from 'react';
+// import { Typography, TextField, Button, ListItemText } from '@mui/material';
+import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+// import List from '@mui/material/List';
+// import ListItem from '@mui/material/ListItem';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
+// import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
 
 import Grid from '@mui/material/Grid';
@@ -22,7 +24,7 @@ import IconButton from '@mui/material/IconButton';
 function Comment(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const [comment, setComment] = useState('');
+    // const [comment, setComment] = useState('');
     const map = store.currentMap;
     let userName = "";
     if (auth.user) {
@@ -40,7 +42,7 @@ function Comment(props) {
         }
     });
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     function handleUpdateComments(event) {
         if (event.key === 'Enter') {
