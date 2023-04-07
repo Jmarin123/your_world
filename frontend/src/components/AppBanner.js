@@ -21,9 +21,11 @@ import TextField from '@mui/material/TextField';
 import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import AuthContext from '../auth'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const [anchorE2, setAnchorE2] = useState(null);
@@ -138,13 +140,33 @@ export default function AppBanner() {
         </Menu>
     );
 
+    const loggedInMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem component={Link} to="/" onClick={handleMenuClose}><Link to='/'>Log Out Of Account</Link></MenuItem>
+        </Menu>
+    );
+
     let editToolbar = "";
     let menu = loggedOutMenu;
     let menu2 = uploadMenu;
-    // if (auth.loggedIn) {
-    //     console.log("we are loggioned in so menu should change");
-    //     menu = loggedInMenu;
-    // }
+    if (auth.loggedIn) {
+        // console.log("we are loggioned in so menu should change");
+        menu = loggedInMenu;
+    }
 
     // function getAccountMenu(loggedIn) {
     //     let userInitials = 'JD'
