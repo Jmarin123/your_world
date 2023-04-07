@@ -21,6 +21,9 @@ import TextField from '@mui/material/TextField';
 import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MapIcon from '@mui/icons-material/Map';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import AuthContext from '../auth'
 
 export default function AppBanner() {
@@ -249,7 +252,7 @@ export default function AppBanner() {
                             <Box
                                 component="form"
                                 sx={{
-                                    '& > :not(style)': { width: '40ch', backgroundColor: "#D9D9D9", marginTop: '1%', borderRadius: '5px'},
+                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px'},
                                     display: 'inline',
                                     fontSize: "40px",
                                     marginLeft: 'auto',
@@ -285,8 +288,40 @@ export default function AppBanner() {
                                 />
                             </Box>
 
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2, marginLeft: '5px'}}
+                            onClick={() => handleComment()}
+                        >
+                           <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon> 
+                        </StyledIconButton>
+
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            onClick={() => handleComment()}
+                        >
+                           <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon> 
+                        </StyledIconButton>
+
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            onClick={() => handleComment()}
+                        >
+                           <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon> 
+                        </StyledIconButton>
                         </Typography>
-                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                        
+                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>                        
+
+                
                         <StyledIconButton
                             edge="start"
                             color="inherit"
@@ -298,6 +333,7 @@ export default function AppBanner() {
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
                         </StyledIconButton>
+                        
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"
