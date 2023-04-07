@@ -6,14 +6,19 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 
-//const cors = require('cors')
+const cors = require('cors')
 app.use(express.urlencoded({ extended: true }))
 // app.use(cors({
 //     origin: ["http://localhost:3001"],
 //     credentials: true
 // }))
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true
+};
 
-const dbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/your_world';
+app.use(cors(corsOptions));
+const dbUrl = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
 
 mongoose.connect(dbUrl);
 
@@ -35,9 +40,9 @@ app.use(express.static(path.join(__dirname, 'what')));
 const authRouter = require('./routes/auth-router')
 app.use('/auth', authRouter)
 
-app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'what', 'index.html')).status(200);
-});
+// app.get('/*', function (req, res) {
+//     res.sendFile(path.join(__dirname, 'what', 'index.html')).status(200);
+// });
 
 
 module.exports = { app };
