@@ -387,8 +387,12 @@ input {
 
 #appBar {
     position: absolute;
-
+    z-index: 5;
     background: #756060;
+}
+
+#toolBar{
+    padding-left: 0;
 }
 
 .sr-only {

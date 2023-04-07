@@ -36,13 +36,16 @@ export default function AppBanner() {
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
+        
         '&:hover': {
-            border: '2px solid green',
-            backgroundColor: "transparent",
-            padding: "3px 3px 3px 3px",
-            borderRadius: "1px 1px",
+            opacity: 1,
+            transition: "color 0.7s, transform 0.7s",
+            transform: 'scale(1.1)',
+            // transitionDuration: '100ms',
+            color: '#FDE66B'
         }
     });
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -54,6 +57,11 @@ export default function AppBanner() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        setAnchorEl(null);
+        auth.logoutUser();
+    }
 
     // function handleClick(path) {
     //     navigate(path);
@@ -156,7 +164,7 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem component={Link} to="/" onClick={handleMenuClose}><Link to='/'>Log Out Of Account</Link></MenuItem>
+            <MenuItem component={Link} to="/" onClick={handleLogout}><Link to='/'>Log Out Of Account</Link></MenuItem>
         </Menu>
     );
 
@@ -187,23 +195,23 @@ export default function AppBanner() {
         editToolbarMenu =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">
-                    <Toolbar>
+                    <Toolbar id="toolBar">
                         <Typography
                             variant="h4"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' }, zIndex: 3 }}
+                            sx={{ display: { xs: 'none', sm: 'block' } }}
                             onClick={handleHomescreen}
                         >
                             <StyledIconButton
                                 edge="start"
                                 color="inherit"
                                 aria-label="open drawer"
-                                sx={{ mr: 2 }}
+                                sx={{ mr: 2, marginLeft: "5px" }}
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <PublicIcon style={{ fontSize: "45px", float: "right" }} onClick={handleProfileMenuOpen}></PublicIcon>
+                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handleProfileMenuOpen}></PublicIcon>
                             </StyledIconButton>
                             <StyledIconButton
                                 edge="start"
@@ -241,16 +249,23 @@ export default function AppBanner() {
                             <Box
                                 component="form"
                                 sx={{
-                                    '& > :not(style)': { width: '40ch', backgroundColor: "white" },
+                                    '& > :not(style)': { width: '40ch', backgroundColor: "#D9D9D9", marginTop: '1%', borderRadius: '5px'},
                                     display: 'inline',
                                     fontSize: "40px",
                                     marginLeft: 'auto',
+                                    "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
+                                        borderColor: '#FDE66B'
+                                      }, 
+                                    "& label.Mui-focused": {
+                                        color: '#756060'
+                                    },
+                                    
                                 }}
                             >
                                 <TextField
                                     id="outlined-basic"
                                     label="Search the map"
-                                    variant="outlined"
+                                    variant="standard"
                                     size="small"
                                     // label={store.search ? "" : "Search"}
                                     // disabled={disabled}
@@ -300,7 +315,7 @@ export default function AppBanner() {
                                     aria-haspopup="true"
                                     onClick={handleUploadMenuOpen}
                                     fontSize='large'
-                                    style={{ fontSize: "45px", color: "black" }}
+                                    style={{ fontSize: "45px" }}
                                 >
                                     {/* {getAccountMenu(auth.loggedIn)} */}
                                 </AddToPhotosIcon>
