@@ -4,8 +4,8 @@
 
 :root {
     position: relative;
-    height: 95%;
-    /* it was 125% before */
+    height: 100%;
+    /* it was 115% before */
     background: linear-gradient(239.25deg, #ECF2FF -9.78%, #756060 16.21%, #756060 85.49%, #ECF2FF 110.24%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
@@ -14,6 +14,7 @@ body {
     overscroll-behavior: none;
     margin: 0;
 }
+
 
 #splashScreenBackground {
     position: relative;
@@ -31,9 +32,9 @@ body {
 #box {
     box-sizing: border-box;
     position: absolute;
-    width: 90%;
-    height: 80%;
-    left: 5%;
+    width: 85%;
+    height: 70%;
+    left: 8%;
     top: 150px;
 
     background: rgba(217, 217, 217, 0.78);
@@ -46,8 +47,10 @@ img {
     position: absolute;
     width: 111.26px;
     height: 113.26px;
-    left: 675px;
+    left: 49%;
     top: 15px;
+    /* max-width: 100%; */
+    /* height: auto; */
 }
 
 #mainlogo {
@@ -60,22 +63,20 @@ img {
 
 #account {
     position: absolute;
-    width: 437px;
+    width: 40%;
     height: 66px;
-    left: 35%;
-    top: 100px;
+    left: 33%;
+    top: 5%;
 
     font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 900;
-    font-size: 50px;
+    font-size: 4vw;
     line-height: 59px;
     text-align: center;
 
     color: #000000;
 }
-
-
 
 #line {
     position: absolute;
@@ -151,79 +152,103 @@ section {
 
 }
 
+input:focus {
+    outline: none;
+    font-size: 1vw;
+}
+
+input {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: lighter;
+    font-size: 1vw;
+    line-height: 10px;
+
+}
+
+/* .my-input::placeholder {
+    opacity: 0.5;
+  }
+
+.my-input::selection {
+    opacity: 0.5;
+  } */
+
+
 
 #firstName {
     position: absolute;
-    width: 169px;
-    height: 10px;
-    /* left: 75px; */
-    transform: translateX(230%);
-    top: 225px;
-
+    width: 15%;
+    height: 7%;
+    left: 35%;
+    top: 24%;
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #lastName {
     position: absolute;
-    width: 169px;
-    height: 10px;
-    /* left: 375px; */
-    transform: translateX(365%);
-    top: 225px;
-
+    width: 15%;
+    height: 7%;
+    left: 55%;
+    top: 24%;
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #username {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(190%);
-    top: 300px;
-
+    width: 21.5%;
+    height: 7%;
+    top: 39%;
+    left: 41.5%;
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #email {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(190%);
-    top: 375px;
+    width: 21.5%;
+    height: 7%;
+    left: 41.5%;
+    top: 50%;
 
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #password {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(190%);
-    top: 450px;
+    width: 21.5%;
+    height: 7%;
+    left: 41.5%;
+    top: 61%;
 
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #repassword {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(190%);
-    top: 525px;
+    width: 21.5%;
+    height: 7%;
+    left: 41.5%;
+    top: 71%;
 
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #register {
     position: absolute;
-    width: 144px;
-    height: 41px;
+    width: 12%;
+    height: 8%;
     left: 47%;
     top: 85%;
     background: #FDE66B;
@@ -233,15 +258,15 @@ section {
 
 #login {
     position: absolute;
-    width: 437px;
+    width: 40%;
     height: 66px;
-    /* left: 750px; */
-    top: 100px;
-    left: 35%;
+    left: 33%;
+    top: 5%;
+
     font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 900;
-    font-size: 50px;
+    font-size: 4vw;
     line-height: 59px;
     text-align: center;
 
@@ -250,11 +275,10 @@ section {
 
 #loginButton {
     position: absolute;
-    width: 144px;
-    height: 41px;
-    left: 46%;
-    top: 85%;
-
+    width: 12%;
+    height: 9%;
+    left: 47%;
+    top: 75%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
@@ -262,24 +286,25 @@ section {
 
 #loginInput {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(185%);
-    top: 250px;
+    width: 21.5%;
+    height: 9%;
+    top: 35%;
+    left: 41.5%;
     background: #ECF2FF;
     border-radius: 5px;
-    display: grid;
+    border-style: none;
 }
 
 #loginPassword {
     position: absolute;
-    width: 260px;
-    height: 10px;
-    transform: translateX(185%);
-    top: 355px;
+    width: 21.5%;
+    height: 9%;
+    left: 41.5%;
+    top: 53%;
 
     background: #ECF2FF;
     border-radius: 5px;
+    border-style: none;
 }
 
 #text {
@@ -287,10 +312,12 @@ section {
     font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 600;
-    font-size: 22px;
+    /* font-size: 22px; */
     line-height: 26px;
     text-align: center;
     color: #000000;
+    font-size: 1.5vw;
+    
 
 }
 
@@ -360,8 +387,12 @@ section {
 
 #appBar {
     position: absolute;
-
+    z-index: 5;
     background: #756060;
+}
+
+#toolBar{
+    padding-left: 0;
 }
 
 .sr-only {

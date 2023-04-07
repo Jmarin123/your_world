@@ -1,7 +1,6 @@
 import { React } from "react";
 import logo from './earthlogo.png'
 import { Button } from '@mui/material';
-import { TextField } from '@mui/material';
 import { Box } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useContext } from 'react';
@@ -27,50 +26,36 @@ function Register() {
 
 
   return (
-        <body>
+        <div>
           <Link to={`/`}>
           <img src={logo} alt="earthlogo"/>
           </Link>
           <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
             <section id="account">Create an Account</section>
-      
-            {/* <div id="line"></div> */}
 
-            <TextField id='firstName' placeholder='first name' sx={{
+            <input id='firstName' placeholder='first name' sx={{
           "& fieldset": { border: 'none' },
-        }} name="firstName" data-cy='firstNameForm'></TextField>
-        <TextField id='lastName' placeholder='last name' sx={{
+        }} name="firstName" data-cy='firstNameForm'></input>
+        <input id='lastName' placeholder='last name' sx={{
           "& fieldset": { border: 'none' },
-        }} name="lastName" data-cy='lastNameForm'></TextField>
-        <TextField id='username' placeholder='username' sx={{
+        }} name="lastName" data-cy='lastNameForm'></input>
+        <input id='username' placeholder='username' sx={{
           "& fieldset": { border: 'none' },
-        }} name="username"></TextField>
-        <TextField id='email' placeholder='email' sx={{
+        }} name="username"></input>
+        <input id='email' placeholder='email' sx={{
           "& fieldset": { border: 'none' },
-        }} data-cy='emailForm' name="emailForm"></TextField>
-        <TextField id='password' placeholder='password' sx={{
+        }} data-cy='emailForm' name="emailForm"></input>
+        <input id='password' type="password" placeholder='password' sx={{
           "& fieldset": { border: 'none' },
-        }} name="password" data-cy='passwordForm'></TextField>
-        <TextField id='repassword' placeholder='verify password' sx={{
+        }} name="password" data-cy='passwordForm'></input>
+        <input id='repassword' type="password" placeholder='verify password' sx={{
           "& fieldset": { border: 'none' },
-        }} name="repassword" data-cy='repeatPasswordForm'></TextField>
-        <Button id="register" type="submit" sx={{ textTransform: `none` }} data-cy='registerButton' on>
+        }} name="repassword" data-cy='repeatPasswordForm'></input>
+        <Button id="register" type="submit" sx={{ textTransform: `none`, fontSize: '1vw' }} data-cy='registerButton' on="true">
           <p id="text">Register</p>
         </Button>
-            {/* <TextField id='loginInput' placeholder='username/email' sx={{
-              "& fieldset": { border: 'none' },
-            }}></TextField>
-            <TextField id='loginPassword' placeholder='password' sx={{
-              "& fieldset": { border: 'none' },
-            }}></TextField>
-
-
-            <Button id="loginButton" sx={{textTransform: `none`}}>
-              <p id="text">Login</p>
-            </Button> */}
           </Box>
-
-      </body>
+      </div>
       
   );
 }

@@ -21,9 +21,14 @@ import TextField from '@mui/material/TextField';
 import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MapIcon from '@mui/icons-material/Map';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
+import AuthContext from '../auth'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const [anchorE2, setAnchorE2] = useState(null);
@@ -34,13 +39,16 @@ export default function AppBanner() {
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
+        
         '&:hover': {
-            border: '2px solid green',
-            backgroundColor: "transparent",
-            padding: "3px 3px 3px 3px",
-            borderRadius: "1px 1px",
+            opacity: 1,
+            transition: "color 0.7s, transform 0.7s",
+            transform: 'scale(1.1)',
+            // transitionDuration: '100ms',
+            color: '#FDE66B'
         }
     });
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -52,6 +60,11 @@ export default function AppBanner() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        setAnchorEl(null);
+        auth.logoutUser();
+    }
 
     // function handleClick(path) {
     //     navigate(path);
@@ -138,13 +151,33 @@ export default function AppBanner() {
         </Menu>
     );
 
+    const loggedInMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem component={Link} to="/" onClick={handleLogout}><Link to='/'>Log Out Of Account</Link></MenuItem>
+        </Menu>
+    );
+
     let editToolbar = "";
     let menu = loggedOutMenu;
     let menu2 = uploadMenu;
-    // if (auth.loggedIn) {
-    //     console.log("we are loggioned in so menu should change");
-    //     menu = loggedInMenu;
-    // }
+    if (auth.loggedIn) {
+        // console.log("we are loggioned in so menu should change");
+        menu = loggedInMenu;
+    }
 
     // function getAccountMenu(loggedIn) {
     //     let userInitials = 'JD'
@@ -165,23 +198,23 @@ export default function AppBanner() {
         editToolbarMenu =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">
-                    <Toolbar>
+                    <Toolbar id="toolBar">
                         <Typography
                             variant="h4"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' }, zIndex: 3 }}
+                            sx={{ display: { xs: 'none', sm: 'block' } }}
                             onClick={handleHomescreen}
                         >
                             <StyledIconButton
                                 edge="start"
                                 color="inherit"
                                 aria-label="open drawer"
-                                sx={{ mr: 2 }}
+                                sx={{ mr: 2, marginLeft: "5px" }}
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <PublicIcon style={{ fontSize: "45px", float: "right" }} onClick={handleProfileMenuOpen}></PublicIcon>
+                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handleProfileMenuOpen}></PublicIcon>
                             </StyledIconButton>
                             <StyledIconButton
                                 edge="start"
@@ -219,16 +252,23 @@ export default function AppBanner() {
                             <Box
                                 component="form"
                                 sx={{
-                                    '& > :not(style)': { width: '40ch', backgroundColor: "white" },
+                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px'},
                                     display: 'inline',
                                     fontSize: "40px",
                                     marginLeft: 'auto',
+                                    "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
+                                        borderColor: '#FDE66B'
+                                      }, 
+                                    "& label.Mui-focused": {
+                                        color: '#756060'
+                                    },
+                                    
                                 }}
                             >
                                 <TextField
                                     id="outlined-basic"
                                     label="Search the map"
-                                    variant="outlined"
+                                    variant="standard"
                                     size="small"
                                     // label={store.search ? "" : "Search"}
                                     // disabled={disabled}
@@ -248,8 +288,40 @@ export default function AppBanner() {
                                 />
                             </Box>
 
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2, marginLeft: '5px'}}
+                            onClick={() => handleComment()}
+                        >
+                           <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon> 
+                        </StyledIconButton>
+
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            onClick={() => handleComment()}
+                        >
+                           <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon> 
+                        </StyledIconButton>
+
+                        <StyledIconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            onClick={() => handleComment()}
+                        >
+                           <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon> 
+                        </StyledIconButton>
                         </Typography>
-                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                        
+                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>                        
+
+                
                         <StyledIconButton
                             edge="start"
                             color="inherit"
@@ -261,6 +333,7 @@ export default function AppBanner() {
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
                         </StyledIconButton>
+                        
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"
@@ -278,7 +351,7 @@ export default function AppBanner() {
                                     aria-haspopup="true"
                                     onClick={handleUploadMenuOpen}
                                     fontSize='large'
-                                    style={{ fontSize: "45px", color: "black" }}
+                                    style={{ fontSize: "45px" }}
                                 >
                                     {/* {getAccountMenu(auth.loggedIn)} */}
                                 </AddToPhotosIcon>
