@@ -10,7 +10,7 @@ jobs:
   all_tests:
     runs-on: ubuntu-latest
     env:
-      REACT_APP_API_URL: http://localhost:3000/auth
+      REACT_APP_API_URL: http://localhost:3001/auth
     steps:
       - uses: actions/checkout@v2
 
@@ -42,7 +42,7 @@ jobs:
           cd backend
           node server.js &
       - name: Wait on server to start
-        run: npx wait-on http://localhost:3000
+        run: npx wait-on http://localhost:3001
       - name: Cypress run
         run: |
           cd frontend
