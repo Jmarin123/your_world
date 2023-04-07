@@ -86,7 +86,7 @@ function AuthContextProvider(props) {
         // console.log("First name here")
         // console.log(firstName)
         const response = await api.registerUser(firstName, lastName, username, email, password, passwordVerify).catch(function (error) {
-
+            console.log("registerUser");
             authReducer({
                 type: AuthActionType.REGISTER_USER_ERROR,
                 payload: {
@@ -95,6 +95,7 @@ function AuthContextProvider(props) {
             })
         });
         if (response && response.status === 200) {
+            console.log("200")
             authReducer({
                 type: AuthActionType.REGISTER_USER,
                 payload: {
