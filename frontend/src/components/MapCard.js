@@ -1,5 +1,6 @@
 import React from 'react'
-// import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext } from '../store'
+import { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
@@ -13,6 +14,13 @@ import { useLocation } from "react-router-dom";
 
 export default function MapCard() {
     const location = useLocation();
+    const { store } = useContext(GlobalStoreContext);
+
+    const handleDeleteMap = (event) => {
+        event.preventDefault();
+        // console.log(event)
+        store.markMapForDeletion("hard-coded")
+      };
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -101,6 +109,9 @@ export default function MapCard() {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
+                onClick={(event) => {
+                        handleDeleteMap(event)
+                    }}
             >
                 <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
@@ -163,6 +174,9 @@ export default function MapCard() {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
+                onClick={(event) => {
+                    handleDeleteMap(event)
+                }}
             >
                 <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>

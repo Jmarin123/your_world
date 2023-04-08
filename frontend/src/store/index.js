@@ -40,6 +40,7 @@ function GlobalStoreContextProvider(props) {
         uploadType: "",
         currentMap: null,
         openComment: false,
+        mapMarkedForDeletion: null,
     });
     // const history = useHistory();
 
@@ -58,6 +59,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: payload.type,
                     currentMap: store.currentMap,
                     openComment: false,
+                    mapMarkedForDeletion: null,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -66,6 +68,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
+                    mapMarkedForDeletion: null,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -74,6 +77,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
+                    mapMarkedForDeletion: null,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -82,6 +86,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: true,
+                    mapMarkedForDeletion: null,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -90,6 +95,16 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
+                    mapMarkedForDeletion: null,
+                });
+            }
+            case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
+                return setStore({
+                    currentModal: CurrentModal.MARK_MAP_FOR_DELETION,
+                    uploadType: "",
+                    currentMap: null,
+                    openComment: false,
+                    mapMarkedForDeletion: payload.map,
                 });
             }
             default:
@@ -151,6 +166,13 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.CLOSE_COMMENT,
             payload: { currentMap: store.currentMap, counter: store.newListCounter, }
+        });
+    }
+
+    store.markMapForDeletion = function (map) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+            payload: { map: map }
         });
     }
 
