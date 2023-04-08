@@ -16,10 +16,6 @@ export default function AppBanner() {
                     <MapCard/>
                     <MapCard/>
                     <MapCard/>
-                    <MapCard/>
-                    <MapCard/>
-                    <MapCard/>
-                    <MapCard/>
                 </List>
             </Box>
         </Box>
