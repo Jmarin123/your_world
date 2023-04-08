@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
 
@@ -34,7 +34,7 @@ export default function AppBanner() {
     const [anchorE2, setAnchorE2] = useState(null);
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     // let disabled = false;
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
@@ -106,6 +106,16 @@ export default function AppBanner() {
         store.showUpload("geojson")
     };
 
+    const handleYourMapsPage = () => {
+        if (auth.loggedIn) {
+            navigate('/yourmaps')
+        }
+    }
+
+    const handlePublicMapsPage = () => {
+         navigate('/home')
+    }
+
     const menuId = 'primary-search-account-menu';
     const uploadMenuId = 'upload-account-menu';
 
@@ -175,7 +185,6 @@ export default function AppBanner() {
     let menu = loggedOutMenu;
     let menu2 = uploadMenu;
     if (auth.loggedIn) {
-        // console.log("we are loggioned in so menu should change");
         menu = loggedInMenu;
     }
 
@@ -224,7 +233,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <HomeIcon style={{ fontSize: "45px", float: "right" }} ></HomeIcon>
+                                <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleYourMapsPage}></HomeIcon>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -235,7 +244,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <MenuIcon style={{ fontSize: "45px", float: "right" }}></MenuIcon>
+                                <MenuIcon style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></MenuIcon>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -266,26 +275,26 @@ export default function AppBanner() {
                                 }}
                             >
                                 <TextField
-                                    id="outlined-basic"
-                                    label="Search the map"
-                                    variant="standard"
-                                    size="small"
-                                    // label={store.search ? "" : "Search"}
-                                    // disabled={disabled}
+                                id="outlined-basic"
+                                label="Search for Maps"
+                                variant="standard"
+                                size="small"
+                                // label={store.search ? "" : "Search"}
+                                // disabled={disabled}
 
-                                    // defaultValue={store ? store.search : ""}
-                                    // onKeyPress={event => store.setSearch("keypress", event)}
-                                    // onChange={event => store.setSearch("change", event)}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            // let search = e.target.value;
-                                            // store.setSearch(search);
-                                            e.target.value = "";
+                                // defaultValue={store ? store.search : ""}
+                                // onKeyPress={event => store.setSearch("keypress", event)}
+                                // onChange={event => store.setSearch("change", event)}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        // let search = e.target.value;
+                                        // store.setSearch(search);
+                                        e.target.value = "";
 
-                                        }
+                                    }
                                     }}
-                                />
+                            />
                             </Box>
 
                         <StyledIconButton
@@ -293,7 +302,6 @@ export default function AppBanner() {
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2, marginLeft: '5px'}}
-                            onClick={() => handleComment()}
                         >
                            <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon> 
                         </StyledIconButton>
@@ -303,7 +311,6 @@ export default function AppBanner() {
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
-                            onClick={() => handleComment()}
                         >
                            <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon> 
                         </StyledIconButton>
@@ -313,7 +320,6 @@ export default function AppBanner() {
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
-                            onClick={() => handleComment()}
                         >
                            <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon> 
                         </StyledIconButton>
