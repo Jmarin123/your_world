@@ -7,10 +7,12 @@ import MapCardSample from './/mapcardsample.jpg'
 import IconButton from '@mui/material/IconButton';
 import DownloadIcon from '@mui/icons-material/Download';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { useLocation } from "react-router-dom";
 
 export default function MapCard() {
-
-    let cardClass = "list-card unselected-list-card";
+    const location = useLocation();
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -19,50 +21,201 @@ export default function MapCard() {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
             transform: 'scale(1.1)',
-            // transitionDuration: '100ms',
             color: '#FDE66B'
         }
     });
 
+    let publishedMapCard = <ListItem id='published-listItemMapCard' >
+        <div
+            key={1}
+            id="mapCard1"
+        >
+            <div id='cardTitle'>
+                Atlantis
+            </div>
+
+            <div id='map-card-line'></div>
+            
+            <p id='map-card-author'>By: Author</p>
+
+            <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+
+            <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{ mr: 2 }}
+                >
+                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+                </StyledIconButton>
+
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{ mr: 2 }}
+                >
+                    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+                </StyledIconButton>
+            </Box>
+        </div>
+    </ListItem>
+
+    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
+    <div
+        key={1}
+        id="mapCard2"
+    >
+        <div id='cardTitle'>
+            Atlantis
+        </div>
+
+        <div id='map-card-line'></div>
+        
+        <p id='map-card-author'>By: Author</p>
+
+        <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+
+        <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+            <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+            >
+                <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+            </StyledIconButton>
+
+            <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+            >
+                <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+            </StyledIconButton>
+
+            <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+            >
+                <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+            </StyledIconButton>
+
+            <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+            >
+                <BorderColorIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+            </StyledIconButton>
+        </Box>
+    </div>
+    </ListItem>
+
+    let mapCards;
+    //if from /home only display published map cards that have 2 button icon's
+    //if from /yourmaps display published and unpublished map cards, 
+    //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
+    if (location.pathname === "/home") {
+        mapCards = [publishedMapCard, publishedMapCard] 
+    } else {
+        publishedMapCard = <ListItem id='published-listItemMapCard' >
+        <div
+            key={1}
+            id="mapCard1"
+        >
+            <div id='cardTitle'>
+                Atlantis
+            </div>
+
+            <div id='map-card-line'></div>
+            
+            <p id='map-card-author'>By: Author</p>
+
+            <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+
+            <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{ mr: 2 }}
+                >
+                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+                </StyledIconButton>
+
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{ mr: 2 }}
+                >
+                    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+                </StyledIconButton>
+
+                <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+            >
+                <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+            </StyledIconButton>
+            </Box>
+        </div>
+        </ListItem>
+        mapCards = [publishedMapCard, unpublishedMapCard]
+    }
+    
+
 
     return (
-        <ListItem id='listItemMapCard' >
-            <div
-                key={1}
-                id="mapCard1"
-                className={cardClass}
-            >
-                <div id='cardTitle'>
-                    Atlantis
-                </div>
 
-                <div id='map-card-line'></div>
+        [mapCards]
+
+
+
+        // <ListItem id='published-listItemMapCard' >
+        //     <div
+        //         key={1}
+        //         id="mapCard1"
+        //     >
+        //         <div id='cardTitle'>
+        //             Atlantis
+        //         </div>
+
+        //         <div id='map-card-line'></div>
                 
-                <p id='map-card-author'>By: Author</p>
+        //         <p id='map-card-author'>By: Author</p>
 
-                <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+        //         <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
-                <Box sx={{marginTop: '6%', marginLeft: '4%'}}>
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <DownloadIcon style={{ fontSize: "35px", float: "left" }} />
-                    </StyledIconButton>
+        //         <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+        //             <StyledIconButton
+        //                 edge="start"
+        //                 color="inherit"
+        //                 aria-label="open drawer"
+        //                 sx={{ mr: 2 }}
+        //             >
+        //                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+        //             </StyledIconButton>
 
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <FileCopyIcon style={{ fontSize: "35px", float: "left" }} />
-                    </StyledIconButton>
-                </Box>
-            </div>
-        </ListItem>
+        //             <StyledIconButton
+        //                 edge="start"
+        //                 color="inherit"
+        //                 aria-label="open drawer"
+        //                 sx={{ mr: 2 }}
+        //             >
+        //                 <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+        //             </StyledIconButton>
+        //         </Box>
+        //     </div>
+        // </ListItem>
     );
 
 }

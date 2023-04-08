@@ -8,6 +8,7 @@ import Login from './components/Login';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import Map from './components/Map';
+import YourMaps from './components/YourMaps';
 import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
 import Statusbar from './components/Statusbar';
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/map" element={<Map />} />
+            <Route path="/yourmaps" element={<YourMaps />} />
             <Route path="/login" element={<Login />} />
             <Route path="/mapview" element={<Mapview />} />
           </Routes>

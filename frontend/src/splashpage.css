@@ -119,7 +119,16 @@ img {
     padding: 0;
 }
 
-#listItemMapCard {
+#published-listItemMapCard {
+    height: 35%;
+    flex-basis: 1%; /* Set the width of each list item */
+    margin-bottom: 10px; /* Add some margin between list items */
+    padding: 10px;
+    margin-right: 5%;
+    word-break: break-word;
+}
+
+#unpublished-listItemMapCard {
     height: 35%;
     flex-basis: 1%; /* Set the width of each list item */
     margin-bottom: 10px; /* Add some margin between list items */
@@ -143,17 +152,32 @@ img {
 }
 
 #mapCard1 {
-    /* position: inherit; */
+    position: relative;
     width: 257px;
     height: 330px;
     overflow: hidden;
     background: #FFFFFF;
     border-radius: 5px;
-    transition: background 0.5s ease, transform 0.5s ease;
+    transition: background 0.8s ease, transform 0.5s ease;
+}
+
+#mapCard2 {
+    position: relative;
+    width: 257px;
+    height: 330px;
+    overflow: hidden;
+    background: #E7EDFA;
+    border-radius: 5px;
+    transition: background 0.8s ease, transform 0.5s ease;
 }
 
 #mapCard1:hover {
-    background: #ECF2FF;
+    background: rgba(117, 96, 96, 0.75);
+    transform: scale(1.05);
+}
+
+#mapCard2:hover {
+    background: rgba(117, 96, 96, 0.75);
     transform: scale(1.05);
 }
 
