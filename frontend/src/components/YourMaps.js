@@ -3,12 +3,12 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MapCard from './MapCard.js'
 
-export default function AppBanner() {
+export default function YourMaps() {
 
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
             <Box id="publicBox" component="form" noValidate >
-                <section id="public">Public Map Listing</section>
+                <section id="public">Your Maps</section>
                 <div id='line'></div>
 
                 <List id="map-cards-list" sx={{display: 'flex'}}>
