@@ -24,7 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MapIcon from '@mui/icons-material/Map';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
-import AuthContext from '../auth'
+import AuthContext from '../auth/index'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
@@ -39,7 +39,8 @@ export default function AppBanner() {
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
-        
+
+
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -113,7 +114,7 @@ export default function AppBanner() {
     }
 
     const handlePublicMapsPage = () => {
-         navigate('/home')
+        navigate('/home')
     }
 
     const menuId = 'primary-search-account-menu';
@@ -223,7 +224,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handlePublicMapsPage}></PublicIcon>
+                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
                             </StyledIconButton>
                             <StyledIconButton
                                 edge="start"
@@ -250,73 +251,73 @@ export default function AppBanner() {
                             <Box
                                 component="form"
                                 sx={{
-                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px'},
+                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
                                     display: 'inline',
                                     fontSize: "40px",
                                     marginLeft: 'auto',
                                     "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
                                         borderColor: '#FDE66B'
-                                      }, 
+                                    },
                                     "& label.Mui-focused": {
                                         color: '#756060'
                                     },
-                                    
+
                                 }}
                             >
                                 <TextField
-                                id="outlined-basic"
-                                label="Search for Maps"
-                                variant="standard"
-                                size="small"
-                                // label={store.search ? "" : "Search"}
-                                // disabled={disabled}
+                                    id="outlined-basic"
+                                    label="Search for Maps"
+                                    variant="standard"
+                                    size="small"
+                                    // label={store.search ? "" : "Search"}
+                                    // disabled={disabled}
 
-                                // defaultValue={store ? store.search : ""}
-                                // onKeyPress={event => store.setSearch("keypress", event)}
-                                // onChange={event => store.setSearch("change", event)}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        // let search = e.target.value;
-                                        // store.setSearch(search);
-                                        e.target.value = "";
+                                    // defaultValue={store ? store.search : ""}
+                                    // onKeyPress={event => store.setSearch("keypress", event)}
+                                    // onChange={event => store.setSearch("change", event)}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            // let search = e.target.value;
+                                            // store.setSearch(search);
+                                            e.target.value = "";
 
-                                    }
+                                        }
                                     }}
-                            />
+                                />
                             </Box>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2, marginLeft: '5px'}}
-                        >
-                           <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2, marginLeft: '5px' }}
+                            >
+                                <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
+                            </StyledIconButton>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                        >
-                           <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            >
+                                <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
+                            </StyledIconButton>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                        >
-                           <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            >
+                                <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
+                            </StyledIconButton>
                         </Typography>
-                        
-                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>                        
 
-                
+                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+
+
                         <StyledIconButton
                             edge="start"
                             color="inherit"
@@ -328,7 +329,7 @@ export default function AppBanner() {
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
                         </StyledIconButton>
-                        
+
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"

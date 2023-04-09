@@ -1,7 +1,7 @@
 // import './App.css';
 import { React } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { AuthContextProvider } from './auth';
+import { AuthContextProvider } from './auth/index';
 import { GlobalStoreContextProvider } from './store'
 import Register from './components/Register';
 import Login from './components/Login';
@@ -13,6 +13,7 @@ import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
 import RenameModal from './components/RenameModal'
 import DeleteModal from './components/DeleteModal'
+import ErrorModal from './components/ErrorModal'
 /*
     This is our application's top-level component.
     
@@ -39,9 +40,9 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/mapview" element={<Mapview />} />
           </Routes>
-          <RenameModal/>
+          <RenameModal />
           <DeleteModal />
-          {/* <MUIErrorModal /> */}
+          <ErrorModal />
           {/* <MUIAlertModal /> */}
           {/* <MUIRemoveSongModal /> */}
 

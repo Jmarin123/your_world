@@ -12,9 +12,9 @@ const corsOptions = {
     credentials: true
 };
 
-app.use(cors(corsOptions));
 
-const dbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/your_world';
+app.use(cors(corsOptions));
+const dbUrl = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
 
 mongoose.connect(dbUrl);
 
@@ -23,8 +23,6 @@ db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
     console.log("Connected successfully");
 });
-
-
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());

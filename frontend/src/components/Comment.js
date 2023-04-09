@@ -1,6 +1,6 @@
 // import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
-import AuthContext from '../auth'
+import AuthContext from '../auth/index'
 
 // import React, { useContext, useState, useRef } from 'react';
 import React, { useContext } from 'react';
