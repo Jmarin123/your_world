@@ -1,44 +1,90 @@
 import { GlobalStoreContext } from '../store'
 import { useContext } from 'react';
-import Map from './Map.js';
 import Comment from './Comment';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+import Statusbar from './Statusbar';
 
 export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
     console.log(store.openComment);
 
+    const countryStyle = {
+        fillColor: "red",
+        fillOpacity: 1,
+        color: "black",
+        weight: 2,
+      };
+
+    function onEachCountry(country, layer) {
+        const countryName = country.properties.ADMIN;
+        console.log(countryName);
+        layer.bindPopup(countryName);
+    
+        layer.options.fillOpacity = Math.random();
+    
+        layer.on({
+          click: this.changeCountryColor,
+        });
+      };
+
+    let renderedMap = <GeoJSON
+    style={countryStyle}
+    data={store.currentMap ? store.currentMap.features : null}
+    onEachFeature={onEachCountry}
+  />
+
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
-            <Map />
-            {/* <Box id="box">
-               
-            </Box> */}
+            <Box id="mapBox" component="form" noValidate >
+            <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {
+                store.currentMap ? renderedMap : <div></div>
+            }
+            </MapContainer>
+            </Box>
 
+            <Box id="statusBox">
+            <Statusbar />
+            </Box>
         </Box>
 
     if (store.openComment) {
         mapViewMenu =
             <div >
-                <Grid container spacing={0.5} >
+                <Grid container spacing={0.5}>
                     <Grid item xs={9}
                         style={{
-                            paddingLeft: '1%',
+                            paddingLeft: '0%',
                             top: '50px',
                             left: '10px',
                             height: '1000px',
                             // overflowY: 'auto',
                         }}
                     >
-                        <Map />
+                        <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+                            <Box id="mapBox" component="form" noValidate >
+                            <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                            {
+                                store.currentMap ? renderedMap : <div></div>
+                            }
+                            </MapContainer>
+                            </Box>
+
+                            <Box id="statusBox">
+                            <Statusbar />
+                            </Box>
+                        </Box>
                     </Grid>
 
                     <Grid item xs={3}
                         style={{
                             paddingRight: '1%',
                             top: '50px',
-                            height: '90px',
+                            height: '90px'
                             // overflowY: 'auto',
                         }}
                     >
