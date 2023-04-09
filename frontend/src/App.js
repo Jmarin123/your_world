@@ -1,16 +1,20 @@
 // import './App.css';
 import { React } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { AuthContextProvider } from './auth';
+import { AuthContextProvider } from './auth/index';
 import { GlobalStoreContextProvider } from './store'
 import Register from './components/Register';
 import Login from './components/Login';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './components/HomePage';
 import Map from './components/Map';
+import YourMaps from './components/YourMaps';
 import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
 import Statusbar from './components/Statusbar';
+import RenameModal from './components/RenameModal'
+import DeleteModal from './components/DeleteModal'
+import ErrorModal from './components/ErrorModal'
 /*
     This is our application's top-level component.
     
@@ -33,12 +37,14 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/map" element={<Map />} />
+            <Route path="/yourmaps" element={<YourMaps />} />
             <Route path="/login" element={<Login />} />
             <Route path="/mapview" element={<Mapview />} />
           </Routes>
           <Statusbar />
-          {/* <MUIDeleteModal /> */}
-          {/* <MUIErrorModal /> */}
+          <RenameModal />
+          <DeleteModal />
+          <ErrorModal />
           {/* <MUIAlertModal /> */}
           {/* <MUIRemoveSongModal /> */}
 

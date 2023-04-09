@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
 
@@ -24,7 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MapIcon from '@mui/icons-material/Map';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
-import AuthContext from '../auth'
+import AuthContext from '../auth/index'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
@@ -34,12 +34,12 @@ export default function AppBanner() {
     const [anchorE2, setAnchorE2] = useState(null);
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     // let disabled = false;
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
-        
+
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -105,6 +105,16 @@ export default function AppBanner() {
         setAnchorE2(null);
         store.showUpload("geojson")
     };
+
+    const handleYourMapsPage = () => {
+        if (auth.loggedIn) {
+            navigate('/yourmaps')
+        }
+    }
+
+    const handlePublicMapsPage = () => {
+        navigate('/home')
+    }
 
     const menuId = 'primary-search-account-menu';
     const uploadMenuId = 'upload-account-menu';
@@ -175,7 +185,6 @@ export default function AppBanner() {
     let menu = loggedOutMenu;
     let menu2 = uploadMenu;
     if (auth.loggedIn) {
-        // console.log("we are loggioned in so menu should change");
         menu = loggedInMenu;
     }
 
@@ -214,7 +223,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handleProfileMenuOpen}></PublicIcon>
+                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handleProfileMenuOpen}></PublicIcon>
                             </StyledIconButton>
                             <StyledIconButton
                                 edge="start"
@@ -224,7 +233,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <HomeIcon style={{ fontSize: "45px", float: "right" }} ></HomeIcon>
+                                <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleYourMapsPage}></HomeIcon>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -235,7 +244,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <MenuIcon style={{ fontSize: "45px", float: "right" }}></MenuIcon>
+                                <MenuIcon style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></MenuIcon>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -252,22 +261,22 @@ export default function AppBanner() {
                             <Box
                                 component="form"
                                 sx={{
-                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px'},
+                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
                                     display: 'inline',
                                     fontSize: "40px",
                                     marginLeft: 'auto',
                                     "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
                                         borderColor: '#FDE66B'
-                                      }, 
+                                    },
                                     "& label.Mui-focused": {
                                         color: '#756060'
                                     },
-                                    
+
                                 }}
                             >
                                 <TextField
                                     id="outlined-basic"
-                                    label="Search the map"
+                                    label="Search for Maps"
                                     variant="standard"
                                     size="small"
                                     // label={store.search ? "" : "Search"}
@@ -288,40 +297,37 @@ export default function AppBanner() {
                                 />
                             </Box>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2, marginLeft: '5px'}}
-                            onClick={() => handleComment()}
-                        >
-                           <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2, marginLeft: '5px' }}
+                            >
+                                <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
+                            </StyledIconButton>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                            onClick={() => handleComment()}
-                        >
-                           <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            >
+                                <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
+                            </StyledIconButton>
 
-                        <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                            onClick={() => handleComment()}
-                        >
-                           <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon> 
-                        </StyledIconButton>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            >
+                                <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
+                            </StyledIconButton>
                         </Typography>
-                        
-                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>                        
 
-                
+                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+
+
                         <StyledIconButton
                             edge="start"
                             color="inherit"
@@ -333,7 +339,7 @@ export default function AppBanner() {
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
                         </StyledIconButton>
-                        
+
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"

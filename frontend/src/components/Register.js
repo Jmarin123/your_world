@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import { Box } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useContext } from 'react';
-import AuthContext from '../auth'
+import AuthContext from '../auth/index'
 
 function Register() {
   const { auth } = useContext(AuthContext);
@@ -15,25 +15,25 @@ function Register() {
     const formData = new FormData(event.currentTarget);
     console.log(formData.get('firstName'))
     auth.registerUser(
-        formData.get('firstName'),
-        formData.get('lastName'),
-        formData.get('username'),
-        formData.get('emailForm'),
-        formData.get('password'),
-        formData.get('repassword')
+      formData.get('firstName'),
+      formData.get('lastName'),
+      formData.get('username'),
+      formData.get('emailForm'),
+      formData.get('password'),
+      formData.get('repassword')
     );
   };
 
 
   return (
-        <div>
-          <Link to={`/`}>
-          <img src={logo} alt="earthlogo"/>
-          </Link>
-          <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
-            <section id="account">Create an Account</section>
+    <div>
+      <Link to={`/`}>
+        <img src={logo} alt="earthlogo" />
+      </Link>
+      <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
+        <section id="account">Create an Account</section>
 
-            <input id='firstName' placeholder='first name' sx={{
+        <input id='firstName' placeholder='first name' sx={{
           "& fieldset": { border: 'none' },
         }} name="firstName" data-cy='firstNameForm'></input>
         <input id='lastName' placeholder='last name' sx={{
@@ -54,9 +54,9 @@ function Register() {
         <Button id="register" type="submit" sx={{ textTransform: `none`, fontSize: '1vw' }} data-cy='registerButton' on="true">
           <p id="text">Register</p>
         </Button>
-          </Box>
-      </div>
-      
+      </Box>
+    </div>
+
   );
 }
 

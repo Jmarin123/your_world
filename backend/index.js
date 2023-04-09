@@ -12,7 +12,6 @@ const corsOptions = {
     credentials: true
 };
 
-app.use(cors(corsOptions));
 
 app.use(cors(corsOptions));
 const dbUrl = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
