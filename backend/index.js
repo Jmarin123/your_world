@@ -25,8 +25,6 @@ db.once("open", function () {
     console.log("Connected successfully");
 });
 
-
-
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
