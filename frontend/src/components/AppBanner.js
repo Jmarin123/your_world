@@ -14,11 +14,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import PublicIcon from '@mui/icons-material/Public';
 import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import TextField from '@mui/material/TextField';
 import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -121,7 +121,7 @@ export default function AppBanner() {
 
     const uploadMenu = (
         <Menu
-            anchorE2={anchorE2}
+            anchore2={anchorE2}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
@@ -142,16 +142,16 @@ export default function AppBanner() {
 
     const loggedOutMenu = (
         <Menu
-            anchorEl={anchorEl}
+            anchore1={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'right',
             }}
             id={menuId}
             keepMounted
             transformOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'right',
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
@@ -163,16 +163,16 @@ export default function AppBanner() {
 
     const loggedInMenu = (
         <Menu
-            anchorEl={anchorEl}
+            anchore1={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'right',
             }}
             id={menuId}
             keepMounted
             transformOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'right',
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
@@ -223,7 +223,7 @@ export default function AppBanner() {
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >
-                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handleProfileMenuOpen}></PublicIcon>
+                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right"}} onClick={handlePublicMapsPage}></PublicIcon>
                             </StyledIconButton>
                             <StyledIconButton
                                 edge="start"
@@ -234,17 +234,6 @@ export default function AppBanner() {
                             // onClick={() => handleClick("/home")}
                             >
                                 <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleYourMapsPage}></HomeIcon>
-                            </StyledIconButton>
-
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                            // disabled={disabled}
-                            // onClick={() => handleClick("/home")}
-                            >
-                                <MenuIcon style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></MenuIcon>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -363,6 +352,31 @@ export default function AppBanner() {
                                 </AddToPhotosIcon>
                             </StyledIconButton>
                         </Box>
+
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <StyledIconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/user-lists")}
+                            >
+                                <AccountCircleIcon
+                                    size="large"
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={menuId}
+                                    aria-haspopup="true"
+                                    onClick={handleProfileMenuOpen}
+                                    fontSize='large'
+                                    style={{ fontSize: "45px" }}
+                                >
+                                    {/* {getAccountMenu(auth.loggedIn)} */}
+                                </AccountCircleIcon>
+                            </StyledIconButton>
+                        </Box>
+
                     </Toolbar>
                 </AppBar>
                 {
