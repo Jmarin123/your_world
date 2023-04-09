@@ -7,6 +7,8 @@ import { GlobalStoreContext } from '../store'
 import { useContext, useState } from 'react'
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
+import Box from '@mui/material/Box';
+import Statusbar from './Statusbar';
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
@@ -57,8 +59,9 @@ export default function Map() {
   />
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>Your World</h1>
+    <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+
+    <Box id="mapBox" component="form" noValidate >
       <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {
@@ -75,7 +78,12 @@ export default function Map() {
         value={color}
         onChange={colorChange}
       />
-    </div>
+      </Box>
+
+      <Box id="statusBox">
+        <Statusbar />
+      </Box>
+    </Box>
   );
 }
 
