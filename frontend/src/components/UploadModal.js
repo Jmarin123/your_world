@@ -3,8 +3,9 @@ import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-// import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 var shapefile = require("shapefile");
 
@@ -13,13 +14,35 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 250,
-    bgcolor: '#e5f6fd',
-    border: '2px solid #000',
-    boxShadow: 24,
+    width: 423,
+    height: 311,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
     p: 4,
 };
+
+const top = {
+    position: 'absolute',
+    width: 423,
+    height: 71,
+    left: 0,
+    top: 0,
+    bgcolor: '#756060',
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+    borderBottomLeftRadius: 2,
+    borderBottomRightRadius: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
+
+const buttonBox = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
 
 export default function UploadModal() {
     const { store } = useContext(GlobalStoreContext);
@@ -80,39 +103,24 @@ export default function UploadModal() {
         <Modal
             open={store.currentModal === "UPLOAD_FILE"}
         >
-            <Box sx={style}>
-            <div
-            id="upload-modal"
-            className="modal is-visible">
-            <div
-                id='upload-root'
-                className="modal-root">
-                <div
-                    id="upload-modal-header"
-                    className="modal-north">Upload File</div>
+            <Grid container sx={style}>
+            <Grid container item >
+                <Box sx={top}>
+                    <Typography id="modal-heading">Upload Files</Typography>
+                </Box>
+            </Grid>
+            <Grid container item>
+                <Box>
                     {
                         store.uploadType === "shp/dbf" ? uploadShpInput : uploadGeojsonInput
                     }
-                <div className="modal-south">
-                    <p></p>
-                    <div id="confirm-cancel-container">
-                        <Button
-                            id='upload-submit-button'
-                            onClick={handleSubmit}
-                            variant="contained">
-                                Confirm
-                        </Button>
-                        <Button
-                            id='upload-cancel-button'
-                            onClick={handleCancel}
-                            variant="contained">
-                                Cancel
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-            </Box>
+                </Box>
+            </Grid>
+            <Grid container item sx={buttonBox}>
+                <Button id="modal-button" onClick={handleSubmit}>Confirm</Button> 
+                <Button id="modal-button" onClick={handleCancel}>Cancel</Button>
+            </Grid>
+            </Grid>
         </Modal>
     );
 }
