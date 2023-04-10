@@ -720,3 +720,12 @@ input {
     margin-right: 20px;
     text-transform: none;
 }
+
+#commentName {
+    font-family: 'Italiana', serif;
+    font-weight: 900;
+}
+
+/* #commentText {
+    
+} */

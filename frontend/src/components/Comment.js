@@ -93,7 +93,7 @@ function Comment(props) {
             width: '102%',
             position: 'relative',
             top: '60px',
-            backgroundColor: '#bfc0c0',
+            backgroundColor: '#D9D9D9',
             height: '960px',
 
         }}>
@@ -125,9 +125,9 @@ function Comment(props) {
 
                             <Grid item key={i} xs={12}
                                 sx={{
-                                    border: "1px solid black",
+         
                                     borderRadius: "12px",
-                                    backgroundColor: "#ECECEC",
+                                    backgroundColor: "#ECF2FF",
                                     margin: '10px',
                                     fontsize: "8pt",
                                     // padding: "10px 10px",
@@ -136,9 +136,9 @@ function Comment(props) {
                                 }}
                             >
                                 <strong>
-                                    <u style={{ color: "blue" }}>{comment[0]}</u>
+                                    <u id="commentName" style={{ color: "#756060" }}>{comment[0]}</u>
                                 </strong><br />
-                                <div style={{ fontSize: '20px' }}>{comment[1]}</div>
+                                <div id="commentText" style={{ fontSize: '20px' }}>{comment[1]}</div>
                             </Grid>
                         ))
                     }
