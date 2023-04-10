@@ -159,6 +159,12 @@ function GlobalStoreContextProvider(props) {
                 currentMap: obj
             }
         });
+        navigate("/map");
+    }
+
+    //TODO: Remove later
+    store.navToMap = async function (obj) {
+        navigate("/map");
     }
 
     store.updateCurrentMap = function () {

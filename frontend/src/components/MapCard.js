@@ -34,6 +34,11 @@ export default function MapCard() {
         store.markMapForExport("Atlantis");
     }
 
+    const handleCardClick = (event) => {
+        console.log("Clicked on card")
+        store.navToMap()
+    }
+
     let StyledIconButton = styled(IconButton)({
         color: "black",
         
@@ -97,6 +102,7 @@ export default function MapCard() {
     <div
         key={1}
         id="mapCard2"
+        onClick={handleCardClick}
     >
         <div id='cardTitle'>
             Atlantis
@@ -169,10 +175,10 @@ export default function MapCard() {
     //if from /home only display published map cards that have 2 button icon's
     //if from /yourmaps display published and unpublished map cards, 
     //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
-    if (location.pathname === "/home") {
+    if (location.pathname === "/home" || location.pathname === "/search") {
         mapCards = [publishedMapCard, publishedMapCard] 
     } else {
-        publishedMapCard = <ListItem id='published-listItemMapCard' >
+        publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
             key={1}
             id="mapCard1"

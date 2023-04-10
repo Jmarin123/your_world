@@ -117,6 +117,10 @@ export default function AppBanner() {
         navigate('/home')
     }
 
+    const handleSearch = (event) => {
+        navigate('/search')
+    }
+
     const menuId = 'primary-search-account-menu';
     const uploadMenuId = 'upload-account-menu';
 
@@ -242,6 +246,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
+                                onClick={handleSearch}
                             // disabled={disabled}
                             // onClick={() => handleClick("/home")}
                             >

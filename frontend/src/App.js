@@ -15,6 +15,7 @@ import RenameModal from './components/RenameModal'
 import DeleteModal from './components/DeleteModal'
 import ErrorModal from './components/ErrorModal'
 import ExportModal from './components/ExportModal'
+import SearchPage from './components/SearchPage';
 /*
     This is our application's top-level component.
     
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/yourmaps" element={<YourMaps />} />
             <Route path="/login" element={<Login />} />
             <Route path="/mapview" element={<Mapview />} />
+            <Route path="/search" element={<SearchPage />} />
           </Routes>
           <RenameModal />
           <DeleteModal />
