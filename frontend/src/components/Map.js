@@ -32,7 +32,7 @@ import { Button } from '@mui/material';
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [color] = useState("#ffff00");
+  const [color, setColor] = useState("#ffff00");
   //setColor
   const [font, setFont] = React.useState("Arial");
 
@@ -83,7 +83,7 @@ export default function Map() {
   };
 
   function colorChange(event) {
-    this.setState({ color: event.target.value });
+    setColor(event.target.value);
   };
 
 
