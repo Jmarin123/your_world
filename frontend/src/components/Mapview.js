@@ -37,6 +37,10 @@ export default function Mapview() {
 
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+            <Box id="statusBoxEdit">
+                <Statusbar />
+            </Box>
+
             <Box id="mapBox" component="form" noValidate >
             <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -46,9 +50,7 @@ export default function Mapview() {
             </MapContainer>
             </Box>
 
-            <Box id="statusBox">
-            <Statusbar />
-            </Box>
+            
         </Box>
 
     if (store.openComment) {
@@ -65,6 +67,9 @@ export default function Mapview() {
                         }}
                     >
                         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+                            <Box id="statusBoxEdit">
+                                <Statusbar />
+                            </Box>
                             <Box id="mapBox" component="form" noValidate >
                             <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -74,9 +79,6 @@ export default function Mapview() {
                             </MapContainer>
                             </Box>
 
-                            <Box id="statusBox">
-                            <Statusbar />
-                            </Box>
                         </Box>
                     </Grid>
 
