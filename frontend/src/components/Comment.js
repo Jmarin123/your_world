@@ -32,13 +32,14 @@ function Comment(props) {
     }
     let disabled = false;
 
+
     let StyledIconButton = styled(IconButton)({
         color: "black",
         '&:hover': {
-            border: '2px solid green',
-            backgroundColor: "transparent",
-            padding: "3px 3px 3px 3px",
-            borderRadius: "1px 1px",
+            opacity: 1,
+            transition: "color 0.7s, transform 0.7s",
+            transform: 'scale(1.1)',
+            color: '#FDE66B'
         }
     });
 
@@ -59,28 +60,31 @@ function Comment(props) {
         console.log(store.openComment);
     }
 
+    if (!auth.user) {
+        disabled = true;
+    }
 
     //Make sure newest comments are at the top by reversing the comments list
     let reversed = [];
-    if (map) {
-        for (let k = map.comments.length - 1; k >= 0; k--) {
-            reversed.push(map.comments[k]);
-        }
-        if (map.published.isPublished === false) {
-            disabled = true;
-        }
-    }
-    if (!map) {
-        disabled = true;
-    }
+    // if (map) {
+    //     for (let k = map.comments.length - 1; k >= 0; k--) {
+    //         reversed.push(map.comments[k]);
+    //     }
+    //     if (map.published.isPublished === false) {
+    //         disabled = true;
+    //     }
+    // }
+    // if (!map) {
+    //     disabled = true;
+    // }
     return (
 
         <Card sx={{
-            width: '100%',
+            width: '102%',
             position: 'relative',
-            top: '70px',
+            top: '60px',
             backgroundColor: '#edede9',
-            height: '800px',
+            height: '900px',
         }}>
             <CardContent>
                 <StyledIconButton
@@ -148,7 +152,7 @@ function Comment(props) {
                             <TextField
                                 sx={{
                                     backgroundColor: "#f8f9fa",
-                                    top: '220px',
+                                    top: '320px',
 
                                     // borderRadius: "20px",
                                     // borderColor: '#ffe5ec',
