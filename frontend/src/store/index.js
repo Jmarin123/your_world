@@ -167,6 +167,11 @@ function GlobalStoreContextProvider(props) {
         navigate("/map");
     }
 
+    //TODO: Remove later
+    store.navToPubMap = async function (obj) {
+        navigate("/mapview");
+    }
+
     store.updateCurrentMap = function () {
         // async function asyncUpdateCurrentList() {
         //     const response = await api.updatePlaylistById(store.currentList._id, store.currentList);

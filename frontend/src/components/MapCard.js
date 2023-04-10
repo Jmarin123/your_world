@@ -12,11 +12,15 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useLocation } from "react-router-dom";
 
 import { GlobalStoreContext } from '../store'
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import AuthContext from '../auth/index'
 
 export default function MapCard() {
     const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
+    const [title] = useState("Atlantis");
+
 
     const handleDeleteMap = (event) => {
         event.preventDefault();
@@ -39,6 +43,11 @@ export default function MapCard() {
         store.navToMap()
     }
 
+    const handlePubCardClick = (event) => {
+        console.log("Clicked on card")
+        store.navToPubMap()
+    }
+
     let StyledIconButton = styled(IconButton)({
         color: "black",
         
@@ -50,13 +59,29 @@ export default function MapCard() {
         }
     });
 
+    let duplicateButton = <StyledIconButton
+    edge="start"
+    color="inherit"
+    aria-label="open drawer"
+    onClick={(event) => {
+        handleDuplicateMap(event)
+    }}
+    sx={{
+        position: 'absolute', bottom: '0',
+        left: '49px',
+        fontSize: '1em'  }}
+>
+    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+    </StyledIconButton>
+
     let publishedMapCard = <ListItem id='published-listItemMapCard' >
         <div
             key={1}
             id="mapCard1"
+            onDoubleClick={handlePubCardClick}
         >
             <div id='cardTitle'>
-                Atlantis
+                {title}
             </div>
 
             <div id='map-card-line'></div>
@@ -80,20 +105,7 @@ export default function MapCard() {
                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
                 </StyledIconButton>
 
-                <StyledIconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={(event) => {
-                        handleDuplicateMap(event)
-                    }}
-                    sx={{
-                        position: 'absolute', bottom: '0',
-                        left: '49px',
-                        fontSize: '1em'  }}
-                >
-                    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
-                </StyledIconButton>
+                {auth.loggedIn ? duplicateButton: <div></div>}
             
         </div>
     </ListItem>
@@ -102,10 +114,10 @@ export default function MapCard() {
     <div
         key={1}
         id="mapCard2"
-        onClick={handleCardClick}
+        onDoubleClick={handleCardClick}
     >
         <div id='cardTitle'>
-            Atlantis
+            {title}
         </div>
 
         <div id='map-card-line'></div>
@@ -182,9 +194,10 @@ export default function MapCard() {
         <div
             key={1}
             id="mapCard1"
+            onDoubleClick={handlePubCardClick}
         >
             <div id='cardTitle'>
-                Atlantis
+                {title}
             </div>
 
             <div id='map-card-line'></div>

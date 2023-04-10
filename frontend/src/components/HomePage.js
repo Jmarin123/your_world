@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MapCard from './MapCard.js'
 
-export default function AppBanner() {
+export default function HomePage() {
 
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">

@@ -155,7 +155,7 @@ function Comment(props) {
                                 }}
                                 fullWidth
                                 rows={2}
-                                label="Add Comment"
+                                label="Add a comment..."
                                 disabled={disabled}
                                 onKeyPress={(event) => handleUpdateComments(event)}
                             />

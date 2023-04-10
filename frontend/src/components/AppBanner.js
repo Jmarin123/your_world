@@ -35,6 +35,7 @@ export default function AppBanner() {
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
     const navigate = useNavigate();
+    const [label, setLabel] = useState("Select an option to search for maps...");
     // let disabled = false;
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
@@ -65,6 +66,18 @@ export default function AppBanner() {
     const handleLogout = () => {
         setAnchorEl(null);
         auth.logoutUser();
+    }
+
+    const handleSearchUser = () => {
+        setLabel("Search by username")
+    }
+
+    const handleSearchMap = () => {
+        setLabel("Search by map name")
+    }
+
+    const handleSearchProperty = () => {
+        setLabel("Search by map properties")
     }
 
     // function handleClick(path) {
@@ -235,7 +248,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                            // disabled={disabled}
+                                disabled={auth.loggedIn ? false: true}
                             // onClick={() => handleClick("/home")}
                             >
                                 <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleYourMapsPage}></HomeIcon>
@@ -271,7 +284,7 @@ export default function AppBanner() {
                             >
                                 <TextField
                                     id="outlined-basic"
-                                    label="Search for Maps"
+                                    label={label}
                                     variant="standard"
                                     size="small"
                                     // label={store.search ? "" : "Search"}
@@ -286,7 +299,7 @@ export default function AppBanner() {
                                             // let search = e.target.value;
                                             // store.setSearch(search);
                                             e.target.value = "";
-
+                                            navigate('/search')
                                         }
                                     }}
                                 />
@@ -297,6 +310,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2, marginLeft: '5px' }}
+                                onClick={() => handleSearchUser()}
                             >
                                 <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
                             </StyledIconButton>
@@ -306,6 +320,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
+                                onClick={() => handleSearchMap()}
                             >
                                 <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
                             </StyledIconButton>
@@ -315,6 +330,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
+                                onClick={() => handleSearchProperty()}
                             >
                                 <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
                             </StyledIconButton>
@@ -322,18 +338,19 @@ export default function AppBanner() {
 
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
 
-
-                        <StyledIconButton
+                        {
+                            location.pathname === '/mapview' ? <StyledIconButton
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
-                            // disabled={disabled}
+                            // disabled={true}
                             // onClick={() => handleClick("/mapview-comment")}
                             onClick={() => handleComment()}
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
-                        </StyledIconButton>
+                        </StyledIconButton> : <div></div>
+                        }
 
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
@@ -341,7 +358,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                            // disabled={disabled}
+                                disabled={auth.loggedIn ? false: true}
                             // onClick={() => handleClick("/user-lists")}
                             >
                                 <AddToPhotosIcon

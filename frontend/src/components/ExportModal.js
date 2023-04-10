@@ -92,6 +92,7 @@ export default function ExportModal() {
                 >
                     <MenuItem value={'SHP/DBF Zip'}>SHP/DBF Zip</MenuItem>
                     <MenuItem value={'GeoJSON'}>GeoJSON</MenuItem>
+                    <MenuItem value={'Image'}>Image (PNG)</MenuItem>
                 </Select>
                 </FormControl>
                 </Box>
