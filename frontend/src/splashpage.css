@@ -27,8 +27,8 @@ body {
 #homePageBackground {
     position: relative;
     width: 100%;
-    /* height: 1024px; */
-    height: 966px;
+    height: 1024px;
+    /* height: 966px; */
     background: #ECF2FF;
 }
 
