@@ -36,7 +36,7 @@ const authRouter = require('./routes/auth-router')
 app.use('/auth', authRouter)
 
 if (process.env.NODE_ENV !== "testing") {
-    app.get('/*', function (req, res) {
+    app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, 'what', 'index.html')).status(200);
     });
 }
