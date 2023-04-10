@@ -15,7 +15,7 @@ function SplashScreen() {
 
       <section id="subtitle">Your Choice, Your Map, Your World</section>
       <section id="subtext">An interactive map design site, used to create your own custom maps and share with others! </section>
-      <div id="line2"></div>
+      <div id="splashpage-line"></div>
 
       <Link to={`home`}>
         <Button id="guestButton" sx={{ textTransform: `none` }} data-cy="guestButton">

@@ -244,7 +244,17 @@ img {
     border: 5px solid #000000;
     border-right-width: 103px;
     border-top-width: 1px;
+}
 
+#splashpage-line {
+    position: absolute;
+    width: 704px;
+    height: 0px;
+    left: 400px;
+    top: 600px;
+
+    border: 1px solid #000000;
+    transform: rotate(90deg);
 }
 
 #map-card-line {

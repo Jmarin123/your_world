@@ -28,7 +28,7 @@ function Register() {
   return (
     <div>
       <Link to={`/`}>
-        <img src={logo} alt="earthlogo" />
+        <img src={logo} alt="earthlogo" title='Go Back'/>
       </Link>
       <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
         <section id="account">Create an Account</section>
