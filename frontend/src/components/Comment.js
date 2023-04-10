@@ -84,7 +84,7 @@ function Comment(props) {
             position: 'relative',
             top: '60px',
             backgroundColor: '#edede9',
-            height: '900px',
+            height: '960px',
         }}>
             <CardContent>
                 <StyledIconButton
