@@ -709,6 +709,7 @@ input {
     font-weight: normal;
     font-size: 15px;
     color: #000000;
+    font-weight: 900;
 }
 
 #modal-textfield {
