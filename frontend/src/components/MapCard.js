@@ -11,8 +11,18 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useLocation } from "react-router-dom";
 
+import { GlobalStoreContext } from '../store'
+import { useContext } from 'react';
+
 export default function MapCard() {
     const location = useLocation();
+    const { store } = useContext(GlobalStoreContext);
+
+    const handleDeleteMap = (event) => {
+        event.preventDefault();
+        // console.log(event)
+        store.markMapForDeletion("hard-coded")
+      };
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -109,6 +119,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
+                onClick={(event) => {
+                    handleDeleteMap(event)
+                }}
                 sx={{position: 'absolute', bottom: '0',
                         left: '93px',
                         fontSize: '1em' }}
@@ -179,6 +192,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
+                onClick={(event) => {
+                    handleDeleteMap(event)
+                }}
                 sx={{position: 'absolute', bottom: '0',
                         left: '93px',
                         fontSize: '1em' }}
