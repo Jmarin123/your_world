@@ -726,6 +726,13 @@ input {
     font-weight: 900;
 }
 
+#commentsTabTitle{
+    font-family: 'Italiana', serif;
+    text-decoration: underline;
+    display: inline;
+    font-weight: 900;
+}
+
 /* #commentText {
     
 } */

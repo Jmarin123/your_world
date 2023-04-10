@@ -98,20 +98,21 @@ function Comment(props) {
 
         }}>
             <CardContent>
+                <p id="commentsTabTitle">Comments Tab</p>
                 <StyledIconButton
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2 }}
+                    sx={{ mr: 2, float: "right",  display: "inline" }}
                     // disabled={disabled}
                     onClick={() => handleCloseComment()}
                 >
                     <CloseOutlinedIcon
-                        style={{ fontSize: "25px", float: "left" }}
+                        style={{ fontSize: "25px", float: "right" }}
 
                     ></CloseOutlinedIcon>
                 </StyledIconButton>
-
+                
                 <Grid container spacing={1} style={{
                     top: '300px',
                     left: '10px',
