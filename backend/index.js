@@ -37,9 +37,10 @@ app.use('/auth', authRouter)
 
 if (process.env.NODE_ENV !== "testing") {
     app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname, 'what', 'index.html')).status(200);
+        res.sendFile(path.join(__dirname, 'what', 'index.html'));
     });
 }
+
 
 
 module.exports = { app };
