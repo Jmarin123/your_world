@@ -1,6 +1,5 @@
 import React from 'react'
-import { GlobalStoreContext } from '../store'
-import { useContext } from 'react';
+// import { GlobalStoreContext } from '../store'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
@@ -14,13 +13,6 @@ import { useLocation } from "react-router-dom";
 
 export default function MapCard() {
     const location = useLocation();
-    const { store } = useContext(GlobalStoreContext);
-
-    const handleDeleteMap = (event) => {
-        event.preventDefault();
-        // console.log(event)
-        store.markMapForDeletion("hard-coded")
-      };
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -48,12 +40,14 @@ export default function MapCard() {
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
-            <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+           
                 <StyledIconButton
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2 }}
+                    sx={{position: 'absolute', bottom: '0',
+                        left: '5px',
+                        fontSize: '1em' }}
                 >
                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
                 </StyledIconButton>
@@ -62,11 +56,14 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2 }}
+                    sx={{
+                        position: 'absolute', bottom: '0',
+                        left: '49px',
+                        fontSize: '1em'  }}
                 >
                     <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
                 </StyledIconButton>
-            </Box>
+            
         </div>
     </ListItem>
 
@@ -90,7 +87,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ mr: 2 }}
+                sx={{position: 'absolute', bottom: '0',
+                        left: '5px',
+                        fontSize: '1em' }}
             >
                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
@@ -99,7 +98,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ mr: 2 }}
+                sx={{position: 'absolute', bottom: '0',
+                        left: '49px',
+                        fontSize: '1em' }}
             >
                 <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
             </StyledIconButton>
@@ -108,10 +109,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ mr: 2 }}
-                onClick={(event) => {
-                        handleDeleteMap(event)
-                    }}
+                sx={{position: 'absolute', bottom: '0',
+                        left: '93px',
+                        fontSize: '1em' }}
             >
                 <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
@@ -120,7 +120,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ mr: 2 }}
+                sx={{position: 'absolute', bottom: '0',
+                        left: '137px',
+                        fontSize: '1em' }}
             >
                 <BorderColorIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
@@ -155,7 +157,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2 }}
+                    sx={{position: 'absolute', bottom: '0',
+                        left: '5px',
+                        fontSize: '1em' }}
                 >
                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
                 </StyledIconButton>
@@ -164,7 +168,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2 }}
+                    sx={{position: 'absolute', bottom: '0',
+                        left: '49px',
+                        fontSize: '1em' }}
                 >
                     <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
                 </StyledIconButton>
@@ -173,10 +179,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ mr: 2 }}
-                onClick={(event) => {
-                    handleDeleteMap(event)
-                }}
+                sx={{position: 'absolute', bottom: '0',
+                        left: '93px',
+                        fontSize: '1em' }}
             >
                 <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
