@@ -2,6 +2,7 @@ import { createContext, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 //useContext
 // import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export const GlobalStoreContext = createContext({});
 console.log("Creating GlobalStoreContext")
@@ -24,6 +25,7 @@ export const GlobalStoreActionType = {
     UPLOAD_FILE: "UPLOAD_FILE",
     OPEN_COMMENT: "OPEN_COMMENT",
     CLOSE_COMMENT: "CLOSE_COMMENT",
+    MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
 }
 
 export const CurrentModal = {
@@ -31,16 +33,20 @@ export const CurrentModal = {
     DELETE_MAP: "DELETE_MAP",
     EDIT_MAP: "EDIT_MAP",
     RENAME_SUBREGION: "RENAME_SUBREGION",
-    UPLOAD_FILE: "UPLOAD_FILE"
+    UPLOAD_FILE: "UPLOAD_FILE",
+    EXPORT_MAP: "EXPORT_MAP"
 }
 
 function GlobalStoreContextProvider(props) {
+    const navigate = useNavigate();
+
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,
         uploadType: "",
         currentMap: null,
         openComment: false,
         mapMarkedForDeletion: null,
+        mapMarkedForExport: null,
     });
     // const history = useHistory();
 
@@ -60,6 +66,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: store.currentMap,
                     openComment: false,
                     mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -69,6 +76,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: store.currentMap,
                     openComment: false,
                     mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -78,6 +86,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: payload.currentMap,
                     openComment: false,
                     mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -87,6 +96,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: payload.currentMap,
                     openComment: true,
                     mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -96,6 +106,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: payload.currentMap,
                     openComment: false,
                     mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -105,6 +116,17 @@ function GlobalStoreContextProvider(props) {
                     currentMap: null,
                     openComment: false,
                     mapMarkedForDeletion: payload.map,
+                    mapMarkedForExport: null,
+                });
+            }
+            case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
+                return setStore({
+                    currentModal: CurrentModal.EXPORT_MAP,
+                    uploadType: "",
+                    currentMap: null,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: payload.map,
                 });
             }
             default:
@@ -172,6 +194,21 @@ function GlobalStoreContextProvider(props) {
     store.markMapForDeletion = function (map) {
         storeReducer({
             type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+            payload: { map: map }
+        });
+    }
+
+    store.duplicateMap = function (map) {
+        // storeReducer({
+        //     type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+        //     payload: { map: map }
+        // });
+        navigate("/yourmaps")
+    }
+
+    store.markMapForExport = function (map) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_MAP_FOR_EXPORT,
             payload: { map: map }
         });
     }

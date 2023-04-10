@@ -21,8 +21,18 @@ export default function MapCard() {
     const handleDeleteMap = (event) => {
         event.preventDefault();
         // console.log(event)
-        store.markMapForDeletion("hard-coded")
+        store.markMapForDeletion("Atlantis");
       };
+
+    const handleDuplicateMap = (event) => {
+        event.preventDefault();
+        store.duplicateMap(); //TODO: Use event to duplicate map
+    }
+
+    const handleExport = (event) => {
+        event.preventDefault();
+        store.markMapForExport("Atlantis");
+    }
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -55,6 +65,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
+                    onClick={(event) => {
+                        handleExport(event)
+                    }}
                     sx={{position: 'absolute', bottom: '0',
                         left: '5px',
                         fontSize: '1em' }}
@@ -66,6 +79,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
+                    onClick={(event) => {
+                        handleDuplicateMap(event)
+                    }}
                     sx={{
                         position: 'absolute', bottom: '0',
                         left: '49px',
@@ -97,6 +113,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
+                onClick={(event) => {
+                    handleExport(event)
+                }}
                 sx={{position: 'absolute', bottom: '0',
                         left: '5px',
                         fontSize: '1em' }}
@@ -108,6 +127,9 @@ export default function MapCard() {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
+                onClick={(event) => {
+                    handleDuplicateMap(event)
+                }}
                 sx={{position: 'absolute', bottom: '0',
                         left: '49px',
                         fontSize: '1em' }}
@@ -170,6 +192,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
+                    onClick={(event) => {
+                        handleExport(event)
+                    }}
                     sx={{position: 'absolute', bottom: '0',
                         left: '5px',
                         fontSize: '1em' }}
@@ -181,6 +206,9 @@ export default function MapCard() {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
+                    onClick={(event) => {
+                        handleDuplicateMap(event)
+                    }}
                     sx={{position: 'absolute', bottom: '0',
                         left: '49px',
                         fontSize: '1em' }}

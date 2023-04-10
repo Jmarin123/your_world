@@ -14,6 +14,7 @@ import AppBanner from './components/AppBanner';
 import RenameModal from './components/RenameModal'
 import DeleteModal from './components/DeleteModal'
 import ErrorModal from './components/ErrorModal'
+import ExportModal from './components/ExportModal'
 /*
     This is our application's top-level component.
     
@@ -43,6 +44,7 @@ const App = () => {
           <RenameModal />
           <DeleteModal />
           <ErrorModal />
+          <ExportModal />
           {/* <MUIAlertModal /> */}
           {/* <MUIRemoveSongModal /> */}
 
