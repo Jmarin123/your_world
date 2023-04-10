@@ -9,6 +9,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useLocation } from "react-router-dom";
 
 import { GlobalStoreContext } from '../store'
@@ -105,6 +107,28 @@ export default function MapCard() {
                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
                 </StyledIconButton>
 
+                <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{position: 'absolute', bottom: '0',
+                        right: '0px',
+                        fontSize: '1em' }}
+                >
+                    3 <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                </StyledIconButton>
+
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{position: 'absolute', bottom: '0',
+                            right: '45px',
+                            fontSize: '1em' }}
+                >
+                    9 <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                </StyledIconButton>
+
                 {auth.loggedIn ? duplicateButton: <div></div>}
             
         </div>
@@ -179,6 +203,7 @@ export default function MapCard() {
             >
                 <BorderColorIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
+
         </Box>
     </div>
     </ListItem>
@@ -248,6 +273,29 @@ export default function MapCard() {
             >
                 <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
             </StyledIconButton>
+
+
+            <StyledIconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{position: 'absolute', bottom: '0',
+                        right: '0px',
+                        fontSize: '1em' }}
+                >
+                    3 <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                </StyledIconButton>
+
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{position: 'absolute', bottom: '0',
+                            right: '45px',
+                            fontSize: '1em' }}
+                >
+                    9 <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                </StyledIconButton>
             </Box>
         </div>
         </ListItem>
