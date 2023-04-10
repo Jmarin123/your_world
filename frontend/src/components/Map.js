@@ -244,7 +244,8 @@ export default function Map() {
           <MenuItem value={"Comic Sans"}>Comic Sans</MenuItem>
         </Select>
       </FormControl>
-      <br />
+      <div id="edit-line3"></div>
+        <br />
       <Button id="publishButton" type="submit" sx={{textTransform: `none`}}>
         <p id="text">Publish</p>
       </Button>

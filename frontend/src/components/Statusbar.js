@@ -34,7 +34,7 @@ function Statusbar() {
                     <AddIcon style={{ fontSize: "30pt", color: "black" }} />
                 </IconButton> */}
             </Typography>
-            Map name here!
+            Map name here
         </div>;
     }
 
