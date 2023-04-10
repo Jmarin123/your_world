@@ -13,7 +13,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
-    baseURL: 'http://localhost:4000/api',
+    baseURL: process.env.REACT_APP_API_URL,
 })
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
@@ -22,7 +22,7 @@ const api = axios.create({
 // WORK, AND SOME REQUIRE DATA, WHICH WE WE WILL FORMAT HERE, FOR WHEN
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
-export const createMap = (payload) => api.post('/map/', payload)
+export const createMap = (payload) => api.post('api/map/', payload)
 // export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 // export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 // export const getPlaylistPairs = () => api.get(`/playlistpairs/`)

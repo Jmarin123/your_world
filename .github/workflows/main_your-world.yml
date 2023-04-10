@@ -10,7 +10,7 @@ jobs:
   all_tests:
     runs-on: ubuntu-latest
     env:
-      REACT_APP_API_URL: http://localhost:3001/auth
+      REACT_APP_API_URL: http://localhost:3001/
     steps:
       - uses: actions/checkout@v2
 
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: all_tests
     env:
-      REACT_APP_API_URL: https://your-world.herokuapp.com/auth
+      REACT_APP_API_URL: https://your-world.herokuapp.com/
     steps:
       - uses: actions/checkout@v2
 
