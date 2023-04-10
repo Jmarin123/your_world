@@ -6,6 +6,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors')
+const helmet = require('helmet');
 app.use(express.urlencoded({ extended: true }))
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -14,6 +15,14 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));
+
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'none'"],
+        imgSrc: ["'self'", 'data:', 'https://your-world.herokuapp.com/']
+    }
+}));
+
 const dbUrl = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
 
 mongoose.connect(dbUrl);
