@@ -33,7 +33,6 @@ import { Button } from '@mui/material';
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   const [color, setColor] = useState("#ffff00");
-  //setColor
   const [font, setFont] = React.useState("Arial");
 
   const handleChange = (event) => {
