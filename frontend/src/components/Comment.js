@@ -64,8 +64,18 @@ function Comment(props) {
         disabled = true;
     }
 
-    //Make sure newest comments are at the top by reversing the comments list
+    // Hardcode the comment
+    let comments = [["Annie", "I live your map!!!"], ["Joe", "The map looks nice."], ["John", "Beautiful map!"], ["AJA", "Amazing work!"],
+    ["Annie", "Second comment."], ["Joe", "The map looks nice2."], ["John", "Beautiful map2!"], ["AJA", "Amazing work2!"],
+    ["Annie", "Third comment."], ["Joe", "The map looks nice3."], ["John", "Beautiful map3!"],
+    ["Annie", "Fourth comment"], ["Joe", "The map looks nice4."], ["John", "Beautiful map4!"],
+    ];
     let reversed = [];
+    for (let k = comments.length - 1; k >= 0; k--) {
+        reversed.push(comments[k]);
+    }
+    //Make sure newest comments are at the top by reversing the comments list
+    // let reversed = [];
     // if (map) {
     //     for (let k = map.comments.length - 1; k >= 0; k--) {
     //         reversed.push(map.comments[k]);
@@ -83,8 +93,9 @@ function Comment(props) {
             width: '102%',
             position: 'relative',
             top: '60px',
-            backgroundColor: '#edede9',
+            backgroundColor: '#bfc0c0',
             height: '960px',
+
         }}>
             <CardContent>
                 <StyledIconButton
@@ -102,9 +113,9 @@ function Comment(props) {
                 </StyledIconButton>
 
                 <Grid container spacing={1} style={{
-                    // top: '300px',
-                    // left: '10px',
-                    height: '420px',
+                    top: '300px',
+                    left: '10px',
+                    height: '700px',
                     overflowY: 'auto',
 
                 }}>
@@ -116,11 +127,12 @@ function Comment(props) {
                                 sx={{
                                     border: "1px solid black",
                                     borderRadius: "12px",
-                                    backgroundColor: "#E0A009",
+                                    backgroundColor: "#ECECEC",
                                     margin: '10px',
                                     fontsize: "8pt",
                                     // padding: "10px 10px",
-                                    marginTop: '1px'
+                                    marginTop: '1px',
+
                                 }}
                             >
                                 <strong>
@@ -131,7 +143,6 @@ function Comment(props) {
                         ))
                     }
                 </Grid>
-
             </CardContent>
             <CardActions>
                 {
@@ -151,8 +162,9 @@ function Comment(props) {
 
                             <TextField
                                 sx={{
-                                    backgroundColor: "#f8f9fa",
-                                    top: '320px',
+                                    backgroundColor: "#ECECEC",
+                                    // top: '320px',
+                                    top: '50px',
 
                                     // borderRadius: "20px",
                                     // borderColor: '#ffe5ec',
