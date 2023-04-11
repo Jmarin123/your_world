@@ -220,7 +220,7 @@ export default function AppBanner() {
     }
 
     let globeIcon;
-    if (location.pathname === '/yourmaps') {
+    if (location.pathname === '/home') {
     globeIcon =  <StyledIconButton
             edge="start"
             color="inherit"
