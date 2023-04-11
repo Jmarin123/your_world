@@ -25,12 +25,11 @@ createMap = (req, res) => {
         return res.status(400).json({ success: false, error: err })
     }
 
-    User.findOne({ _id: req.userId }, (err, user) => {
+    User.find({ _id: req.userId }).then(function(user, err){
         console.log("user found: " + JSON.stringify(user));
-        user.maps.push(map._id);
-        user
-            .save()
-            .then(() => {
+        user[0].maps.push(map._id)
+
+        user[0].save().then(() => {
                 map
                     .save()
                     .then(() => {
@@ -46,6 +45,8 @@ createMap = (req, res) => {
             });
     })
 }
+
+
 // deletePlaylist = async (req, res) => {
 //     console.log("delete Playlist with id: " + JSON.stringify(req.params.id));
 //     console.log("delete " + req.params.id);
