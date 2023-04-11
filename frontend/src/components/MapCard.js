@@ -2,6 +2,7 @@ import React from 'react'
 // import { GlobalStoreContext } from '../store'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ListItem from '@mui/material/ListItem';
 import MapCardSample from './/mapcardsample.jpg'
 import IconButton from '@mui/material/IconButton';
@@ -76,19 +77,28 @@ export default function MapCard() {
     <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
     </StyledIconButton>
 
-    let publishedMapCard = <ListItem id='published-listItemMapCard' >
+    let publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
             key={1}
             id="mapCard1"
             onDoubleClick={handlePubCardClick}
         >
-            <div id='cardTitle'>
-                {title}
-            </div>
 
-            <div id='map-card-line'></div>
+            <Box sx={{p: 0.5}}>
+            <Box id='cardTitle'>
+                {title}
+            </Box>
+
+            <Box id='map-card-line'>
+            {/* <div id='map-card-line'></div> */}
+            </Box>
             
-            <p id='map-card-author'>By: Author</p>
+            
+            <Typography id='map-card-author'>
+                By: Author
+            {/* <br id='map-card-author'>By: Author</br> */}
+            </Typography>
+            </Box>
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
@@ -112,10 +122,10 @@ export default function MapCard() {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{position: 'absolute', bottom: '0',
-                        right: '0px',
+                        right: '2px',
                         fontSize: '1em' }}
                 >
-                    3 <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                    <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 3
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -123,10 +133,10 @@ export default function MapCard() {
                     color="inherit"
                     aria-label="open drawer"
                     sx={{position: 'absolute', bottom: '0',
-                            right: '45px',
+                            right: '50px',
                             fontSize: '1em' }}
                 >
-                    9 <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                    <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 9
                 </StyledIconButton>
 
                 {auth.loggedIn ? duplicateButton: <div></div>}
@@ -140,13 +150,22 @@ export default function MapCard() {
         id="mapCard2"
         onDoubleClick={handleCardClick}
     >
-        <div id='cardTitle'>
-            {title}
-        </div>
 
-        <div id='map-card-line'></div>
-        
-        <p id='map-card-author'>By: Author</p>
+        <Box sx={{p: 0.5}}>
+            <Box id='cardTitle'>
+                {title}
+            </Box>
+
+            <Box id='map-card-line'>
+            {/* <div id='map-card-line'></div> */}
+            </Box>
+            
+            
+            <Typography id='map-card-author'>
+                By: Author
+            {/* <br id='map-card-author'>By: Author</br> */}
+            </Typography>
+         </Box>
 
         <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
@@ -221,13 +240,21 @@ export default function MapCard() {
             id="mapCard1"
             onDoubleClick={handlePubCardClick}
         >
-            <div id='cardTitle'>
+        <Box sx={{p: 0.5}}>
+            <Box id='cardTitle'>
                 {title}
-            </div>
+            </Box>
 
-            <div id='map-card-line'></div>
+            <Box id='map-card-line'>
+            {/* <div id='map-card-line'></div> */}
+            </Box>
             
-            <p id='map-card-author'>By: Author</p>
+            
+            <Typography id='map-card-author'>
+                By: Author
+            {/* <br id='map-card-author'>By: Author</br> */}
+            </Typography>
+         </Box>
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
@@ -280,10 +307,10 @@ export default function MapCard() {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{position: 'absolute', bottom: '0',
-                        right: '0px',
+                        right: '2px',
                         fontSize: '1em' }}
                 >
-                    3 <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                    <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 3
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -291,10 +318,10 @@ export default function MapCard() {
                     color="inherit"
                     aria-label="open drawer"
                     sx={{position: 'absolute', bottom: '0',
-                            right: '45px',
+                            right: '50px',
                             fontSize: '1em' }}
                 >
-                    9 <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} />
+                    <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 9
                 </StyledIconButton>
             </Box>
         </div>
