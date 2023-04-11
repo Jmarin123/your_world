@@ -8,6 +8,7 @@ const User = require('../models/user-model');
     @author McKilla Gorilla
 */
 createMap = (req, res) => {
+    console.log("in map-controller createMap")
     const body = req.body;
     console.log("createMap body: " + JSON.stringify(body));
 
@@ -269,7 +270,7 @@ createMap = (req, res) => {
 //     })
 // }
 module.exports = {
-    createPlaylist,
+    createMap,
     // deletePlaylist,
     // getPlaylistById,
     // getPlaylistPairs,

@@ -177,7 +177,7 @@ function GlobalStoreContextProvider(props) {
             listCounter: store.newMapCounter + 1,
             ownerEmail: auth.user.email,
             owner: auth.user.firstName + " " + auth.user.lastName,
-            dataFromMap: obj,
+            dataFromMap: JSON.stringify(obj),
             comments: [],
             likes: [],
             dislikes: [],
