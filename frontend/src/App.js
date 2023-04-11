@@ -6,9 +6,9 @@ import { GlobalStoreContextProvider } from './store'
 import Register from './components/Register';
 import Login from './components/Login';
 import SplashScreen from './components/SplashScreen';
-import HomePage from './components/HomePage';
+import PublicPage from './components/PublicPage';
 import Map from './components/Map';
-import YourMaps from './components/YourMaps';
+import HomePage from './components/HomePage';
 import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
 import RenameModal from './components/RenameModal'
@@ -36,12 +36,12 @@ const App = () => {
           <Routes>
             <Route path="/" element={<SplashScreen />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/map" element={<Map />} />
-            <Route path="/yourmaps" element={<YourMaps />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/mapview" element={<Mapview />} />
+            <Route path="/public" element={<PublicPage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/map" element={<Map />} />
+            <Route path="/mapview" element={<Mapview />} />
           </Routes>
           <RenameModal />
           <DeleteModal />

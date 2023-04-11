@@ -80,29 +80,10 @@ export default function AppBanner() {
         setLabel("Search by map properties")
     }
 
-    // function handleClick(path) {
-    //     navigate(path);
-    //     disabled = false;
-    //     // store.setSearch("");
-    // }
-
     function handleComment() {
         store.openCommentView();
         console.log(store.openComment);
     }
-
-    // disable the comment button
-    // if (map && map.published.isPublished === true) {
-    //     disabled = true;
-    // }
-
-    // const handleLogout = () => {
-    //     handleMenuClose();
-    // }
-
-    // const handleShowUpload = () => {
-    //     store.showUpload();
-    // }
 
     const handleUploadMenuClose = () => {
         setAnchorE2(null);
@@ -120,17 +101,17 @@ export default function AppBanner() {
         store.showUpload("geojson")
     };
 
-    const handleYourMapsPage = () => {
+    const handleHomePage = () => {
         if (auth.loggedIn) {
-            navigate('/yourmaps')
+            navigate('/home')
         }
     }
 
     const handlePublicMapsPage = () => {
-        navigate('/home')
+        navigate('/public')
     }
 
-    const handleSearch = (event) => {
+    const handleSearchPage = (event) => {
         navigate('/search')
     }
 
@@ -219,29 +200,69 @@ export default function AppBanner() {
         // store.closeCurrentList();
     }
 
-    let globeIcon;
-    if (location.pathname === '/home') {
-    globeIcon =  <StyledIconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
-        // disabled={disabled}
-        // onClick={() => handleClick("/home")}
-        >
-            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
-        </StyledIconButton>
-
-    } else {
-        globeIcon =  <StyledIconButton
+    let globeIcon = <StyledIconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2, marginLeft: "5px" }}
         // disabled={disabled}
-        // onClick={() => handleClick("/home")}
+        // onClick={() => handleClick("/public")}
         >
             <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+        </StyledIconButton>
+
+    let homeIcon = <StyledIconButton
+    edge="start"
+    color="inherit"
+    aria-label="open drawer"
+    sx={{ mr: 2 }}
+    disabled={auth.loggedIn ? false: true}
+    // onClick={() => handleClick("/public")}
+    >
+        <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
+    </StyledIconButton>
+
+    let searchIcon = <StyledIconButton
+    edge="start"
+    color="inherit"
+    aria-label="open drawer"
+    sx={{ mr: 2 }}
+    onClick={handleSearchPage}
+    // disabled={disabled}
+    // onClick={() => handleClick("/public")}
+    >
+    <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+    </StyledIconButton>
+        
+    if (location.pathname === '/public') {
+    globeIcon =  <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
+        >
+            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+        </StyledIconButton>
+    }
+    else if (location.pathname === '/home') {
+        homeIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2, color: '#FDE66B' }}
+        disabled={auth.loggedIn ? false: true}
+        >
+            <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
+        </StyledIconButton>
+    }
+    else if (location.pathname === '/search') {
+        searchIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2, color: '#FDE66B' }}
+        >
+        <SearchIcon style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}></SearchIcon>
         </StyledIconButton>
     }
 
@@ -259,44 +280,9 @@ export default function AppBanner() {
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                             onClick={handleHomescreen}
                         >
-
                               {globeIcon}
-
-                            {/* <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2, marginLeft: "5px" }}
-                            // disabled={disabled}
-                            // onClick={() => handleClick("/home")}
-                            >
-                                <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
-                            </StyledIconButton> */}
-
-
-
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                disabled={auth.loggedIn ? false: true}
-                            // onClick={() => handleClick("/home")}
-                            >
-                                <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleYourMapsPage}></HomeIcon>
-                            </StyledIconButton>
-
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={handleSearch}
-                            // disabled={disabled}
-                            // onClick={() => handleClick("/home")}
-                            >
-                                <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
-                            </StyledIconButton>
+                              {homeIcon}
+                              {searchIcon}
 
                             <Box
                                 component="form"

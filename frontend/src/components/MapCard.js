@@ -228,10 +228,10 @@ export default function MapCard() {
     </ListItem>
 
     let mapCards;
-    //if from /home only display published map cards that have 2 button icon's
-    //if from /yourmaps display published and unpublished map cards, 
+    //if from /public only display published map cards that have 2 button icon's
+    //if from /home display published and unpublished map cards, 
     //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
-    if (location.pathname === "/home" || location.pathname === "/search") {
+    if (location.pathname === "/public" || location.pathname === "/search") {
         mapCards = [publishedMapCard, publishedMapCard] 
     } else {
         publishedMapCard = <ListItem id='published-listItemMapCard'>

@@ -8,7 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import React from "react";
 
-export default function HomePage() {
+export default function SearchPage() {
     const [sort, setSort] = React.useState("Map Title");
 
   const handleChange = (event) => {

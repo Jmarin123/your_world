@@ -214,7 +214,7 @@ function GlobalStoreContextProvider(props) {
         //     type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
         //     payload: { map: map }
         // });
-        navigate("/yourmaps")
+        navigate("/home")
     }
 
     store.markMapForExport = function (map) {

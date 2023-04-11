@@ -2,7 +2,7 @@ describe('test if guest button results in home screen', () => {
   it('passes', () => {
     cy.visit('/')
     cy.get('[data-cy="guestButton"]').click()
-    cy.location('pathname').should('eq', '/home')
+    cy.location('pathname').should('eq', '/public')
   })
 })
 

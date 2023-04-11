@@ -1,26 +1,25 @@
 // import Map from './Map.js';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import MapCard from './MapCard.js';
+import MapCard from './MapCard.js'
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import React from "react";
 
-export default function YourMaps() {
+export default function PublicPage() {
     const [sort, setSort] = React.useState("Map Title");
 
-    const handleChange = (event) => {
-      setSort(event.target.value);
-    };
+  const handleChange = (event) => {
+    setSort(event.target.value);
+  };
 
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+            
             <Box id="publicBox" component="form" noValidate >
-                <section id="public">Your Maps</section>
-
-
+                <section id="public">Public Map Listing</section>
                 <FormControl variant="standard" sx={{ 
                     m: 1, 
                     width: '100px',
@@ -47,6 +46,7 @@ export default function YourMaps() {
                     onChange={handleChange}
                     >
                     <MenuItem value={"Map Title"}>Map Title</MenuItem>
+                    <MenuItem value={"Author"}>Author</MenuItem>
                     <MenuItem value={"Likes"}>Likes</MenuItem>
                     <MenuItem value={"Dislikes"}>Dislikes</MenuItem>
                     </Select>

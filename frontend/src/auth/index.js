@@ -156,7 +156,7 @@ function AuthContextProvider(props) {
                         type: "user",
                     }
                 })
-                navigate("/yourmaps");
+                navigate("/home");
             }
         } catch (response) {
             // if (!response.ok) {
@@ -215,7 +215,7 @@ function AuthContextProvider(props) {
                 type: "guest",
             }
         });
-        navigate("/home");
+        navigate("/public");
     }
 
     return (
