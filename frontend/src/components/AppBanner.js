@@ -219,6 +219,32 @@ export default function AppBanner() {
         // store.closeCurrentList();
     }
 
+    let globeIcon;
+    if (location.pathname === '/yourmaps') {
+    globeIcon =  <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
+        // disabled={disabled}
+        // onClick={() => handleClick("/home")}
+        >
+            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+        </StyledIconButton>
+
+    } else {
+        globeIcon =  <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2, marginLeft: "5px" }}
+        // disabled={disabled}
+        // onClick={() => handleClick("/home")}
+        >
+            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+        </StyledIconButton>
+    }
+
     let editToolbarMenu = "";
     // if (auth.user || auth.type) {
     if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login') {
@@ -233,7 +259,10 @@ export default function AppBanner() {
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                             onClick={handleHomescreen}
                         >
-                            <StyledIconButton
+
+                              {globeIcon}
+
+                            {/* <StyledIconButton
                                 edge="start"
                                 color="inherit"
                                 aria-label="open drawer"
@@ -242,7 +271,10 @@ export default function AppBanner() {
                             // onClick={() => handleClick("/home")}
                             >
                                 <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
-                            </StyledIconButton>
+                            </StyledIconButton> */}
+
+
+
                             <StyledIconButton
                                 edge="start"
                                 color="inherit"
