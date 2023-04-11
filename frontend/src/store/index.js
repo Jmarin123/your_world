@@ -1,5 +1,8 @@
-import { createContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { Outlet } from 'react-router-dom'
+import AuthContext from '../auth'
+import api from './store-request-api'
+import jsTPS from '../common/jsTPS'
 //useContext
 // import { useHistory } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -28,6 +31,9 @@ export const GlobalStoreActionType = {
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
 }
 
+// WE'LL NEED THIS TO PROCESS TRANSACTIONS
+const tps = new jsTPS();
+
 export const CurrentModal = {
     NONE: "NONE",
     DELETE_MAP: "DELETE_MAP",
@@ -50,8 +56,8 @@ function GlobalStoreContextProvider(props) {
     });
     // const history = useHistory();
 
-    // const { auth } = useContext(AuthContext);
-    // console.log("auth: " + auth);
+    const { auth } = useContext(AuthContext);
+    console.log("auth: " + auth);
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
@@ -152,14 +158,51 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    // store.createNewMap = async function (obj) {
+    //     storeReducer({
+    //         type: GlobalStoreActionType.SET_CURRENT_MAP,
+    //         payload: {
+    //             currentMap: obj
+    //         }
+    //     });
+    //     navigate("/map");
+    // }
+
+    // THIS FUNCTION CREATES A NEW LIST
     store.createNewMap = async function (obj) {
-        storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_MAP,
-            payload: {
-                currentMap: obj
+        // let newMapName = "Untitled" + store.idNamePairs.length;
+        let newMapName = "Untitled";
+        let payload = {
+            name: newMapName,
+            listCounter: store.newMapCounter + 1,
+            ownerEmail: auth.user.email,
+            owner: auth.user.firstName + " " + auth.user.lastName,
+            dataFromMap: obj,
+            comments: [],
+            likes: [],
+            dislikes: [],
+            publish: { isPublished: false, publishedDate: new Date() }
+        };
+        const response = await api.createMap(payload);
+        // console.log("createNewList response: " + response);
+        if (response.status === 201) {
+            tps.clearAllTransactions();
+            let newMap = response.data.map;
+
+            console.log("store.createNewMap.  newmap: ", newMap);
+            storeReducer({
+                type: GlobalStoreActionType.CREATE_NEW_MAP,
+                payload: newMap
+                // payload: { newListCounter: newList.listCounter, playlist: newList }
+
             }
-        });
-        navigate("/map");
+            );
+
+            // store.loadIdNamePairs();
+        }
+        else {
+            console.log("API FAILED TO CREATE A NEW MAP");
+        }
     }
 
     //TODO: Remove later
