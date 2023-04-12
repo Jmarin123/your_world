@@ -23,7 +23,7 @@ function AuthContextProvider(props) {
         loggedIn: false,
         type: ""
     });
-    console.log('AuthContext auth:', auth);
+    // console.log('AuthContext auth:', auth);
     const navigate = useNavigate();
 
     // useEffect(() => {

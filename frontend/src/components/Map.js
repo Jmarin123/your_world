@@ -85,10 +85,9 @@ export default function Map() {
     setColor(event.target.value);
   };
 
-
   let renderedMap = <GeoJSON
     style={countryStyle}
-    data={store.currentMap ? store.currentMap.features : null}
+    data={store.currentMap ? (JSON.parse(store.currentMap.dataFromMap)).features : null}
     onEachFeature={onEachCountry}
   />
 

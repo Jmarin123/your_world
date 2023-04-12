@@ -57,7 +57,7 @@ function GlobalStoreContextProvider(props) {
     // const history = useHistory();
 
     const { auth } = useContext(AuthContext);
-    console.log("auth: " + auth);
+    // console.log("auth: " + auth);
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
@@ -168,7 +168,6 @@ function GlobalStoreContextProvider(props) {
     //     navigate("/map");
     // }
 
-    // THIS FUNCTION CREATES A NEW LIST
     store.createNewMap = async function (obj) {
         // let newMapName = "Untitled" + store.idNamePairs.length;
         let newMapName = "Untitled";
@@ -189,14 +188,18 @@ function GlobalStoreContextProvider(props) {
             tps.clearAllTransactions();
             let newMap = response.data.map;
 
-            console.log("store.createNewMap.  newmap: ", newMap);
-            storeReducer({
-                type: GlobalStoreActionType.CREATE_NEW_MAP,
-                payload: newMap
-                // payload: { newListCounter: newList.listCounter, playlist: newList }
+            // console.log(newMap)
 
+            // console.log("store.createNewMap.  newmap: ", newMap);
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_MAP,
+                payload: { currentMap: newMap }
+                // payload: { newListCounter: newList.listCounter, playlist: newList }
             }
             );
+
+            
+            navigate("/map")
 
             // store.loadIdNamePairs();
         }

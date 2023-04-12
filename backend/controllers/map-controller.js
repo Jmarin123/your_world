@@ -8,9 +8,8 @@ const User = require('../models/user-model');
     @author McKilla Gorilla
 */
 createMap = (req, res) => {
-    console.log("in map-controller createMap")
     const body = req.body;
-    console.log("createMap body: " + JSON.stringify(body));
+    // console.log("createMap body: " + JSON.stringify(body));
 
     if (!body) {
         return res.status(400).json({
@@ -20,13 +19,13 @@ createMap = (req, res) => {
     }
 
     const map = new Map(body);
-    console.log("map: " + map.toString());
+    // console.log("map: " + map.toString());
     if (!map) {
         return res.status(400).json({ success: false, error: err })
     }
 
     User.find({ _id: req.userId }).then(function(user, err){
-        console.log("user found: " + JSON.stringify(user));
+        // console.log("user found: " + JSON.stringify(user));
         user[0].maps.push(map._id)
 
         user[0].save().then(() => {
@@ -39,7 +38,7 @@ createMap = (req, res) => {
                     })
                     .catch(error => {
                         return res.status(400).json({
-                            errorMessage: 'Map Not Created!'
+                            errorMessage: error
                         })
                     })
             });
