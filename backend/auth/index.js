@@ -12,7 +12,7 @@ function authManager() {
                     errorMessage: "Unauthorized"
                 })
             }
-            const verified = jwt.verify(token, process.env.JWT_SECRET_KEY)
+            const verified = jwt.verify(token, process.env.JWT_KEY)
             req.userId = verified.userId;
 
             next();
@@ -33,7 +33,7 @@ function authManager() {
                 return null;
             }
 
-            const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+            const decodedToken = jwt.verify(token, process.env.JWT_KEY);
             return decodedToken.userId;
         } catch (err) {
             return null;
@@ -43,7 +43,7 @@ function authManager() {
     signToken = (userId) => {
         return jwt.sign({
             userId: userId
-        }, `${process.env.JWT_SECRET_KEY}`);
+        }, `${process.env.JWT_KEY}`);
     }
 
     return this;
