@@ -10,11 +10,11 @@ const router = express.Router()
 const auth = require('../auth')
 
 router.post('/map', auth.verify, MapController.createMap)
-// router.delete('/playlist/:id', auth.verify, PlaylistController.deletePlaylist)
-// router.get('/playlist/:id', PlaylistController.getPlaylistById)
-// router.get('/playlistpairs', auth.verify, PlaylistController.getPlaylistPairs)
+router.delete('/map/:id', auth.verify, MapController.deleteMap)
+router.get('/map/:id', MapController.getMapById)
+router.get('/mappairs', auth.verify, MapController.getMapPairs)
 // // router.get('/playlists', auth.verify, PlaylistController.getPlaylists)
 // router.get('/playlists', PlaylistController.getPlaylists)
-// router.put('/playlist/:id', PlaylistController.updatePlaylist)
+// router.put('/map/:id', MapController.updateMap)
 
 module.exports = router

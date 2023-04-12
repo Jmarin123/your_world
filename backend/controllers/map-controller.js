@@ -24,128 +24,128 @@ createMap = (req, res) => {
         return res.status(400).json({ success: false, error: err })
     }
 
-    User.find({ _id: req.userId }).then(function(user, err){
+    User.find({ _id: req.userId }).then(function (user, err) {
         // console.log("user found: " + JSON.stringify(user));
         user[0].maps.push(map._id)
 
         user[0].save().then(() => {
-                map
-                    .save()
-                    .then(() => {
-                        return res.status(201).json({
-                            map: map
-                        })
+            map
+                .save()
+                .then(() => {
+                    return res.status(201).json({
+                        map: map
                     })
-                    .catch(error => {
-                        return res.status(400).json({
-                            errorMessage: error
-                        })
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        errorMessage: error
                     })
-            });
+                })
+        });
     })
 }
 
 
-// deletePlaylist = async (req, res) => {
-//     console.log("delete Playlist with id: " + JSON.stringify(req.params.id));
-//     console.log("delete " + req.params.id);
-//     console.log("req.userId" + req.userId);
-//     Playlist.findById({ _id: req.params.id }, (err, playlist) => {
-//         console.log("playlist found: " + JSON.stringify(playlist));
-//         if (err) {
-//             return res.status(404).json({
-//                 errorMessage: 'Playlist not found!',
-//             })
-//         }
+deleteMap = async (req, res) => {
+    console.log("delete map with id: " + JSON.stringify(req.params.id));
+    console.log("delete " + req.params.id);
+    console.log("req.userId" + req.userId);
+    Map.findById({ _id: req.params.id }, (err, map) => {
+        console.log("map found: " + JSON.stringify(map));
+        if (err) {
+            return res.status(404).json({
+                errorMessage: 'map not found!',
+            })
+        }
 
-//         // DOES THIS LIST BELONG TO THIS USER?
-//         async function asyncFindUser(playlist) {
-//             User.findOne({ email: playlist.ownerEmail }, (err, user) => {
-//                 console.log("user._id: " + user._id);
-//                 console.log("req.userId: " + req.userId);
-//                 console.log("playlist.ownerEmail: " + playlist.ownerEmail);
-//                 if (user._id == req.userId) {
-//                     console.log("correct user!");
-//                     Playlist.findOneAndDelete({ _id: req.params.id }, () => {
-//                         return res.status(200).json({});
-//                     }).catch(err => console.log(err))
-//                 }
-//                 else {
-//                     console.log("incorrect user!");
-//                     return res.status(400).json({
-//                         errorMessage: "authentication error"
-//                     });
-//                 }
-//             });
-//         }
-//         asyncFindUser(playlist);
-//     })
-// }
-// getPlaylistById = async (req, res) => {
-//     console.log("Find Playlist with id: " + JSON.stringify(req.params.id));
+        // DOES THIS LIST BELONG TO THIS USER?
+        async function asyncFindUser(map) {
+            User.findOne({ email: map.ownerEmail }, (err, user) => {
+                console.log("user._id: " + user._id);
+                console.log("req.userId: " + req.userId);
+                console.log("map.ownerEmail: " + map.ownerEmail);
+                if (user._id == req.userId) {
+                    console.log("correct user!");
+                    Map.findOneAndDelete({ _id: req.params.id }, () => {
+                        return res.status(200).json({});
+                    }).catch(err => console.log(err))
+                }
+                else {
+                    console.log("incorrect user!");
+                    return res.status(400).json({
+                        errorMessage: "authentication error"
+                    });
+                }
+            });
+        }
+        asyncFindUser(map);
+    })
+}
+getMapById = async (req, res) => {
+    console.log("Find map with id: " + JSON.stringify(req.params.id));
 
-//     await Playlist.findById({ _id: req.params.id }, (err, list) => {
-//         if (err) {
-//             return res.status(400).json({ success: false, error: err });
-//         }
-//         console.log("Found list: " + JSON.stringify(list));
-//         return res.status(200).json({ success: true, playlist: list })
+    await Map.findById({ _id: req.params.id }, (err, map) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err });
+        }
+        console.log("Found map: " + JSON.stringify(map));
+        return res.status(200).json({ success: true, map: map })
 
-//         // DOES THIS LIST BELONG TO THIS USER?
-//         // async function asyncFindUser(list) {
-//         //     await User.findOne({ email: list.ownerEmail }, (err, user) => {
-//         //         console.log("user._id: " + user._id);
-//         //         console.log("req.userId: " + req.userId);
-//         //         if (user._id == req.userId) {
-//         //             console.log("correct user!");
-//         //             return res.status(200).json({ success: true, playlist: list })
-//         //         }
-//         //         else {
-//         //             console.log("incorrect user!");
-//         //             return res.status(400).json({ success: false, description: "authentication error" });
-//         //         }
-//         //     });
-//         // }
-//         // asyncFindUser(list);
-//     }).catch(err => console.log(err))
-// }
-// getPlaylistPairs = async (req, res) => {
-//     console.log("getPlaylistPairs");
-//     await User.findOne({ _id: req.userId }, (err, user) => {
-//         console.log("find user with id " + req.userId);
-//         async function asyncFindList(email) {
-//             console.log("find all Playlists owned by " + email);
-//             await Playlist.find({ ownerEmail: email }, (err, playlists) => {
-//                 console.log("found Playlists: " + JSON.stringify(playlists));
-//                 if (err) {
-//                     return res.status(400).json({ success: false, error: err })
-//                 }
-//                 if (!playlists) {
-//                     console.log("!playlists.length");
-//                     return res
-//                         .status(404)
-//                         .json({ success: false, error: 'Playlists not found' })
-//                 }
-//                 else {
-//                     console.log("Send the Playlist pairs");
-//                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//                     let pairs = [];
-//                     for (let key in playlists) {
-//                         let list = playlists[key];
-//                         let pair = {
-//                             _id: list._id,
-//                             name: list.name,
-//                             playlist: list // add it 
-//                         };
-//                         pairs.push(pair);
-//                     }
-//                     return res.status(200).json({ success: true, idNamePairs: pairs })
-//                 }
-//             }).catch(err => console.log(err))
-//         }
-//         asyncFindList(user.email);
-//     }).catch(err => console.log(err))
-// }
+        // DOES THIS LIST BELONG TO THIS USER?
+        // async function asyncFindUser(list) {
+        //     await User.findOne({ email: list.ownerEmail }, (err, user) => {
+        //         console.log("user._id: " + user._id);
+        //         console.log("req.userId: " + req.userId);
+        //         if (user._id == req.userId) {
+        //             console.log("correct user!");
+        //             return res.status(200).json({ success: true, playlist: list })
+        //         }
+        //         else {
+        //             console.log("incorrect user!");
+        //             return res.status(400).json({ success: false, description: "authentication error" });
+        //         }
+        //     });
+        // }
+        // asyncFindUser(list);
+    }).catch(err => console.log(err))
+}
+getMapPairs = async (req, res) => {
+    console.log("getMapPairs");
+    await User.findOne({ _id: req.userId }, (err, user) => {
+        console.log("find user with id " + req.userId);
+        async function asyncFindList(email) {
+            console.log("find all maps owned by " + email);
+            await Map.find({ ownerEmail: email }, (err, maps) => {
+                console.log("found Maps: " + JSON.stringify(maps));
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!maps) {
+                    console.log("!maps.length");
+                    return res
+                        .status(404)
+                        .json({ success: false, error: 'Maps not found' })
+                }
+                else {
+                    console.log("Send the Map pairs");
+                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                    let pairs = [];
+                    for (let key in maps) {
+                        let map = maps[key];
+                        let pair = {
+                            _id: map._id,
+                            name: map.name,
+                            map: map // add it 
+                        };
+                        pairs.push(pair);
+                    }
+                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                }
+            }).catch(err => console.log(err))
+        }
+        asyncFindList(user.email);
+    }).catch(err => console.log(err))
+}
 // getPlaylists = async (req, res) => {
 //     console.log("playlist-controller: getPlaylists");
 //     await Playlist.find({}, (err, playlists) => {
@@ -271,9 +271,9 @@ createMap = (req, res) => {
 // }
 module.exports = {
     createMap,
-    // deletePlaylist,
-    // getPlaylistById,
-    // getPlaylistPairs,
+    deleteMap,
+    getMapById,
+    getMapPairs,
     // getPlaylists,
     // updatePlaylist
 }

@@ -48,6 +48,7 @@ function GlobalStoreContextProvider(props) {
 
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,
+        idNamePairs: [],
         uploadType: "",
         currentMap: null,
         openComment: false,
@@ -58,7 +59,7 @@ function GlobalStoreContextProvider(props) {
 
     const { auth } = useContext(AuthContext);
     // console.log("auth: " + auth);
-
+    // console.log("idnamepair: ", idNamePairs);
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
     const storeReducer = (action) => {
@@ -68,6 +69,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CREATE_NEW_MAP: {
                 return setStore({
                     currentModal: CurrentModal.UPLOAD_FILE,
+                    idNamePairs: store.idNamePairs,
                     uploadType: payload.type,
                     currentMap: store.currentMap,
                     openComment: false,
@@ -78,6 +80,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.HIDE_MODAL: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
@@ -88,6 +91,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_CURRENT_MAP: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -98,6 +102,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.OPEN_COMMENT: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: true,
@@ -108,6 +113,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CLOSE_COMMENT: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -118,6 +124,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
                 return setStore({
                     currentModal: CurrentModal.MARK_MAP_FOR_DELETION,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -128,6 +135,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
                 return setStore({
                     currentModal: CurrentModal.EXPORT_MAP,
+                    idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -198,7 +206,7 @@ function GlobalStoreContextProvider(props) {
             }
             );
 
-            
+
             navigate("/map")
 
             // store.loadIdNamePairs();
