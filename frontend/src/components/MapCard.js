@@ -1,5 +1,7 @@
 import React from 'react'
 // import { GlobalStoreContext } from '../store'
+
+import { useNavigate } from 'react-router-dom'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -13,23 +15,33 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useLocation } from "react-router-dom";
+// import Grid from '@mui/material/Grid';
 
 import { GlobalStoreContext } from '../store'
 import { useContext, useState } from 'react';
 import AuthContext from '../auth/index'
 
-export default function MapCard() {
+// export default function MapCard() {
+export default function MapCard(props) {
     const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [title] = useState("Atlantis");
+    const navigate = useNavigate();
 
+    // const [editActive, setEditActive] = useState(false);
+    // const [text, setText] = useState("");
+    const { idNamePair } = props;
+    // const [open, setOpen] = useState(false);
+    // const [modal, setModal] = useState(false);
+    // let disabled = false;
 
+    // console.log(idNamePair);
     const handleDeleteMap = (event) => {
         event.preventDefault();
         // console.log(event)
         store.markMapForDeletion("Atlantis");
-      };
+    };
 
     const handleDuplicateMap = (event) => {
         event.preventDefault();
@@ -41,9 +53,15 @@ export default function MapCard() {
         store.markMapForExport("Atlantis");
     }
 
-    const handleCardClick = (event) => {
-        console.log("Clicked on card")
-        store.navToMap()
+    // const handleCardClick = (event) => {
+    //     console.log("Clicked on card")
+    //     store.navToMap()
+    // }
+
+    function handleOpenCard(id) {
+        store.currentMap = idNamePair.map;
+        navigate("/map/" + id);
+
     }
 
     const handlePubCardClick = (event) => {
@@ -53,7 +71,7 @@ export default function MapCard() {
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
-        
+
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -63,18 +81,19 @@ export default function MapCard() {
     });
 
     let duplicateButton = <StyledIconButton
-    edge="start"
-    color="inherit"
-    aria-label="open drawer"
-    onClick={(event) => {
-        handleDuplicateMap(event)
-    }}
-    sx={{
-        position: 'absolute', bottom: '0',
-        left: '49px',
-        fontSize: '1em'  }}
->
-    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        onClick={(event) => {
+            handleDuplicateMap(event)
+        }}
+        sx={{
+            position: 'absolute', bottom: '0',
+            left: '49px',
+            fontSize: '1em'
+        }}
+    >
+        <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
 
     let publishedMapCard = <ListItem id='published-listItemMapCard'>
@@ -84,92 +103,25 @@ export default function MapCard() {
             onDoubleClick={handlePubCardClick}
         >
 
-            <Box sx={{p: 0.5}}>
-            <Box id='cardTitle'>
-                {title}
-            </Box>
+            <Box sx={{ p: 0.5 }}>
+                <Box id='cardTitle'>
+                    {title}
+                </Box>
 
-            <Box id='map-card-line'>
-            {/* <div id='map-card-line'></div> */}
-            </Box>
-            
-            
-            <Typography id='map-card-author'>
-                By: Author
-            {/* <br id='map-card-author'>By: Author</br> */}
-            </Typography>
+                <Box id='map-card-line'>
+                    {/* <div id='map-card-line'></div> */}
+                </Box>
+
+
+                <Typography id='map-card-author'>
+                    By: Author
+                    {/* <br id='map-card-author'>By: Author</br> */}
+                </Typography>
             </Box>
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
-           
-                <StyledIconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={(event) => {
-                        handleExport(event)
-                    }}
-                    sx={{position: 'absolute', bottom: '0',
-                        left: '5px',
-                        fontSize: '1em' }}
-                >
-                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
-                </StyledIconButton>
 
-                <StyledIconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                sx={{position: 'absolute', bottom: '0',
-                        right: '2px',
-                        fontSize: '1em' }}
-                >
-                    <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 3
-                </StyledIconButton>
-
-                <StyledIconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    sx={{position: 'absolute', bottom: '0',
-                            right: '50px',
-                            fontSize: '1em' }}
-                >
-                    <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 9
-                </StyledIconButton>
-
-                {auth.loggedIn ? duplicateButton: <div></div>}
-            
-        </div>
-    </ListItem>
-
-    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
-    <div
-        key={1}
-        id="mapCard2"
-        onDoubleClick={handleCardClick}
-    >
-
-        <Box sx={{p: 0.5}}>
-            <Box id='cardTitle'>
-                {title}
-            </Box>
-
-            <Box id='map-card-line'>
-            {/* <div id='map-card-line'></div> */}
-            </Box>
-            
-            
-            <Typography id='map-card-author'>
-                By: Author
-            {/* <br id='map-card-author'>By: Author</br> */}
-            </Typography>
-         </Box>
-
-        <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
-        <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
             <StyledIconButton
                 edge="start"
                 color="inherit"
@@ -177,88 +129,73 @@ export default function MapCard() {
                 onClick={(event) => {
                     handleExport(event)
                 }}
-                sx={{position: 'absolute', bottom: '0',
-                        left: '5px',
-                        fontSize: '1em' }}
-            >
-                <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
-            </StyledIconButton>
-
-            <StyledIconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={(event) => {
-                    handleDuplicateMap(event)
+                sx={{
+                    position: 'absolute', bottom: '0',
+                    left: '5px',
+                    fontSize: '1em'
                 }}
-                sx={{position: 'absolute', bottom: '0',
-                        left: '49px',
-                        fontSize: '1em' }}
             >
-                <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
+                <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
 
             <StyledIconButton
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                onClick={(event) => {
-                    handleDeleteMap(event)
+                sx={{
+                    position: 'absolute', bottom: '0',
+                    right: '2px',
+                    fontSize: '1em'
                 }}
-                sx={{position: 'absolute', bottom: '0',
-                        left: '93px',
-                        fontSize: '1em' }}
             >
-                <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+                <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
             </StyledIconButton>
 
             <StyledIconButton
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{position: 'absolute', bottom: '0',
-                        left: '137px',
-                        fontSize: '1em' }}
+                sx={{
+                    position: 'absolute', bottom: '0',
+                    right: '50px',
+                    fontSize: '1em'
+                }}
             >
-                <BorderColorIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+                <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
             </StyledIconButton>
 
-        </Box>
-    </div>
+            {auth.loggedIn ? duplicateButton : <div></div>}
+
+        </div>
     </ListItem>
 
-    let mapCards;
-    //if from /public only display published map cards that have 2 button icon's
-    //if from /home display published and unpublished map cards, 
-    //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
-    if (location.pathname === "/public" || location.pathname === "/search") {
-        mapCards = [publishedMapCard, publishedMapCard] 
-    } else {
-        publishedMapCard = <ListItem id='published-listItemMapCard'>
+    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
         <div
-            key={1}
-            id="mapCard1"
-            onDoubleClick={handlePubCardClick}
+            key={idNamePair._id}
+            id="mapCard2"
+            // onDoubleClick={handleCardClick}
+            onDoubleClick={() => handleOpenCard(idNamePair._id)}
         >
-        <Box sx={{p: 0.5}}>
-            <Box id='cardTitle'>
-                {title}
-            </Box>
 
-            <Box id='map-card-line'>
-            {/* <div id='map-card-line'></div> */}
+            <Box sx={{ p: 0.5 }}>
+                <Box id='cardTitle'>
+                    {idNamePair.name}
+                </Box>
+
+                <Box id='map-card-line'>
+                    {/* <div id='map-card-line'></div> */}
+                </Box>
+
+
+                <Typography id='map-card-author'>
+                    By: {idNamePair.map.owner}
+                    {/* <br id='map-card-author'>By: Author</br> */}
+                </Typography>
             </Box>
-            
-            
-            <Typography id='map-card-author'>
-                By: Author
-            {/* <br id='map-card-author'>By: Author</br> */}
-            </Typography>
-         </Box>
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
 
-            <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
+            <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
                 <StyledIconButton
                     edge="start"
                     color="inherit"
@@ -266,11 +203,13 @@ export default function MapCard() {
                     onClick={(event) => {
                         handleExport(event)
                     }}
-                    sx={{position: 'absolute', bottom: '0',
+                    sx={{
+                        position: 'absolute', bottom: '0',
                         left: '5px',
-                        fontSize: '1em' }}
+                        fontSize: '1em'
+                    }}
                 >
-                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
+                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -280,99 +219,165 @@ export default function MapCard() {
                     onClick={(event) => {
                         handleDuplicateMap(event)
                     }}
-                    sx={{position: 'absolute', bottom: '0',
+                    sx={{
+                        position: 'absolute', bottom: '0',
                         left: '49px',
-                        fontSize: '1em' }}
+                        fontSize: '1em'
+                    }}
                 >
-                    <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
-                </StyledIconButton>
-
-                <StyledIconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={(event) => {
-                    handleDeleteMap(event)
-                }}
-                sx={{position: 'absolute', bottom: '0',
-                        left: '93px',
-                        fontSize: '1em' }}
-            >
-                <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
-            </StyledIconButton>
-
-
-            <StyledIconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                sx={{position: 'absolute', bottom: '0',
-                        right: '2px',
-                        fontSize: '1em' }}
-                >
-                    <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 3
+                    <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{position: 'absolute', bottom: '0',
-                            right: '50px',
-                            fontSize: '1em' }}
+                    onClick={(event) => {
+                        handleDeleteMap(event)
+                    }}
+                    sx={{
+                        position: 'absolute', bottom: '0',
+                        left: '93px',
+                        fontSize: '1em'
+                    }}
                 >
-                    <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon:"absolute"}} /> 9
+                    <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
+
+                <StyledIconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{
+                        position: 'absolute', bottom: '0',
+                        left: '137px',
+                        fontSize: '1em'
+                    }}
+                >
+                    <BorderColorIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                </StyledIconButton>
+
             </Box>
         </div>
+    </ListItem>
+
+    let mapCards;
+    //if from /public only display published map cards that have 2 button icon's
+    //if from /home display published and unpublished map cards, 
+    //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
+    if (location.pathname === "/public" || location.pathname === "/search") {
+        mapCards = [publishedMapCard, publishedMapCard]
+    } else {
+        publishedMapCard = <ListItem id='published-listItemMapCard'>
+            <div
+                key={1}
+                id="mapCard1"
+                onDoubleClick={handlePubCardClick}
+            >
+                <Box sx={{ p: 0.5 }}>
+                    <Box id='cardTitle'>
+                        {title}
+                    </Box>
+
+                    <Box id='map-card-line'>
+                        {/* <div id='map-card-line'></div> */}
+                    </Box>
+
+
+                    <Typography id='map-card-author'>
+                        By: Author
+                        {/* <br id='map-card-author'>By: Author</br> */}
+                    </Typography>
+                </Box>
+
+                <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+
+                <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
+                    <StyledIconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={(event) => {
+                            handleExport(event)
+                        }}
+                        sx={{
+                            position: 'absolute', bottom: '0',
+                            left: '5px',
+                            fontSize: '1em'
+                        }}
+                    >
+                        <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    </StyledIconButton>
+
+                    <StyledIconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={(event) => {
+                            handleDuplicateMap(event)
+                        }}
+                        sx={{
+                            position: 'absolute', bottom: '0',
+                            left: '49px',
+                            fontSize: '1em'
+                        }}
+                    >
+                        <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    </StyledIconButton>
+
+                    <StyledIconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={(event) => {
+                            handleDeleteMap(event)
+                        }}
+                        sx={{
+                            position: 'absolute', bottom: '0',
+                            left: '93px',
+                            fontSize: '1em'
+                        }}
+                    >
+                        <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    </StyledIconButton>
+
+
+                    <StyledIconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        sx={{
+                            position: 'absolute', bottom: '0',
+                            right: '2px',
+                            fontSize: '1em'
+                        }}
+                    >
+                        <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
+                    </StyledIconButton>
+
+                    <StyledIconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        sx={{
+                            position: 'absolute', bottom: '0',
+                            right: '50px',
+                            fontSize: '1em'
+                        }}
+                    >
+                        <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
+                    </StyledIconButton>
+                </Box>
+            </div>
         </ListItem>
-        mapCards = [publishedMapCard, unpublishedMapCard]
+        // mapCards = [publishedMapCard, unpublishedMapCard]
+        mapCards = [unpublishedMapCard]
     }
-    
+
 
 
     return (
-
         [mapCards]
-
-
-
-        // <ListItem id='published-listItemMapCard' >
-        //     <div
-        //         key={1}
-        //         id="mapCard1"
-        //     >
-        //         <div id='cardTitle'>
-        //             Atlantis
-        //         </div>
-
-        //         <div id='map-card-line'></div>
-                
-        //         <p id='map-card-author'>By: Author</p>
-
-        //         <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
-        //         <Box sx={{marginTop: '6%', marginLeft: '4%', height: '100%'}}>
-        //             <StyledIconButton
-        //                 edge="start"
-        //                 color="inherit"
-        //                 aria-label="open drawer"
-        //                 sx={{ mr: 2 }}
-        //             >
-        //                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon:"absolute"}} />
-        //             </StyledIconButton>
-
-        //             <StyledIconButton
-        //                 edge="start"
-        //                 color="inherit"
-        //                 aria-label="open drawer"
-        //                 sx={{ mr: 2 }}
-        //             >
-        //                 <FileCopyIcon style={{ fontSize: "35px", float: "left",  positon:"absolute"}} />
-        //             </StyledIconButton>
-        //         </Box>
-        //     </div>
-        // </ListItem>
     );
 
 }

@@ -23,9 +23,9 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 export const createMap = (payload) => api.post('/api/map/', payload)
-export const deleteMapById = (id) => api.delete(`/api/map/${id}`)
-export const getmapById = (id) => api.get(`/api/map/${id}`)
-export const getmapPairs = () => api.get('/api/mappairs/')
+export const deleteMapById = (id) => api.delete('/api/map/${id}')
+export const getMapById = (id) => api.get('/api/map/${id}')
+export const getMapPairs = () => api.get('/api/mappairs/')
 // export const updatePlaylistById = (id, playlist) => {
 //     return api.put(`/playlist/${id}`, {
 //         // SPECIFY THE PAYLOAD
@@ -38,8 +38,8 @@ export const getmapPairs = () => api.get('/api/mappairs/')
 const apis = {
     createMap,
     deleteMapById,
-    getmapById,
-    getmapPairs,
+    getMapById,
+    getMapPairs,
     // getmaps,
     // updatePlaylistById
 }

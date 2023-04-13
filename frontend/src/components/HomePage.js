@@ -1,4 +1,6 @@
-// import Map from './Map.js';
+import React, { useContext, useEffect, useState } from 'react'
+import { GlobalStoreContext } from '../store'
+
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MapCard from './MapCard.js';
@@ -6,15 +8,31 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import React from "react";
 
+// import Grid from '@mui/material/Grid';
 export default function HomePage() {
-    const [sort, setSort] = React.useState("Map Title");
-
+    const [sort, setSort] = useState("Map Title");
+    const { store } = useContext(GlobalStoreContext);
+    // const { auth } = useContext(AuthContext);
     const handleChange = (event) => {
         setSort(event.target.value);
     };
 
+    // const { auth } = useContext(AuthContext);
+
+    useEffect(() => {
+        store.loadIdNamePairs();
+    }, []);
+
+    let mapCard = [];
+    mapCard = store.idNamePairs;
+    console.log(mapCard);
+    // if (store.search !== "" && store.idNamePairs) {
+    //     listCard = store.filterBySearch("home");
+    // }
+    // if (listCard.length > 0 && store && store.sort !== "") {
+    //     listCard = store.sortList(listCard);
+    // }
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
             <Box id="publicBox" component="form" noValidate >
@@ -55,12 +73,23 @@ export default function HomePage() {
 
                 <div id='line'></div>
 
-                <List id="map-cards-list" sx={{ display: 'flex' }}>
-                    <MapCard />
-                    <MapCard />
-                    <MapCard />
-                    <MapCard />
+                <List id="map-cards-list"
+                    sx={{
+                        display: 'flex',
+                        // overflowY: 'auto',
+                    }}>
+                    {
+                        mapCard.map((pair) => (
+                            <MapCard
+                                key={pair._id}
+                                idNamePair={pair}
+
+                                selected={false}
+                            />
+                        ))
+                    }
                 </List>
+
             </Box>
         </Box>
     );
