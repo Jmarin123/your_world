@@ -49,6 +49,7 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,
         idNamePairs: [],
+        newMapCounter: 0,
         uploadType: "",
         currentMap: null,
         openComment: false,
@@ -70,6 +71,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.UPLOAD_FILE,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: payload.type,
                     currentMap: store.currentMap,
                     openComment: false,
@@ -81,6 +83,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
@@ -92,6 +95,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -103,6 +107,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: true,
@@ -114,6 +119,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -125,6 +131,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.MARK_MAP_FOR_DELETION,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -136,11 +143,26 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.EXPORT_MAP,
                     idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: payload.map,
+                });
+            }
+            // GET ALL THE LISTS SO WE CAN PRESENT THEM
+            case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
+                console.log("LOAD_ID_NAME_PAIRES");
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: payload,
+                    newMapCounter: store.newListCounter,
+                    uploadType: "",
+                    currentMap: null,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
                 });
             }
             default:
@@ -166,22 +188,32 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    // store.createNewMap = async function (obj) {
-    //     storeReducer({
-    //         type: GlobalStoreActionType.SET_CURRENT_MAP,
-    //         payload: {
-    //             currentMap: obj
-    //         }
-    //     });
-    //     navigate("/map");
-    // }
+    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
+    store.loadIdNamePairs = function () {
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log("store.loadIdNamePairs");
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }
+        asyncLoadIdNamePairs();
+        tps.clearAllTransactions();
+    }
 
     store.createNewMap = async function (obj) {
-        // let newMapName = "Untitled" + store.idNamePairs.length;
-        let newMapName = "Untitled";
+        let newMapName = "Untitled" + store.idNamePairs.length;
+        // let newMapName = "Untitled";
         let payload = {
             name: newMapName,
-            listCounter: store.newMapCounter + 1,
+            mapCounter: store.newMapCounter + 1,
             ownerEmail: auth.user.email,
             owner: auth.user.firstName + " " + auth.user.lastName,
             dataFromMap: JSON.stringify(obj),
@@ -196,7 +228,7 @@ function GlobalStoreContextProvider(props) {
             tps.clearAllTransactions();
             let newMap = response.data.map;
 
-            // console.log(newMap)
+            console.log(newMap._id)
 
             // console.log("store.createNewMap.  newmap: ", newMap);
             storeReducer({
@@ -205,11 +237,9 @@ function GlobalStoreContextProvider(props) {
                 // payload: { newListCounter: newList.listCounter, playlist: newList }
             }
             );
+            navigate("/map/" + newMap._id);
 
 
-            navigate("/map")
-
-            // store.loadIdNamePairs();
         }
         else {
             console.log("API FAILED TO CREATE A NEW MAP");
