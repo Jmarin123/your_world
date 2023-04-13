@@ -40,7 +40,7 @@ const App = () => {
             <Route path="/public" element={<PublicPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/search" element={<SearchPage />} />
-            <Route path="/map" element={<Map />} />
+            <Route path="/map/:id" element={<Map />} />
             <Route path="/mapview" element={<Mapview />} />
           </Routes>
           <RenameModal />
