@@ -272,6 +272,13 @@ function GlobalStoreContextProvider(props) {
 
     }
 
+    store.setCurrentMap = function (newMap) {
+        storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_MAP,
+            payload: { currentMap: newMap }
+        });
+    }
+
     store.openCommentView = function () {
         storeReducer({
             type: GlobalStoreActionType.OPEN_COMMENT,

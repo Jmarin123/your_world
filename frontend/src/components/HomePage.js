@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 
 import Box from '@mui/material/Box';
@@ -18,11 +18,27 @@ export default function HomePage() {
         setSort(event.target.value);
     };
 
+    // eslint-disable-next-line
     // const { auth } = useContext(AuthContext);
 
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
+
+    // useLayoutEffect(() => {
+    //     // This will run only once when the component mounts
+    //     store.loadIdNamePairs();
+    //   }, []);
+
+    // const loadIdNamePairs = useMemo(() => {
+    //     // This will run only once when the component mounts
+    //     return () => {
+    //         store.loadIdNamePairs();
+    //     };
+    //   }, []);
+    
+      // Call the memoized function directly in the component's body
+    //   loadIdNamePairs();
 
     let mapCard = [];
     mapCard = store.idNamePairs;

@@ -53,15 +53,9 @@ export default function MapCard(props) {
         store.markMapForExport("Atlantis");
     }
 
-    // const handleCardClick = (event) => {
-    //     console.log("Clicked on card")
-    //     store.navToMap()
-    // }
-
     function handleOpenCard(id) {
-        store.currentMap = idNamePair.map;
+        store.setCurrentMap(idNamePair.map)
         navigate("/map/" + id);
-
     }
 
     const handlePubCardClick = (event) => {
@@ -266,7 +260,7 @@ export default function MapCard(props) {
     //if from /home display published and unpublished map cards, 
     //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
     if (location.pathname === "/public" || location.pathname === "/search") {
-        mapCards = [publishedMapCard, publishedMapCard]
+        mapCards = [publishedMapCard]
     } else {
         publishedMapCard = <ListItem id='published-listItemMapCard'>
             <div

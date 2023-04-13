@@ -2,7 +2,7 @@ import { GlobalStoreContext } from '../store'
 import React, { useContext } from 'react'
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import MapCard from './MapCard.js'
+import MapCard from './MapCard.js';
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
