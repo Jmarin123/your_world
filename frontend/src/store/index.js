@@ -53,6 +53,7 @@ function GlobalStoreContextProvider(props) {
         uploadType: "",
         currentMap: null,
         openComment: false,
+        mapIdMarkedForDeletion: null,
         mapMarkedForDeletion: null,
         mapMarkedForExport: null,
     });
@@ -75,6 +76,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: payload.type,
                     currentMap: store.currentMap,
                     openComment: false,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                 });
@@ -87,6 +89,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                 });
@@ -99,6 +102,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                 });
@@ -111,6 +115,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: true,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                 });
@@ -123,6 +128,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                 });
@@ -135,6 +141,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
+                    mapIdMarkedForDeletion: payload.id,
                     mapMarkedForDeletion: payload.map,
                     mapMarkedForExport: null,
                 });
@@ -147,6 +154,7 @@ function GlobalStoreContextProvider(props) {
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
+                    mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: payload.map,
                 });
@@ -293,11 +301,32 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.markMapForDeletion = function (map) {
-        storeReducer({
-            type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
-            payload: { map: map }
-        });
+    store.markMapForDeletion = function (id) {
+        console.log(id);
+        async function getMapToDelete(id) {
+            let response = await api.getMapById(id);
+            if (response.data.success) {
+                let map = response.data.map;
+                storeReducer({
+                    type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+                    payload: { id: id, map: map }
+                });
+            }
+        }
+        getMapToDelete(id);
+    }
+
+    store.deleteMap = function (id) {
+        async function processDelete(id) {
+            await api.deleteMapById(id);
+            console.log("store.deleteList");
+            store.loadIdNamePairs();
+            navigate("/home");
+        }
+        processDelete(id);
+    }
+    store.deleteMarkedMap = function () {
+        store.deleteMap(store.mapIdMarkedForDeletion);
     }
 
     store.duplicateMap = function (map) {
