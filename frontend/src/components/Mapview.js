@@ -15,25 +15,25 @@ export default function Mapview() {
         fillOpacity: 1,
         color: "black",
         weight: 2,
-      };
+    };
 
     function onEachCountry(country, layer) {
         const countryName = country.properties.ADMIN;
         console.log(countryName);
         layer.bindPopup(countryName);
-    
+
         layer.options.fillOpacity = Math.random();
-    
+
         layer.on({
-          click: this.changeCountryColor,
+            click: this.changeCountryColor,
         });
-      };
+    };
 
     let renderedMap = <GeoJSON
-    style={countryStyle}
-    data={store.currentMap ? store.currentMap.features : null}
-    onEachFeature={onEachCountry}
-  />
+        style={countryStyle}
+        data={store.currentMap ? store.currentMap.features : null}
+        onEachFeature={onEachCountry}
+    />
 
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
@@ -42,15 +42,15 @@ export default function Mapview() {
             </Box>
 
             <Box id="mapBox" component="form" noValidate >
-            <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {
-                store.currentMap ? renderedMap : <div></div>
-            }
-            </MapContainer>
+                <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {
+                        store.currentMap ? renderedMap : <div></div>
+                    }
+                </MapContainer>
             </Box>
 
-            
+
         </Box>
 
     if (store.openComment) {
@@ -71,12 +71,12 @@ export default function Mapview() {
                                 <Statusbar />
                             </Box>
                             <Box id="mapBox" component="form" noValidate >
-                            <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
-                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                            {
-                                store.currentMap ? renderedMap : <div></div>
-                            }
-                            </MapContainer>
+                                <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+                                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                    {
+                                        store.currentMap ? renderedMap : <div></div>
+                                    }
+                                </MapContainer>
                             </Box>
 
                         </Box>

@@ -14,7 +14,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 // import Grid from '@mui/material/Grid';
 
 import { GlobalStoreContext } from '../store'
@@ -23,7 +23,7 @@ import AuthContext from '../auth/index'
 
 // export default function MapCard() {
 export default function MapCard(props) {
-    // const location = useLocation();
+    const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     // const [title] = useState("Atlantis");
@@ -93,7 +93,24 @@ export default function MapCard(props) {
     >
         <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
-
+    let deleteButton = < StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        onClick={(event) => {
+            handleDeleteMap(idNamePair._id)
+        }}
+        sx={{
+            position: 'absolute', bottom: '0',
+            left: '93px',
+            fontSize: '1em'
+        }}
+    >
+        <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+    </StyledIconButton>
+    console.log(auth.user.email);
+    console.log(map.ownerEmail);
+    console.log(auth.email === map.ownerEmail);
     let publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
             id="mapCard1"
@@ -134,7 +151,7 @@ export default function MapCard(props) {
             >
                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
-
+            {auth && (auth.user.email === map.ownerEmail) && location.pathname === '/home' ? deleteButton : <div></div>}
             <StyledIconButton
                 edge="start"
                 color="inherit"
@@ -165,7 +182,7 @@ export default function MapCard(props) {
             {auth.loggedIn ? duplicateButton : <div></div>}
 
         </div>
-    </ListItem>
+    </ListItem >
 
     let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
         <div
