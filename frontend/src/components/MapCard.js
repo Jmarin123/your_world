@@ -37,10 +37,8 @@ export default function MapCard(props) {
     // let disabled = false;
 
     // console.log(idNamePair);
-    const handleDeleteMap = (event) => {
-        event.preventDefault();
-        // console.log(event)
-        store.markMapForDeletion("Atlantis");
+    const handleDeleteMap = (id) => {
+        store.markMapForDeletion(id);
     };
 
     const handleDuplicateMap = (event) => {
@@ -227,7 +225,7 @@ export default function MapCard(props) {
                     color="inherit"
                     aria-label="open drawer"
                     onClick={(event) => {
-                        handleDeleteMap(event)
+                        handleDeleteMap(idNamePair._id)
                     }}
                     sx={{
                         position: 'absolute', bottom: '0',

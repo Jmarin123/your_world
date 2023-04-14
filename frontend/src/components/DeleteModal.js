@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -44,13 +44,13 @@ const buttonBox = {
 
 export default function DeleteModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [name] = useState("Atlantis");
+    let name = "";
+    if (store.mapMarkedForDeletion) {
+        name = store.mapMarkedForDeletion.name;
+    }
 
-    // if (store.listMarkedForDeletion) {
-//         name = store.listMarkedForDeletion.name;
-//     }
     function handleConfirmDelete(event) {
-        // store.markMapForDeletion();
+        store.deleteMarkedMap();
         store.hideModals();
     }
     function handleCloseModal(event) {
@@ -62,21 +62,21 @@ export default function DeleteModal() {
             open={store.mapMarkedForDeletion !== null}
         >
             <Grid container sx={style}>
-            <Grid container item >
-                <Box sx={top}>
-                    <Typography id="modal-heading">Map Deletion</Typography>
-                </Box>
-            </Grid>
-            <Grid container item>
-                <Box>
-                <Typography id="modal-text" xs={4}>Are you sure you want to delete <b>{name}</b>?</Typography>
-                </Box>
-            </Grid>
-            <Grid container item sx={buttonBox}>
-                <Button id="modal-button" onClick={handleConfirmDelete}>Confirm</Button> 
-                <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+                <Grid container item >
+                    <Box sx={top}>
+                        <Typography id="modal-heading">Map Deletion</Typography>
+                    </Box>
+                </Grid>
+                <Grid container item>
+                    <Box>
+                        <Typography id="modal-text" xs={4}>Are you sure you want to delete <b>{name}</b>?</Typography>
+                    </Box>
+                </Grid>
+                <Grid container item sx={buttonBox}>
+                    <Button id="modal-button" onClick={handleConfirmDelete}>Confirm</Button>
+                    <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
 
-            </Grid>
+                </Grid>
             </Grid>
         </Modal>
     );
