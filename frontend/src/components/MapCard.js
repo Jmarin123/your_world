@@ -14,7 +14,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 // import Grid from '@mui/material/Grid';
 
 import { GlobalStoreContext } from '../store'
@@ -23,7 +23,7 @@ import AuthContext from '../auth/index'
 
 // export default function MapCard() {
 export default function MapCard(props) {
-    const location = useLocation();
+    // const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     // const [title] = useState("Atlantis");
@@ -262,8 +262,6 @@ export default function MapCard(props) {
 
     let mapCards;
     if (map.publish.isPublished) {
-        mapCards = [publishedMapCard]
-    } else if (location.pathname === "/public" || location.pathname === "/search") {
         mapCards = [publishedMapCard]
     }
     else {
