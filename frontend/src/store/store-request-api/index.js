@@ -26,12 +26,12 @@ export const createMap = (payload) => api.post('/api/map/', payload)
 export const deleteMapById = (id) => api.delete(`/api/map/${id}`)
 export const getMapById = (id) => api.get(`/api/map/${id}`)
 export const getMapPairs = () => api.get('/api/mappairs/')
-// export const updatePlaylistById = (id, playlist) => {
-//     return api.put(`/playlist/${id}`, {
-//         // SPECIFY THE PAYLOAD
-//         playlist: playlist
-//     })
-// }
+export const updateMapById = (id, map) => {
+    return api.put(`/api/map/${id}`, {
+        // SPECIFY THE PAYLOAD
+        map: map
+    })
+}
 
 // export const getPlaylists = () => api.get(`/playlists`)
 
@@ -41,7 +41,7 @@ const apis = {
     getMapById,
     getMapPairs,
     // getmaps,
-    // updatePlaylistById
+    updateMapById
 }
 
 export default apis

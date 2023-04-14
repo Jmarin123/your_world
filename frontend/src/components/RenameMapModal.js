@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -43,34 +43,39 @@ const buttonBox = {
     justifyContent: 'center',
 }
 
-export default function RenameModal() {
+export default function RenameMapModal() {
     const { store } = useContext(GlobalStoreContext);
-    // if (store.listMarkedForDeletion) {
-    //         name = store.listMarkedForDeletion.name;
-    //     }
-    function handleConfirmRename(event) {
-        // store.deleteMarkedList();
+    const [name, setName] = useState("");
+
+    function handleConfirmRename() {
+        console.log("new name: ", name);
+        store.changeMapName(name);
         console.log("Confirm rename modal")
     }
     function handleCloseModal(event) {
         store.hideModals();
     }
+    function handleUpdateName(event) {
+        setName(event.target.value);
+    }
 
     return (
         <Modal
-            // open={store.mapMarkedForDeletion !== null}
-            open={false}
+            open={store.isRenameModalOpen()}
         >
             <Grid container sx={style}>
                 <Grid container item >
                     <Box sx={top}>
-                        <Typography id="modal-heading">Rename Subregion</Typography>
+                        <Typography id="modal-heading">Rename Map</Typography>
                     </Box>
                 </Grid>
                 <Grid container item>
                     <Box>
                         <Typography id="modal-text" xs={4}>Name: </Typography>
-                        <TextField id="modal-textfield" xs={12} placeholder="Chicago"></TextField>
+                        <TextField id="modal-textfield" xs={12}
+                            defaultValue={name}
+                            onChange={handleUpdateName}
+                        />
                     </Box>
                 </Grid>
                 <Grid container item sx={buttonBox}>

@@ -41,6 +41,12 @@ export default function MapCard(props) {
         store.markMapForDeletion(id);
     };
 
+    const handleEditMapName = (id) => {
+        // store.renameMap(id);
+        console.log("show rename modal")
+        store.showRenameModal(idNamePair.map);
+    };
+
     const handleDuplicateMap = (event) => {
         event.preventDefault();
         store.duplicateMap(); //TODO: Use event to duplicate map
@@ -240,6 +246,9 @@ export default function MapCard(props) {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
+                    onClick={(event) => {
+                        handleEditMapName(idNamePair._id)
+                    }}
                     sx={{
                         position: 'absolute', bottom: '0',
                         left: '137px',

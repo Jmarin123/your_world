@@ -26,6 +26,7 @@ createMap = (req, res) => {
 
     User.find({ _id: req.userId }).then(function (user, err) {
         // console.log("user found: " + JSON.stringify(user));
+        console.log("user[0]: ", user[0]);
         user[0].maps.push(map._id)
 
         user[0].save().then(() => {
@@ -75,18 +76,7 @@ deleteMap = async (req, res) => {
         return res.status(500).json({ errorMessage: 'internal server error' });
     }
 };
-// getMapById = async (req, res) => {
-//     console.log("Find map with id: " + JSON.stringify(req.params.id));
 
-//     await Map.findById({ _id: req.params.id }, (err, map) => {
-//         if (err) {
-//             return res.status(400).json({ success: false, error: err });
-//         }
-//         // console.log("Found map: " + JSON.stringify(map));
-//         return res.status(200).json({ success: true, map: map })
-
-//     }).catch(err => console.log(err))
-// }
 getMapById = async (req, res) => {
     console.log("Find map with id: " + JSON.stringify(req.params.id));
 
@@ -104,17 +94,17 @@ getMapById = async (req, res) => {
 };
 
 getMapPairs = async (req, res) => {
-    console.log("getMapPairs");
+    // console.log("getMapPairs");
     try {
         const user = await User.findOne({ _id: req.userId });
-        console.log("find user with id " + req.userId);
+        // console.log("find user with id " + req.userId);
         const maps = await Map.find({ ownerEmail: user.email });
         if (!maps || !maps.length) {
             console.log("!maps.length");
             return res.status(404).json({ success: false, error: 'Maps not found' });
         }
         else {
-            console.log("Send the Map pairs");
+            // console.log("Send the Map pairs");
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             const pairs = maps.map((map) => {
                 return {
@@ -130,123 +120,6 @@ getMapPairs = async (req, res) => {
         return res.status(400).json({ success: false, error: err });
     }
 }
-
-
-
-
-
-
-
-
-
-
-// getMapPairs = async (req, res) => {
-//     console.log("getMapPairs");
-
-//     const user = await User.findOne({ _id: req.userId }).exec();
-//     console.log("find user with id " + req.userId);
-//     async function asyncFindList(email) {
-//         console.log("find all maps owned by " + email);
-//         try {
-//             const maps = await Map.find({ ownerEmail: email }).exec();
-//             if (!maps.length) {
-//                 console.log("!maps.length");
-//                 return res.status(404).json({ success: false, error: 'Maps not found' });
-//             } else {
-//                 console.log("Send the Map pairs");
-//                 // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//                 let pairs = [];
-//                 for (let key in maps) {
-//                     let map = maps[key];
-//                     let pair = {
-//                         _id: map._id,
-//                         name: map.name,
-//                         map: map // add it
-//                     };
-//                     pairs.push(pair);
-//                 }
-//                 return res.status(200).json({ success: true, idNamePairs: pairs });
-//             }
-//         } catch (err) {
-//             console.error(err);
-//             return res.status(400).json({ success: false, error: err });
-//         }
-//     }
-//     await asyncFindList(user.email);
-
-// }
-
-
-// getMapPairs = async (req, res) => {
-//     try {
-//         console.log("getMapPairs");
-//         const user = await User.findOne({ _id: req.userId });
-//         console.log("find user with id " + req.userId);
-
-//         console.log("find all maps owned by " + user.email);
-//         const maps = await Map.find({ ownerEmail: user.email });
-//         // console.log("found Maps: " + JSON.stringify(maps));
-
-//         if (!maps.length) {
-//             console.log("!maps.length");
-//             return res.status(404).json({ success: false, error: 'Maps not found' })
-//         }
-
-//         console.log("Send the Map pairs");
-//         // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//         const pairs = maps.map(map => ({
-//             _id: map._id,
-//             name: map.name,
-//             map: map // add it 
-//         }));
-
-//         return res.status(200).json({ success: true, idNamePairs: pairs });
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(400).json({ success: false, error: err })
-//     }
-// }
-
-
-//********************************************************** */
-// getMapPairs = async (req, res) => {
-//     console.log("getMapPairs");
-//     await User.findOne({ _id: req.userId }, (err, user) => {
-//         console.log("find user with id " + req.userId);
-//         async function asyncFindList(email) {
-//             console.log("find all maps owned by " + email);
-//             await Map.find({ ownerEmail: email }, (err, maps) => {
-//                 console.log("found Maps: " + JSON.stringify(maps));
-//                 if (err) {
-//                     return res.status(400).json({ success: false, error: err })
-//                 }
-//                 if (!maps) {
-//                     console.log("!maps.length");
-//                     return res
-//                         .status(404)
-//                         .json({ success: false, error: 'Maps not found' })
-//                 }
-//                 else {
-//                     console.log("Send the Map pairs");
-//                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//                     let pairs = [];
-//                     for (let key in maps) {
-//                         let map = maps[key];
-//                         let pair = {
-//                             _id: map._id,
-//                             name: map.name,
-//                             map: map // add it 
-//                         };
-//                         pairs.push(pair);
-//                     }
-//                     return res.status(200).json({ success: true, idNamePairs: pairs })
-//                 }
-//             }).catch(err => console.log(err))
-//         }
-//         asyncFindList(user.email);
-//     }).catch(err => console.log(err))
-// }
-//********************************************************** */
 
 
 // getPlaylists = async (req, res) => {
@@ -279,104 +152,58 @@ getMapPairs = async (req, res) => {
 //         // return res.status(200).json({ success: true, data: playlists })
 //     }).catch(err => console.log(err))
 // }
-// updatePlaylist = async (req, res) => {
-//     const body = req.body
-//     console.log("updatePlaylist: " + JSON.stringify(body));
-//     console.log("req.body.name: " + req.body.name);
+updateMap = async (req, res) => {
+    const body = req.body
+    console.log("req.body.name: " + req.body.name);
 
-//     if (!body) {
-//         return res.status(400).json({
-//             success: false,
-//             error: 'You must provide a body to update',
-//         })
-//     }
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
 
-//     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
-//         console.log("playlist found: " + JSON.stringify(playlist));
-//         if (err) {
-//             return res.status(404).json({
-//                 err,
-//                 message: 'Playlist not found!',
-//             })
-//         }
-//         playlist.name = body.playlist.name;
-//         playlist.songs = body.playlist.songs;
-//         playlist.ownerEmail = body.playlist.ownerEmail;
-//         playlist.owner = body.playlist.owner;
-//         playlist.comments = body.playlist.comments;
-//         playlist.likes = body.playlist.likes;
-//         playlist.dislikes = body.playlist.dislikes;
-//         playlist.listens = body.playlist.listens;
-//         playlist.published = body.playlist.published;
-//         console.log("playlist renewed: " + JSON.stringify(playlist));
-//         playlist
-//             .save()
-//             .then(() => {
-//                 console.log("SUCCESS!!!");
-//                 return res.status(200).json({
-//                     success: true,
-//                     id: playlist._id,
-//                     message: 'Playlist updated!',
-//                 })
-//             })
-//             .catch(error => {
-//                 console.log("FAILURE: " + JSON.stringify(error));
-//                 return res.status(404).json({
-//                     error,
-//                     message: 'Playlist not updated!',
-//                 })
-//             })
+    try {
+        const map = await Map.findOne({ _id: req.params.id });
+        console.log("map found! ");
 
-//         // DOES THIS LIST BELONG TO THIS USER?
-//         // async function asyncFindUser(list) {
-//         //     await User.findOne({ email: list.ownerEmail }, (err, user) => {
-//         //         console.log("user._id: " + user._id);
-//         //         console.log("req.userId: " + req.userId);
-//         //         if (user._id == req.userId) {
-//         //             console.log("correct user!");
-//         //             console.log("req.body.name: " + req.body.name);
+        if (!map) {
+            return res.status(404).json({
+                message: 'Map not found!',
+            })
+        }
 
-//         //             list.name = body.playlist.name;
-//         //             list.songs = body.playlist.songs;
-//         //             list.ownerEmail = body.playlist.ownerEmail;
-//         //             list.owner = body.playlist.owner;
-//         //             list.comments = body.playlist.comments;
-//         //             list.likes = body.playlist.likes;
-//         //             list.dislikes = body.playlist.dislikes;
-//         //             list.listens = body.playlist.listens;
-//         //             list.published = body.playlist.published;
-//         //             list
-//         //                 .save()
-//         //                 .then(() => {
-//         //                     console.log("SUCCESS!!!");
-//         //                     return res.status(200).json({
-//         //                         success: true,
-//         //                         id: list._id,
-//         //                         message: 'Playlist updated!',
-//         //                     })
-//         //                 })
-//         //                 .catch(error => {
-//         //                     console.log("FAILURE: " + JSON.stringify(error));
-//         //                     return res.status(404).json({
-//         //                         error,
-//         //                         message: 'Playlist not updated!',
-//         //                     })
-//         //                 })
-//         //         }
-//         //         else {
-//         //             console.log("incorrect user!");
-//         //             return res.status(400).json({ success: false, description: "authentication error" });
-//         //         }
-//         //     });
-//         // }
-//         // asyncFindUser(playlist);
-//     })
-// }
+        map.name = body.map.name;
+        map.ownerEmail = body.map.ownerEmail;
+        map.owner = body.map.owner;
+        map.dataFromMap = body.map.dataFromMap;
+        map.comments = body.map.comments;
+        map.likes = body.map.likes;
+        map.dislikes = body.map.dislikes;
+        map.publish = body.map.publish;
+
+        await map.save();
+
+        console.log("SUCCESS!!!");
+        return res.status(200).json({
+            success: true,
+            id: map._id,
+            message: 'Map updated!',
+        })
+    } catch (error) {
+        console.log("FAILURE: " + JSON.stringify(error));
+        return res.status(404).json({
+            error,
+            message: 'Map not updated!',
+        })
+    }
+}
+
 module.exports = {
     createMap,
     deleteMap,
     getMapById,
     getMapPairs,
     // getPlaylists,
-    // updatePlaylist
+    updateMap,
 }
