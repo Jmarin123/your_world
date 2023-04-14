@@ -93,65 +93,66 @@ getMapById = async (req, res) => {
     }
 };
 
+// getMapPairs = async (req, res) => {
+//     // console.log("getMapPairs");
+//     try {
+//         const user = await User.findOne({ _id: req.userId });
+//         // console.log("find user with id " + req.userId);
+//         const maps = await Map.find({ ownerEmail: user.email });
+//         if (!maps || !maps.length) {
+//             console.log("!maps.length");
+//             return res.status(404).json({ success: false, error: 'Maps not found' });
+//         }
+//         else {
+//             // console.log("Send the Map pairs");
+//             // PUT ALL THE LISTS INTO ID, NAME PAIRS
+//             const pairs = maps.map((map) => {
+//                 return {
+//                     _id: map._id,
+//                     name: map.name,
+//                     map: map // add it
+//                 };
+//             });
+//             return res.status(200).json({ success: true, idNamePairs: pairs });
+//         }
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(400).json({ success: false, error: err });
+//     }
+// }
+
+
+// getAllMaps = async (req, res) => {
 getMapPairs = async (req, res) => {
-    // console.log("getMapPairs");
     try {
-        const user = await User.findOne({ _id: req.userId });
-        // console.log("find user with id " + req.userId);
-        const maps = await Map.find({ ownerEmail: user.email });
-        if (!maps || !maps.length) {
-            console.log("!maps.length");
-            return res.status(404).json({ success: false, error: 'Maps not found' });
+        const maps = await Map.find({});
+        if (!maps.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Maps not found` });
         }
         else {
-            // console.log("Send the Map pairs");
+            console.log("Send the all maps pairs");
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
-            const pairs = maps.map((map) => {
-                return {
+            let pairs = [];
+            for (let key in maps) {
+                let map = maps[key];
+                let pair = {
                     _id: map._id,
                     name: map.name,
-                    map: map // add it
+                    map: map // add it 
                 };
-            });
-            return res.status(200).json({ success: true, idNamePairs: pairs });
+                pairs.push(pair);
+            }
+            return res.status(200).json({ success: true, idNamePairs: pairs })
         }
     } catch (err) {
-        console.error(err);
-        return res.status(400).json({ success: false, error: err });
+        console.log(err);
+        return res.status(400).json({ success: false, error: err })
     }
 }
 
 
-// getPlaylists = async (req, res) => {
-//     console.log("playlist-controller: getPlaylists");
-//     await Playlist.find({}, (err, playlists) => {
-//         if (err) {
-//             return res.status(400).json({ success: false, error: err })
-//         }
-//         if (!playlists.length) {
-//             return res
-//                 .status(404)
-//                 .json({ success: false, error: `Playlists not found` })
-//         }
-//         else {
-//             console.log("Send the Playlist pairs");
-//             // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//             let pairs = [];
-//             for (let key in playlists) {
-//                 let list = playlists[key];
-//                 let pair = {
-//                     _id: list._id,
-//                     name: list.name,
-//                     playlist: list // add it 
-//                 };
-//                 pairs.push(pair);
-//             }
-//             return res.status(200).json({ success: true, idNamePairs: pairs })
-//         }
-//         // console.log(playlists);
-//         // return res.status(200).json({ success: true, data: playlists })
-//     }).catch(err => console.log(err))
-// }
 updateMap = async (req, res) => {
     const body = req.body
     console.log("req.body.name: " + req.body.name);
@@ -204,6 +205,7 @@ module.exports = {
     deleteMap,
     getMapById,
     getMapPairs,
+    // getAllMaps,
     // getPlaylists,
     updateMap,
 }

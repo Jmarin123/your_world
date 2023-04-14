@@ -15,8 +15,15 @@ export default function PublicPage() {
     const handleChange = (event) => {
         setSort(event.target.value);
     };
+
+    console.log(store.idNamePairs);
     let mapCard = [];
-    mapCard = store.idNamePairs;
+    for (let i = 0; i < store.idNamePairs.length; i++) {
+        if (store.idNamePairs[i].map.publish.isPublished) {
+            mapCard.push(store.idNamePairs[i]);
+        }
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 

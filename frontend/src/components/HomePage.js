@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth'
 
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -13,7 +14,7 @@ import Select from "@mui/material/Select";
 export default function HomePage() {
     const [sort, setSort] = useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
-    // const { auth } = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const handleChange = (event) => {
         setSort(event.target.value);
     };
@@ -23,25 +24,13 @@ export default function HomePage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-
-    // useLayoutEffect(() => {
-    //     // This will run only once when the component mounts
-    //     store.loadIdNamePairs();
-    //   }, []);
-
-    // const loadIdNamePairs = useMemo(() => {
-    //     // This will run only once when the component mounts
-    //     return () => {
-    //         store.loadIdNamePairs();
-    //     };
-    //   }, []);
-
-    // Call the memoized function directly in the component's body
-    //   loadIdNamePairs();
-
     let mapCard = [];
-    mapCard = store.idNamePairs;
-    console.log(mapCard);
+
+    for (let i = 0; i < store.idNamePairs.length; i++) {
+        if (auth && auth.user.email === store.idNamePairs[i].map.ownerEmail) {
+            mapCard.push(store.idNamePairs[i]);
+        }
+    }
     // if (store.search !== "" && store.idNamePairs) {
     //     listCard = store.filterBySearch("home");
     // }

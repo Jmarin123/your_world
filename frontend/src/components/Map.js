@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom'
 //Component
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 // import mapData from "./custom.json";
@@ -34,6 +35,7 @@ export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   const [color, setColor] = useState("#ffff00");
   const [font, setFont] = React.useState("Arial");
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setFont(event.target.value);
@@ -56,6 +58,20 @@ export default function Map() {
     color: "black",
     weight: 2,
   };
+
+  function handlePublishMap() {
+    console.log("called publish map");
+    let newMap = store.currentMap;
+    newMap.publish.isPublished = true;
+    const timeElapsed = Date.now();
+    const today = new Date(timeElapsed);
+    newMap.publish.publishedDate = today;
+    store.currentMap = newMap;
+
+    store.updateMap(newMap);
+    navigate("/home");
+  }
+
 
   // function printMesssageToConsole(event){
   //   console.log("Clicked");
@@ -244,7 +260,11 @@ export default function Map() {
         </FormControl>
         <div id="edit-line3"></div>
         <br />
-        <Button id="publishButton" type="submit" sx={{ textTransform: `none` }}>
+        <Button id="publishButton"
+          type="submit"
+          sx={{ textTransform: `none` }}
+          onClick={() => handlePublishMap()}
+        >
           <p id="text">Publish</p>
         </Button>
       </Box>
