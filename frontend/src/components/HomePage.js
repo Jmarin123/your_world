@@ -18,12 +18,11 @@ export default function HomePage() {
         setSort(event.target.value);
     };
 
-    // eslint-disable-next-line
-    // const { auth } = useContext(AuthContext);
-
     useEffect(() => {
         store.loadIdNamePairs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
 
     // useLayoutEffect(() => {
     //     // This will run only once when the component mounts
@@ -36,8 +35,8 @@ export default function HomePage() {
     //         store.loadIdNamePairs();
     //     };
     //   }, []);
-    
-      // Call the memoized function directly in the component's body
+
+    // Call the memoized function directly in the component's body
     //   loadIdNamePairs();
 
     let mapCard = [];
