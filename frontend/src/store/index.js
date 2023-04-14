@@ -173,10 +173,101 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                 });
             }
+            case GlobalStoreActionType.EDIT_MAP: {
+                // console.log("EDIT_MAP");
+                return setStore({
+                    currentModal: CurrentModal.EDIT_MAP,
+                    idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+
+                });
+            }
+            case GlobalStoreActionType.CHANGE_MAP_NAME: {
+                console.log("CHANGE_MAP_NAME")
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: payload.idNamePairs,
+                    newMapCounter: store.newListCounter,
+                    uploadType: "",
+                    currentMap: null,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+
+                });
+            }
             default:
                 return store;
         }
     }
+
+    store.showRenameModal = (mapToEdit) => {
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP,
+            payload: { currentMap: mapToEdit }
+        });
+    }
+    store.isRenameModalOpen = () => {
+        return store.currentModal === CurrentModal.EDIT_MAP;
+    }
+    store.changeMapName = function (newName) {
+        // GET THE LIST
+        let id = store.currentMap._id;
+        console.log(id);
+        async function asyncChangeMapName(id) {
+            let flag = 0;
+            // for (let i = 0; i < store.idNamePairs.length; i++) {
+            //     if (store.idNamePairs[i].name.toLowerCase() == newName.toLowerCase()) {
+            //         console.log("same name");
+            //         flag = 1;
+            //         storeReducer({
+            //             type: GlobalStoreActionType.SAME_NAME,
+            //             payload: {}
+            //         });
+            //     }
+            // }
+            if (!flag) {
+                let response = await api.getMapById(id);
+                if (response.data.success) {
+                    let map = response.data.map;
+                    map.name = newName;
+                    async function updateMap(map) {
+
+                        response = await api.updateMapById(map._id, map);
+                        console.log(map._id);
+                        if (response.data.success) {
+                            async function getMapPairs(map) {
+                                response = await api.getMapPairs();
+                                if (response.data.success) {
+                                    let pairsArray = response.data.idNamePairs;
+                                    console.log("store.changeMapName");
+                                    storeReducer({
+                                        type: GlobalStoreActionType.CHANGE_MAP_NAME,
+                                        payload: {
+                                            idNamePairs: pairsArray,
+                                        }
+                                    });
+
+                                }
+
+                            }
+                            getMapPairs(map);
+
+                        }
+                    }
+                    updateMap(map);
+                }
+            }
+
+        }
+        asyncChangeMapName(id);
+    }
+
 
     store.showUpload = function (uploadType) {
         storeReducer({
