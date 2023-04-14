@@ -8,13 +8,11 @@ import React, { useContext } from 'react';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
+import { List, ListItem, ListItemText } from '@mui/material';
 import Card from '@mui/material/Card';
-// import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
 
-import Grid from '@mui/material/Grid';
+// import Grid from '@mui/material/Grid';
 
 import CardContent from '@mui/material/CardContent';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -44,13 +42,12 @@ function Comment(props) {
     });
 
     // const navigate = useNavigate();
-
     function handleUpdateComments(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             map.comments.push([(auth.user ? userName : ""), event.target.value]);
 
-            store.updateCurrentList(map);
+            store.updateCurrentMap(map);
             event.target.value = "";
         }
     }
@@ -65,28 +62,28 @@ function Comment(props) {
     }
 
     // Hardcode the comment
-    let comments = [["Annie", "I live your map!!!"], ["Joe", "The map looks nice."], ["John", "Beautiful map!"], ["AJA", "Amazing work!"],
-    ["Annie", "Second comment."], ["Joe", "The map looks nice2."], ["John", "Beautiful map2!"], ["AJA", "Amazing work2!"],
-    ["Annie", "Third comment."], ["Joe", "The map looks nice3."], ["John", "Beautiful map3!"],
-    ["Annie", "Fourth comment"], ["Joe", "The map looks nice4."], ["John", "Beautiful map4!"],
-    ];
-    let reversed = [];
-    for (let k = comments.length - 1; k >= 0; k--) {
-        reversed.push(comments[k]);
-    }
-    //Make sure newest comments are at the top by reversing the comments list
+    // let comments = [["Annie", "I live your map!!!"], ["Joe", "The map looks nice."], ["John", "Beautiful map!"], ["AJA", "Amazing work!"],
+    // ["Annie", "Second comment."], ["Joe", "The map looks nice2."], ["John", "Beautiful map2!"], ["AJA", "Amazing work2!"],
+    // ["Annie", "Third comment."], ["Joe", "The map looks nice3."], ["John", "Beautiful map3!"],
+    // ["Annie", "Fourth comment"], ["Joe", "The map looks nice4."], ["John", "Beautiful map4!"],
+    // ];
     // let reversed = [];
-    // if (map) {
-    //     for (let k = map.comments.length - 1; k >= 0; k--) {
-    //         reversed.push(map.comments[k]);
-    //     }
-    //     if (map.published.isPublished === false) {
-    //         disabled = true;
-    //     }
+    // for (let k = comments.length - 1; k >= 0; k--) {
+    //     reversed.push(comments[k]);
     // }
-    // if (!map) {
-    //     disabled = true;
-    // }
+    //Make sure newest comments are at the top by reversing the comments list
+    let reversed = [];
+    if (map) {
+        for (let k = map.comments.length - 1; k >= 0; k--) {
+            reversed.push(map.comments[k]);
+        }
+        if (map.publish.isPublished === false) {
+            disabled = true;
+        }
+    }
+    if (!map) {
+        disabled = true;
+    }
     return (
 
         <Card sx={{
@@ -103,7 +100,7 @@ function Comment(props) {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    sx={{ mr: 2, float: "right",  display: "inline" }}
+                    sx={{ mr: 2, float: "right", display: "inline" }}
                     // disabled={disabled}
                     onClick={() => handleCloseComment()}
                 >
@@ -112,8 +109,8 @@ function Comment(props) {
 
                     ></CloseOutlinedIcon>
                 </StyledIconButton>
-                
-                <Grid container spacing={1} style={{
+
+                {/* <Grid container spacing={1} style={{
                     top: '300px',
                     left: '10px',
                     height: '700px',
@@ -126,15 +123,15 @@ function Comment(props) {
 
                             <Grid item key={i} xs={12}
                                 sx={{
-         
+
                                     borderRadius: "12px",
                                     backgroundColor: "#ECF2FF",
                                     margin: '10px',
                                     fontsize: "8pt",
-                                    // padding: "10px 10px",
                                     marginTop: '1px',
 
                                 }}
+
                             >
                                 <strong>
                                     <u id="commentName" style={{ color: "#756060" }}>{comment[0]}</u>
@@ -143,7 +140,33 @@ function Comment(props) {
                             </Grid>
                         ))
                     }
-                </Grid>
+                </Grid> */}
+                <List style={{
+                    top: '15px',
+                    left: '10px',
+                    height: '700px',
+                    overflowY: 'auto',
+                }}>
+                    {reversed.map((comment, i) => (
+                        <ListItem key={i} sx={{
+                            borderRadius: "12px",
+                            backgroundColor: "#ECF2FF",
+                            margin: '8px',
+                            fontsize: "8pt",
+                            // marginTop: '1px',
+                        }}>
+                            <ListItemText primary={
+                                <React.Fragment>
+                                    <strong><u id="commentName" style={{ color: "#756060" }}>{comment[0]}</u></strong>
+                                </React.Fragment>
+                            } secondary={
+                                <React.Fragment>
+                                    <div id="commentText" style={{ fontSize: '20px' }}>{comment[1]}</div>
+                                </React.Fragment>
+                            } />
+                        </ListItem>
+                    ))}
+                </List>
             </CardContent>
             <CardActions>
                 {

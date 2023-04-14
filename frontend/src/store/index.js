@@ -101,7 +101,7 @@ function GlobalStoreContextProvider(props) {
                     newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
-                    openComment: false,
+                    openComment: store.openComment,
                     mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
@@ -378,19 +378,36 @@ function GlobalStoreContextProvider(props) {
         navigate("/mapview");
     }
 
-    store.updateCurrentMap = function () {
-        // async function asyncUpdateCurrentList() {
-        //     const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
-        //     if (response.data.success) {
-        //         console.log("store.updateCurrentList");
-        storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_MAP,
-            payload: { currentMap: store.currentMap, counter: store.newListCounter }
-        });
+    // store.updateCurrentMap = function () {
+    //     // async function asyncUpdateCurrentList() {
+    //     //     const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+    //     //     if (response.data.success) {
+    //     //         console.log("store.updateCurrentList");
+    //     storeReducer({
+    //         type: GlobalStoreActionType.SET_CURRENT_MAP,
+    //         payload: { currentMap: store.currentMap, counter: store.newListCounter }
+    //     });
 
-        //     }
-        // }
-        // asyncUpdateCurrentList();
+    //     //     }
+    //     // }
+    //     // asyncUpdateCurrentList();
+
+    // }
+    store.updateCurrentMap = function () {
+        async function asyncUpdateCurrentMap() {
+            const response = await api.updateMapById(store.currentMap._id, store.currentMap);
+            if (response.data.success) {
+                console.log("store.updateCurrentMap");
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_MAP,
+                    payload: {
+                        currentMap: store.currentMap
+                    }
+                });
+
+            }
+        }
+        asyncUpdateCurrentMap();
 
     }
 
