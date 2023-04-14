@@ -33,14 +33,14 @@ export const updateMapById = (id, map) => {
     })
 }
 
-// export const getPlaylists = () => api.get(`/playlists`)
+export const getAllMaps = () => api.get(`/api/maps`)
 
 const apis = {
     createMap,
     deleteMapById,
     getMapById,
     getMapPairs,
-    // getmaps,
+    getAllMaps,
     updateMapById
 }
 

@@ -36,7 +36,7 @@ export default function AppBanner() {
     const location = useLocation();
     const navigate = useNavigate();
     const [label, setLabel] = useState("Select an option to search for maps...");
-    // let disabled = false;
+    let disabled = true;
     // const map = store.currentMap;
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -50,6 +50,10 @@ export default function AppBanner() {
             color: '#FDE66B'
         }
     });
+
+    if (store.currentMap && store.currentMap.publish) {
+        disabled = false;
+    }
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -201,41 +205,41 @@ export default function AppBanner() {
     }
 
     let globeIcon = <StyledIconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2, marginLeft: "5px" }}
-        // disabled={disabled}
-        // onClick={() => handleClick("/public")}
-        >
-            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
-        </StyledIconButton>
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2, marginLeft: "5px" }}
+    // disabled={disabled}
+    // onClick={() => handleClick("/public")}
+    >
+        <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+    </StyledIconButton>
 
     let homeIcon = <StyledIconButton
-    edge="start"
-    color="inherit"
-    aria-label="open drawer"
-    sx={{ mr: 2 }}
-    disabled={auth.loggedIn ? false: true}
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        disabled={auth.loggedIn ? false : true}
     // onClick={() => handleClick("/public")}
     >
         <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
     </StyledIconButton>
 
     let searchIcon = <StyledIconButton
-    edge="start"
-    color="inherit"
-    aria-label="open drawer"
-    sx={{ mr: 2 }}
-    onClick={handleSearchPage}
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={handleSearchPage}
     // disabled={disabled}
     // onClick={() => handleClick("/public")}
     >
-    <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+        <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
     </StyledIconButton>
-        
+
     if (location.pathname === '/public') {
-    globeIcon =  <StyledIconButton
+        globeIcon = <StyledIconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
@@ -246,23 +250,23 @@ export default function AppBanner() {
     }
     else if (location.pathname === '/home') {
         homeIcon = <StyledIconButton
-        edge="start"
-        color="inherit"
-        aria-label="open drawer"
-        sx={{ mr: 2, color: '#FDE66B' }}
-        disabled={auth.loggedIn ? false: true}
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2, color: '#FDE66B' }}
+            disabled={auth.loggedIn ? false : true}
         >
             <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
         </StyledIconButton>
     }
     else if (location.pathname === '/search') {
         searchIcon = <StyledIconButton
-        edge="start"
-        color="inherit"
-        aria-label="open drawer"
-        sx={{ mr: 2, color: '#FDE66B' }}
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2, color: '#FDE66B' }}
         >
-        <SearchIcon style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}></SearchIcon>
+            <SearchIcon style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}></SearchIcon>
         </StyledIconButton>
     }
 
@@ -280,9 +284,9 @@ export default function AppBanner() {
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                             onClick={handleHomescreen}
                         >
-                              {globeIcon}
-                              {homeIcon}
-                              {searchIcon}
+                            {globeIcon}
+                            {homeIcon}
+                            {searchIcon}
 
                             <Box
                                 component="form"
@@ -355,20 +359,18 @@ export default function AppBanner() {
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-
-                        {
-                            location.pathname === '/mapview' ? <StyledIconButton
+                        <StyledIconButton
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
-                            // disabled={true}
+                            disabled={disabled}
                             // onClick={() => handleClick("/mapview-comment")}
                             onClick={() => handleComment()}
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
-                        </StyledIconButton> : <div></div>
-                        }
+                        </StyledIconButton>
+
 
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
@@ -376,7 +378,7 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                                disabled={auth.loggedIn ? false: true}
+                                disabled={auth.loggedIn ? false : true}
                             // onClick={() => handleClick("/user-lists")}
                             >
                                 <AddToPhotosIcon

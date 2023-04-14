@@ -18,7 +18,7 @@ import { useLocation } from "react-router-dom";
 // import Grid from '@mui/material/Grid';
 
 import { GlobalStoreContext } from '../store'
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import AuthContext from '../auth/index'
 
 // export default function MapCard() {
@@ -26,12 +26,13 @@ export default function MapCard(props) {
     const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const [title] = useState("Atlantis");
+    // const [title] = useState("Atlantis");
     const navigate = useNavigate();
 
     // const [editActive, setEditActive] = useState(false);
     // const [text, setText] = useState("");
     const { idNamePair } = props;
+    let map = idNamePair.map;
     // const [open, setOpen] = useState(false);
     // const [modal, setModal] = useState(false);
     // let disabled = false;
@@ -62,9 +63,9 @@ export default function MapCard(props) {
         navigate("/map/" + id);
     }
 
-    const handlePubCardClick = (event) => {
-        console.log("Clicked on card")
-        store.navToPubMap()
+    function handleOpenPublicCard(id) {
+        store.setCurrentMap(idNamePair.map)
+        navigate("/mapview/" + id);
     }
 
     let StyledIconButton = styled(IconButton)({
@@ -96,14 +97,14 @@ export default function MapCard(props) {
 
     let publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
-            key={1}
             id="mapCard1"
-            onDoubleClick={handlePubCardClick}
+            key={idNamePair._id}
+            onDoubleClick={() => handleOpenPublicCard(idNamePair._id)}
         >
 
             <Box sx={{ p: 0.5 }}>
                 <Box id='cardTitle'>
-                    {title}
+                    {idNamePair.name}
                 </Box>
 
                 <Box id='map-card-line'>
@@ -112,8 +113,7 @@ export default function MapCard(props) {
 
 
                 <Typography id='map-card-author'>
-                    By: Author
-                    {/* <br id='map-card-author'>By: Author</br> */}
+                    By: {idNamePair.map.owner}
                 </Typography>
             </Box>
 
@@ -263,117 +263,125 @@ export default function MapCard(props) {
     </ListItem>
 
     let mapCards;
+    if (map.publish.isPublished) {
+        mapCards = [publishedMapCard]
+    } else if (location.pathname === "/public" || location.pathname === "/search") {
+        mapCards = [publishedMapCard]
+    }
+    else {
+        mapCards = [unpublishedMapCard]
+    }
     //if from /public only display published map cards that have 2 button icon's
     //if from /home display published and unpublished map cards, 
     //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
-    if (location.pathname === "/public" || location.pathname === "/search") {
-        mapCards = [publishedMapCard]
-    } else {
-        publishedMapCard = <ListItem id='published-listItemMapCard'>
-            <div
-                key={1}
-                id="mapCard1"
-                onDoubleClick={handlePubCardClick}
-            >
-                <Box sx={{ p: 0.5 }}>
-                    <Box id='cardTitle'>
-                        {title}
-                    </Box>
+    // if (location.pathname === "/public" || location.pathname === "/search") {
+    //     mapCards = [publishedMapCard]
+    // } else {
+    //     publishedMapCard = <ListItem id='published-listItemMapCard'>
+    //         <div
+    //             key={1}
+    //             id="mapCard1"
+    //             onDoubleClick={handlePubCardClick}
+    //         >
+    //             <Box sx={{ p: 0.5 }}>
+    //                 <Box id='cardTitle'>
+    //                     {title}
+    //                 </Box>
 
-                    <Box id='map-card-line'>
-                        {/* <div id='map-card-line'></div> */}
-                    </Box>
-
-
-                    <Typography id='map-card-author'>
-                        By: Author
-                        {/* <br id='map-card-author'>By: Author</br> */}
-                    </Typography>
-                </Box>
-
-                <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
-                <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={(event) => {
-                            handleExport(event)
-                        }}
-                        sx={{
-                            position: 'absolute', bottom: '0',
-                            left: '5px',
-                            fontSize: '1em'
-                        }}
-                    >
-                        <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-                    </StyledIconButton>
-
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={(event) => {
-                            handleDuplicateMap(event)
-                        }}
-                        sx={{
-                            position: 'absolute', bottom: '0',
-                            left: '49px',
-                            fontSize: '1em'
-                        }}
-                    >
-                        <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-                    </StyledIconButton>
-
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={(event) => {
-                            handleDeleteMap(event)
-                        }}
-                        sx={{
-                            position: 'absolute', bottom: '0',
-                            left: '93px',
-                            fontSize: '1em'
-                        }}
-                    >
-                        <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-                    </StyledIconButton>
+    //                 <Box id='map-card-line'>
+    //                     {/* <div id='map-card-line'></div> */}
+    //                 </Box>
 
 
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{
-                            position: 'absolute', bottom: '0',
-                            right: '2px',
-                            fontSize: '1em'
-                        }}
-                    >
-                        <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
-                    </StyledIconButton>
+    //                 <Typography id='map-card-author'>
+    //                     By: Author
+    //                     {/* <br id='map-card-author'>By: Author</br> */}
+    //                 </Typography>
+    //             </Box>
 
-                    <StyledIconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{
-                            position: 'absolute', bottom: '0',
-                            right: '50px',
-                            fontSize: '1em'
-                        }}
-                    >
-                        <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
-                    </StyledIconButton>
-                </Box>
-            </div>
-        </ListItem>
-        // mapCards = [publishedMapCard, unpublishedMapCard]
-        mapCards = [unpublishedMapCard]
-    }
+    //             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+
+    //             <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
+    //                 <StyledIconButton
+    //                     edge="start"
+    //                     color="inherit"
+    //                     aria-label="open drawer"
+    //                     onClick={(event) => {
+    //                         handleExport(event)
+    //                     }}
+    //                     sx={{
+    //                         position: 'absolute', bottom: '0',
+    //                         left: '5px',
+    //                         fontSize: '1em'
+    //                     }}
+    //                 >
+    //                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+    //                 </StyledIconButton>
+
+    //                 <StyledIconButton
+    //                     edge="start"
+    //                     color="inherit"
+    //                     aria-label="open drawer"
+    //                     onClick={(event) => {
+    //                         handleDuplicateMap(event)
+    //                     }}
+    //                     sx={{
+    //                         position: 'absolute', bottom: '0',
+    //                         left: '49px',
+    //                         fontSize: '1em'
+    //                     }}
+    //                 >
+    //                     <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+    //                 </StyledIconButton>
+
+    //                 <StyledIconButton
+    //                     edge="start"
+    //                     color="inherit"
+    //                     aria-label="open drawer"
+    //                     onClick={(event) => {
+    //                         handleDeleteMap(event)
+    //                     }}
+    //                     sx={{
+    //                         position: 'absolute', bottom: '0',
+    //                         left: '93px',
+    //                         fontSize: '1em'
+    //                     }}
+    //                 >
+    //                     <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+    //                 </StyledIconButton>
+
+
+    //                 <StyledIconButton
+    //                     edge="start"
+    //                     color="inherit"
+    //                     aria-label="open drawer"
+    //                     sx={{
+    //                         position: 'absolute', bottom: '0',
+    //                         right: '2px',
+    //                         fontSize: '1em'
+    //                     }}
+    //                 >
+    //                     <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
+    //                 </StyledIconButton>
+
+    //                 <StyledIconButton
+    //                     edge="start"
+    //                     color="inherit"
+    //                     aria-label="open drawer"
+    //                     sx={{
+    //                         position: 'absolute', bottom: '0',
+    //                         right: '50px',
+    //                         fontSize: '1em'
+    //                     }}
+    //                 >
+    //                     <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
+    //                 </StyledIconButton>
+    //             </Box>
+    //         </div>
+    //     </ListItem>
+    //     // mapCards = [publishedMapCard, unpublishedMapCard]
+    //     mapCards = [unpublishedMapCard]
+    // }
 
 
 

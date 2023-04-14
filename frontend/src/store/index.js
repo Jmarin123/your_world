@@ -159,7 +159,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: payload.map,
                 });
             }
-            // GET ALL THE LISTS SO WE CAN PRESENT THEM
+            // GET ALL LISTS SO WE CAN PRESENT THEM
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 console.log("LOAD_ID_NAME_PAIRES");
                 return setStore({
@@ -173,6 +173,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                 });
             }
+
             case GlobalStoreActionType.EDIT_MAP: {
                 // console.log("EDIT_MAP");
                 return setStore({
@@ -268,6 +269,28 @@ function GlobalStoreContextProvider(props) {
         asyncChangeMapName(id);
     }
 
+    // Update new list 
+    store.updateMap = function (map) {
+        async function asyncUpdateMap() {
+            const response = await api.updateMapById(map._id, map);
+            if (response.data.success) {
+                console.log("store.updateMap");
+                const response = await api.getMapPairs();
+                if (response.data.success) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+                else {
+                    console.log("API FAILED TO GET THE MAP PAIRS");
+                }
+
+            }
+        }
+        asyncUpdateMap();
+    }
 
     store.showUpload = function (uploadType) {
         storeReducer({
@@ -372,6 +395,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setCurrentMap = function (newMap) {
+        console.log(newMap);
         storeReducer({
             type: GlobalStoreActionType.SET_CURRENT_MAP,
             payload: { currentMap: newMap }
