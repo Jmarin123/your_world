@@ -445,10 +445,60 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.duplicateMap = function (map) {
-        // storeReducer({
-        //     type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
-        //     payload: { map: map }
-        // });
+        async function asyncLoadIdNamePairs() {
+            let response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
+                let newMapName = map.name;
+                for (let i = 0; i < pairsArray.length; i++) {
+                    console.log(pairsArray[i].name);
+                    console.log(newMapName);
+                    if (pairsArray[i].name === newMapName) {
+                        console.log("find the same");
+                        newMapName = newMapName + pairsArray.length;
+                        console.log("newMapName = ", newMapName);
+                        break;
+                    }
+                }
+                async function asyncCreateMap() {
+                    let payload = {
+                        name: newMapName,
+                        ownerEmail: auth.user.email,
+                        owner: auth.user.firstName + " " + auth.user.lastName,
+                        dataFromMap: map.dataFromMap,
+                        comments: [],
+                        likes: [],
+                        dislikes: [],
+                        publish: { isPublished: false, publishedDate: new Date() }
+                    };
+                    const response = await api.createMap(payload);
+                    // console.log("createNewList response: " + response);
+                    if (response.status === 201) {
+                        tps.clearAllTransactions();
+                        let newMap = response.data.map;
+                        console.log("store.duplicateMap");
+                        storeReducer({
+                            type: GlobalStoreActionType.CREATE_NEW_MAP,
+                            payload: newMap
+                        }
+                        );
+
+                        // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+                        // history.push("/home/playlist/" + newList._id);
+                        store.loadIdNamePairs();
+                    }
+                    else {
+                        console.log("API FAILED TO CREATE A NEW MAP");
+                    }
+                }
+                asyncCreateMap();
+            }
+            else {
+                console.log("API FAILED TO GET THE MAP PAIRS");
+            }
+        }
+        asyncLoadIdNamePairs();
         navigate("/home")
     }
 

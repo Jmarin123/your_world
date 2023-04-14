@@ -48,9 +48,8 @@ export default function MapCard(props) {
         store.showRenameModal(idNamePair.map);
     };
 
-    const handleDuplicateMap = (event) => {
-        event.preventDefault();
-        store.duplicateMap(); //TODO: Use event to duplicate map
+    const handleDuplicateMap = () => {
+        store.duplicateMap(idNamePair.map);
     }
 
     const handleExport = (event) => {
@@ -158,6 +157,7 @@ export default function MapCard(props) {
                     right: '50px',
                     fontSize: '1em'
                 }}
+                onClick={() => handleDuplicateMap()}
             >
                 <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
             </StyledIconButton>
@@ -214,9 +214,7 @@ export default function MapCard(props) {
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    onClick={(event) => {
-                        handleDuplicateMap(event)
-                    }}
+                    onClick={() => handleDuplicateMap()}
                     sx={{
                         position: 'absolute', bottom: '0',
                         left: '49px',
