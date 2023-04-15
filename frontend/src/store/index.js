@@ -378,8 +378,8 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.createNewMap = async function (obj) {
-        let newMapName = "Untitled" + store.idNamePairs.length;
-        // let newMapName = "Untitled";
+        // let newMapName = "Untitled" + store.idNamePairs.length;
+        let newMapName = "Untitled";
         let payload = {
             name: newMapName,
             mapCounter: store.newMapCounter + 1,
@@ -520,16 +520,16 @@ function GlobalStoreContextProvider(props) {
                 let pairsArray = response.data.idNamePairs;
                 console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
                 let newMapName = map.name;
-                for (let i = 0; i < pairsArray.length; i++) {
-                    console.log(pairsArray[i].name);
-                    console.log(newMapName);
-                    if (pairsArray[i].name === newMapName) {
-                        console.log("find the same");
-                        newMapName = newMapName + pairsArray.length;
-                        console.log("newMapName = ", newMapName);
-                        break;
-                    }
-                }
+                // for (let i = 0; i < pairsArray.length; i++) {
+                //     console.log(pairsArray[i].name);
+                //     console.log(newMapName);
+                //     if (pairsArray[i].name === newMapName) {
+                //         console.log("find the same");
+                //         newMapName = newMapName + pairsArray.length;
+                //         console.log("newMapName = ", newMapName);
+                //         break;
+                //     }
+                // }
                 async function asyncCreateMap() {
                     let payload = {
                         name: newMapName,
