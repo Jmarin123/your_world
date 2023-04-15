@@ -19,7 +19,7 @@ export default function Mapview() {
 
     function onEachCountry(country, layer) {
         const countryName = country.properties.ADMIN;
-        console.log(countryName);
+        // console.log(countryName);
         layer.bindPopup(countryName);
 
         layer.options.fillOpacity = Math.random();

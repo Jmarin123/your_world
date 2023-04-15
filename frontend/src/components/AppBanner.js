@@ -36,8 +36,16 @@ export default function AppBanner() {
     const location = useLocation();
     const navigate = useNavigate();
     const [label, setLabel] = useState("Select an option to search for maps...");
-    let disabled = true;
-    // const map = store.currentMap;
+    let disabled = false;
+
+    let id;
+    if (store.currentMap) {
+        const map = store.currentMap;
+        id = map._id;
+        console.log(id);
+    }
+
+
     let StyledIconButton = styled(IconButton)({
         color: "black",
 
@@ -50,10 +58,6 @@ export default function AppBanner() {
             color: '#FDE66B'
         }
     });
-
-    if (store.currentMap && store.currentMap.publish) {
-        disabled = false;
-    }
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -118,6 +122,30 @@ export default function AppBanner() {
     const handleSearchPage = (event) => {
         navigate('/search')
     }
+
+    // if (store.currentMap && store.currentMap.publish) {
+    // if (location.pathname === ('/mapview' + id)) {
+    //     console.log(disabled);
+    //     disabled = true;
+
+    // }
+    console.log(location.pathname === '/mapview/' + id);
+    if (location.pathname === '/mapview/' + id) {
+        disabled = true;
+    }
+
+
+
+    let commentButton = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        // onClick={() => handleClick("/mapview-comment")}
+        onClick={() => handleComment()}
+    >
+        <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
+    </StyledIconButton>
 
     const menuId = 'primary-search-account-menu';
     const uploadMenuId = 'upload-account-menu';
@@ -363,7 +391,8 @@ export default function AppBanner() {
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                        <StyledIconButton
+                        {disabled ? commentButton : <div></div>}
+                        {/* <StyledIconButton
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
@@ -373,7 +402,7 @@ export default function AppBanner() {
                             onClick={() => handleComment()}
                         >
                             <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
-                        </StyledIconButton>
+                        </StyledIconButton> */}
 
 
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
