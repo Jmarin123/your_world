@@ -33,8 +33,10 @@ export default function MapCard(props) {
     // const [text, setText] = useState("");
     const { idNamePair } = props;
     let map = idNamePair.map;
-    // const [open, setOpen] = useState(false);
-    // const [modal, setModal] = useState(false);
+    let userName = "";
+    if (auth.user) {
+        userName = auth.user.firstName + " " + auth.user.lastName;
+    }
 
     let disabled = false;
     if (auth.type === 'guest' || location.pathname !== '/home') {
@@ -69,6 +71,41 @@ export default function MapCard(props) {
     function handleOpenPublicCard(id) {
         store.setCurrentMap(idNamePair.map)
         navigate("/mapview/" + id);
+    }
+
+    /* handleLikeDislike will handle updating the liked and disliked button, as well as the 
+    like and/or dislike count of this list */
+    function handleLikeDislike(param) {
+        if (auth.type !== "guest") {
+            if (param === "like") {
+                if (map.likes.includes(userName)) {
+                    //If the user clicks like after already clicking it once, remove their like
+                    map.likes = map.likes.filter(username => username !== userName);
+                }
+                else if (map.dislikes.includes(userName)) {
+                    map.dislikes = map.dislikes.filter(username => username !== userName);
+                    map.likes.push(userName);
+                }
+                else {
+                    map.likes.push(userName);
+                    console.log(map.likes);
+                }
+            }
+            else {
+                if (map.likes.includes(userName)) {
+                    map.likes = map.likes.filter(username => username !== userName);
+                    map.dislikes.push(userName);
+                }
+                else if (map.dislikes.includes(userName)) {
+                    map.dislikes = map.dislikes.filter(username => username !== userName);
+                }
+                else {
+                    map.dislikes.push(userName);
+                }
+            }
+            store.currentMap = map;
+            store.updateCurrentMap();
+        }
     }
 
     let StyledIconButton = styled(IconButton)({
@@ -166,7 +203,12 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
+                <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                    onClick={() => handleLikeDislike("dislike")} />
+
+                <strong style={{ color: 'black' }}>
+                    {map.dislikes.length}
+                </strong>
             </StyledIconButton>
 
             <StyledIconButton
@@ -178,9 +220,13 @@ export default function MapCard(props) {
                     right: '50px',
                     fontSize: '1em'
                 }}
-                onClick={() => handleDuplicateMap()}
             >
-                <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
+                <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                    onClick={() => handleLikeDislike("like")} />
+
+                <strong style={{ color: 'black' }}>
+                    {map.likes.length}
+                </strong>
             </StyledIconButton>
 
             {auth.loggedIn ? duplicateButton : <div></div>}
