@@ -31,7 +31,7 @@ export default function Mapview() {
 
     let renderedMap = <GeoJSON
         style={countryStyle}
-        data={store.currentMap ? store.currentMap.features : null}
+        data={store.currentMap ? store.currentMap.dataFromMap.features : null}
         onEachFeature={onEachCountry}
     />
 
