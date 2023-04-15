@@ -1,9 +1,12 @@
 import logo from './earthlogo.png'
+import { useContext } from 'react';
 import { Button } from '@mui/material';
 import globeLogo from './globelogo.png';
 import { Link } from "react-router-dom";
+import AuthContext from '../auth/index'
 
 function SplashScreen() {
+  const { auth } = useContext(AuthContext);
 
   return (
     <div id="splashScreenBackground">
@@ -18,7 +21,7 @@ function SplashScreen() {
       <div id="splashpage-line"></div>
 
       <Link to={`public`}>
-        <Button id="guestButton" sx={{ textTransform: `none` }} data-cy="guestButton">
+        <Button id="guestButton" onClick={() => auth.continueAsGuest()} sx={{ textTransform: `none` }} data-cy="guestButton">
           <p id="text">Continue as Guest</p>
         </Button>
       </Link>

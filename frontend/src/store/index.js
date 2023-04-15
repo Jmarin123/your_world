@@ -330,6 +330,29 @@ function GlobalStoreContextProvider(props) {
         tps.clearAllTransactions();
     }
 
+    // THIS FUNCTION LOAD ALL THE MAPS WITHOUT VERIFY
+    store.loadAllMaps = async function () {
+        console.log("store.loadMaps");
+        try {
+            const response = await api.getAllMaps();
+
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log(pairsArray);
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+            }
+        }
+        catch (err) {
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: []
+            });
+        }
+    }
+
     store.createNewMap = async function (obj) {
         let newMapName = "Untitled" + store.idNamePairs.length;
         // let newMapName = "Untitled";

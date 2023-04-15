@@ -35,7 +35,11 @@ export default function MapCard(props) {
     let map = idNamePair.map;
     // const [open, setOpen] = useState(false);
     // const [modal, setModal] = useState(false);
-    // let disabled = false;
+
+    let disabled = false;
+    if (auth.type === 'guest' || location.pathname !== '/home') {
+        disabled = true;
+    }
 
     // console.log(idNamePair);
     const handleDeleteMap = (id) => {
@@ -44,7 +48,7 @@ export default function MapCard(props) {
 
     const handleEditMapName = (id) => {
         // store.renameMap(id);
-        console.log("show rename modal")
+        // console.log("show rename modal")
         store.showRenameModal(idNamePair.map);
     };
 
@@ -108,9 +112,9 @@ export default function MapCard(props) {
     >
         <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
-    console.log(auth.user.email);
-    console.log(map.ownerEmail);
-    console.log(auth.email === map.ownerEmail);
+    // console.log(auth.user.email);
+    // console.log(map.ownerEmail);
+    // console.log(auth.email === map.ownerEmail);
     let publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
             id="mapCard1"
@@ -151,7 +155,7 @@ export default function MapCard(props) {
             >
                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
-            {auth && (auth.user.email === map.ownerEmail) && location.pathname === '/home' ? deleteButton : <div></div>}
+            {!disabled ? deleteButton : <div></div>}
             <StyledIconButton
                 edge="start"
                 color="inherit"
