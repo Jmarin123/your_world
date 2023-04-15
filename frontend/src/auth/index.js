@@ -5,7 +5,7 @@ import api from './auth-request-api'
 // import { GlobalStoreContext } from '../store'
 
 const AuthContext = createContext();
-// console.log("create AuthContext: " + AuthContext);
+console.log("create AuthContext: " + AuthContext);
 
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const AuthActionType = {
@@ -79,6 +79,7 @@ function AuthContextProvider(props) {
     }
 
     auth.getLoggedIn = async function () {
+        console.log("auth.getloggedin");
         try {
             const response = await api.getLoggedIn();
             console.log("auth.getLoggedIn");
@@ -215,6 +216,7 @@ function AuthContextProvider(props) {
                 type: "guest",
             }
         });
+        console.log("continueasguest");
         navigate("/public");
     }
 

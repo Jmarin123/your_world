@@ -93,36 +93,33 @@ getMapById = async (req, res) => {
     }
 };
 
-// getMapPairs = async (req, res) => {
-//     // console.log("getMapPairs");
-//     try {
-//         const user = await User.findOne({ _id: req.userId });
-//         // console.log("find user with id " + req.userId);
-//         const maps = await Map.find({ ownerEmail: user.email });
-//         if (!maps || !maps.length) {
-//             console.log("!maps.length");
-//             return res.status(404).json({ success: false, error: 'Maps not found' });
-//         }
-//         else {
-//             // console.log("Send the Map pairs");
-//             // PUT ALL THE LISTS INTO ID, NAME PAIRS
-//             const pairs = maps.map((map) => {
-//                 return {
-//                     _id: map._id,
-//                     name: map.name,
-//                     map: map // add it
-//                 };
-//             });
-//             return res.status(200).json({ success: true, idNamePairs: pairs });
-//         }
-//     } catch (err) {
-//         console.error(err);
-//         return res.status(400).json({ success: false, error: err });
-//     }
-// }
+getAllMaps = async (req, res) => {
+    try {
+        const maps = await Map.find({});
+        if (!maps.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `maps not found` });
+        }
+
+        // PUT ALL THE LISTS INTO ID, NAME PAIRS
+        const pairs = maps.map((map) => {
+            return {
+                _id: map._id,
+                name: map.name,
+                map: map // add it 
+            };
+        });
+
+        return res.status(200).json({ success: true, idNamePairs: pairs });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({ success: false, error: err });
+    }
+};
 
 
-// getAllMaps = async (req, res) => {
+
 getMapPairs = async (req, res) => {
     try {
         const maps = await Map.find({});
@@ -205,7 +202,7 @@ module.exports = {
     deleteMap,
     getMapById,
     getMapPairs,
-    // getAllMaps,
+    getAllMaps,
     // getPlaylists,
     updateMap,
 }

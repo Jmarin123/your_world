@@ -3,6 +3,7 @@ require('dotenv')
 
 function authManager() {
     verify = (req, res, next) => {
+
         try {
             const token = req.cookies.token;
             if (!token) {
@@ -27,6 +28,7 @@ function authManager() {
     }
 
     verifyUser = (req) => {
+
         try {
             const token = req.cookies.token;
             if (!token) {
