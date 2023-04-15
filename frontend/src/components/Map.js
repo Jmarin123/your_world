@@ -103,7 +103,8 @@ export default function Map() {
 
   let renderedMap = <GeoJSON
     style={countryStyle}
-    data={store.currentMap ? (JSON.parse(store.currentMap.dataFromMap)).features : null}
+    // data={store.currentMap ? (JSON.parse(store.currentMap.dataFromMap)).features : null}
+    data={store.currentMap ? store.currentMap.dataFromMap.features : null}
     onEachFeature={onEachCountry}
   />
 

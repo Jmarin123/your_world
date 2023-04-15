@@ -312,17 +312,21 @@ export default function AppBanner() {
                                     // label={store.search ? "" : "Search"}
                                     // disabled={disabled}
 
-                                    // defaultValue={store ? store.search : ""}
+                                    defaultValue={store ? store.search : ""}
                                     // onKeyPress={event => store.setSearch("keypress", event)}
                                     // onChange={event => store.setSearch("change", event)}
                                     onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            // let search = e.target.value;
-                                            // store.setSearch(search);
-                                            e.target.value = "";
-                                            navigate('/search')
-                                        }
+                                        e.preventDefault();
+                                        let search = e.target.value;
+                                        store.setSearch(search);
+                                        e.target.value = "";
+                                        // if (e.key === 'Enter') {
+                                        //     e.preventDefault();
+                                        //     let search = e.target.value;
+                                        //     store.setSearch(search);
+                                        //     e.target.value = "";
+                                        //     // navigate('/search')
+                                        // }
                                     }}
                                 />
                             </Box>
