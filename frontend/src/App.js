@@ -29,6 +29,9 @@ import RenameMapModal from './components/RenameMapModal';
   @author McKilla Gorilla
 */
 const App = () => {
+  if (process.env.NODE_ENV === "production") {
+    console.log = function () { }
+  }
   return (
     <BrowserRouter>
       <AuthContextProvider>
