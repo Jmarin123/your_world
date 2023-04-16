@@ -17,7 +17,8 @@ const mapSchema = new Schema(
         comments: { type: [[String]], required: true },
         likes: { type: [String], required: true },
         dislikes: { type: [String], required: true },
-        publish: { type: { isPublished: Boolean, pushlishedDate: Date }, required: true }
+        publish: { type: { isPublished: Boolean, pushlishedDate: Date }, required: true },
+        image: { type: String, required: true }
     },
     { timestamps: true },
 )

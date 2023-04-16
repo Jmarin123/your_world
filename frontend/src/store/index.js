@@ -409,7 +409,6 @@ function GlobalStoreContextProvider(props) {
         let newMapName = "Untitled";
         let payload = {
             name: newMapName,
-            mapCounter: store.newMapCounter + 1,
             ownerEmail: auth.user.email,
             owner: auth.user.firstName + " " + auth.user.lastName,
             // dataFromMap: JSON.stringify(obj),
@@ -417,7 +416,8 @@ function GlobalStoreContextProvider(props) {
             comments: [],
             likes: [],
             dislikes: [],
-            publish: { isPublished: false, publishedDate: new Date() }
+            publish: { isPublished: false, publishedDate: new Date() },
+            image: "temp"
         };
         const response = await api.createMap(payload);
         // console.log("createNewList response: " + response);
@@ -437,6 +437,7 @@ function GlobalStoreContextProvider(props) {
             navigate("/map/" + newMap._id);
 
 
+
         }
         else {
             console.log("API FAILED TO CREATE A NEW MAP");
@@ -454,9 +455,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setSearch = function (search) {
-        console.log("store.setSearch");
-        console.log("store.search is ", store.search);
-        console.log(store.filterSearch);
+        console.log("setSearch is ", search);
         storeReducer({
             type: GlobalStoreActionType.SET_SEARCH,
             payload: search,
@@ -649,7 +648,8 @@ function GlobalStoreContextProvider(props) {
                         comments: [],
                         likes: [],
                         dislikes: [],
-                        publish: { isPublished: false, publishedDate: new Date() }
+                        publish: { isPublished: false, publishedDate: new Date() },
+                        image: map.image
                     };
                     const response = await api.createMap(payload);
                     // console.log("createNewList response: " + response);

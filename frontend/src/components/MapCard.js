@@ -73,6 +73,8 @@ export default function MapCard(props) {
         navigate("/mapview/" + id);
     }
 
+    let image = idNamePair.map.image === "temp" ? MapCardSample : idNamePair.map.image
+
     /* handleLikeDislike will handle updating the liked and disliked button, as well as the 
     like and/or dislike count of this list */
     function handleLikeDislike(param) {
@@ -248,17 +250,14 @@ export default function MapCard(props) {
                 </Box>
 
                 <Box id='map-card-line'>
-                    {/* <div id='map-card-line'></div> */}
                 </Box>
-
 
                 <Typography id='map-card-author'>
                     By: {idNamePair.map.owner}
-                    {/* <br id='map-card-author'>By: Author</br> */}
                 </Typography>
             </Box>
 
-            <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
+            <img id="map-card-image" src={image} alt="mapcardsample" />
 
             <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
                 <StyledIconButton

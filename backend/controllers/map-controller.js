@@ -179,6 +179,7 @@ updateMap = async (req, res) => {
         map.likes = body.map.likes;
         map.dislikes = body.map.dislikes;
         map.publish = body.map.publish;
+        map.image = body.map.image;
 
         await map.save();
 

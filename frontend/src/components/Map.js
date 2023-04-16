@@ -30,12 +30,32 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Button } from '@mui/material';
+import html2canvas from 'html2canvas';
+
+// import { featureCollection, bbox, point } from '@turf/turf';
+
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   const [color, setColor] = useState("#ffff00");
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
+  const featureGroupRef = React.useRef();
+  const [center] = useState([20, 100])
+
+  // function findCenter() {
+  //   console.log('Component mounted');
+  //   console.log(store.currentMap)
+  //   // handleSaveMap();
+  //   let centerPoint = [20,100]
+  //   if(store.currentMap){
+  //     const [minX, minY, maxX, maxY] = bbox(store.currentMap.dataFromMap);
+  //     centerPoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+  //     console.log(centerPoint);
+  //   }
+  //   setCenter(centerPoint)
+  //   return centerPoint
+  // }
 
   const handleChange = (event) => {
     setFont(event.target.value);
@@ -60,7 +80,6 @@ export default function Map() {
   };
 
   function handlePublishMap() {
-    console.log("called publish map");
     let newMap = store.currentMap;
     newMap.publish.isPublished = true;
     const timeElapsed = Date.now();
@@ -70,6 +89,39 @@ export default function Map() {
 
     store.updateMap(newMap);
     navigate("/home");
+  }
+
+  async function handleSaveMap() {
+    // const element = featureGroupRef.current;
+    // const canvas = await html2canvas(element);
+
+    // const data = canvas.toDataURL('image/jpg');
+    // const link = document.createElement('a');
+
+    // if (typeof link.download === 'string') {
+    //   link.href = data;
+    //   link.download = 'image.jpg';
+
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   window.open(data);
+    // }
+    /////////////////////
+    let mapContainer = document.getElementById("mapContainer");
+    // let renderingArea = document.getElementById("renderingArea");
+    html2canvas(mapContainer, {
+      useCORS: true,
+      width: mapContainer.offsetWidth,
+      height: mapContainer.offsetHeight,
+    }).then(function(canvas) {
+      console.log(canvas)
+      const imageData = canvas.toDataURL()
+      store.currentMap.image = imageData;
+      store.updateCurrentMap();
+      // renderingArea.appendChild(canvas);
+    });
   }
 
 
@@ -86,7 +138,7 @@ export default function Map() {
   // };
 
   function onEachCountry(country, layer) {
-    const countryName = country.properties.ADMIN;
+    const countryName = country.properties.admin;
     console.log(countryName);
     layer.bindPopup(countryName);
 
@@ -103,7 +155,6 @@ export default function Map() {
 
   let renderedMap = <GeoJSON
     style={countryStyle}
-    // data={store.currentMap ? (JSON.parse(store.currentMap.dataFromMap)).features : null}
     data={store.currentMap ? store.currentMap.dataFromMap.features : null}
     onEachFeature={onEachCountry}
   />
@@ -129,6 +180,7 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={() => handleSaveMap()}
           >
             <SaveIcon style={{ fontSize: "45px" }} titleAccess="Save" />
           </StyledIconButton>
@@ -279,23 +331,26 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+        <div id="mapContainer">
+        <MapContainer style={{ height: "80vh" }} zoom={2} center={ center }>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {
             store.currentMap ? renderedMap : <div></div>
           }
-          <FeatureGroup>
+          <FeatureGroup ref={featureGroupRef}>
             <EditControl
               position='topright'
             />
           </FeatureGroup>
         </MapContainer>
+        </div>
         <input
           type="color"
           value={color}
           onChange={colorChange}
         />
       </Box>
+      {/* <div id="renderingArea"></div> */}
     </Box>
   );
 }
