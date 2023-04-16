@@ -49,10 +49,8 @@ export default function PublicPage() {
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
             <Box id="publicBox" component="form" noValidate >
-                <section id="public">
                     {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
-                    <section id="public">Public Map Listing</section>
-                </section>
+                <section id="public">Public Map Listing</section>
                 <FormControl variant="standard" sx={{
                     m: 1,
                     width: '100px',
