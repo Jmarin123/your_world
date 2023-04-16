@@ -29,6 +29,7 @@ export const GlobalStoreActionType = {
     OPEN_COMMENT: "OPEN_COMMENT",
     CLOSE_COMMENT: "CLOSE_COMMENT",
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
+    SET_FILTER_SEARCH: "SET_FILTER_SEARCH",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -57,6 +58,7 @@ function GlobalStoreContextProvider(props) {
         mapMarkedForDeletion: null,
         mapMarkedForExport: null,
         search: "",
+        filterSearch: "",
     });
     // const history = useHistory();
 
@@ -81,6 +83,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -95,6 +98,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -109,6 +113,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -123,6 +128,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -137,6 +143,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -151,6 +158,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: payload.map,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -165,6 +173,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: payload.map,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
             // GET ALL LISTS SO WE CAN PRESENT THEM
@@ -180,6 +189,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                 });
             }
 
@@ -195,6 +205,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
 
                 });
             }
@@ -210,6 +221,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
 
                 });
             }
@@ -224,6 +236,21 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: payload,
+                    filterSearch: store.filterSearch,
+                });
+            }
+            case GlobalStoreActionType.SET_FILTER_SEARCH: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: "",
+                    filterSearch: payload,
                 });
             }
             default:
@@ -427,11 +454,15 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setSearch = function (search) {
-        console.log("setSearch is ", search);
+        console.log("store.setSearch");
+        console.log("store.search is ", store.search);
+        console.log(store.filterSearch);
         storeReducer({
             type: GlobalStoreActionType.SET_SEARCH,
             payload: search,
         });
+        console.log("store.search is ", store.search);
+        console.log(store.filterSearch);
     }
 
     store.clearSearch = function () {
@@ -444,6 +475,85 @@ function GlobalStoreContextProvider(props) {
         });
         console.log("search is ", store.search);
     }
+
+    store.setFilterSearch = function (searchType) {
+        console.log("store.setFilterSearch");
+        console.log(searchType);
+        storeReducer({
+            type: GlobalStoreActionType.SET_FILTER_SEARCH,
+            payload: searchType,
+        });
+    }
+
+    // store.filterBySearch = function (screenType) {
+    // store.filterBySearch = function () {
+    //     console.log(store.filterSearch);
+    //     console.log(store.search);
+    //     let screenList = [];
+    //     if (store.filterSearch === "mapname" && store.search) {
+    //         screenList = store.idNamePairs.filter(pair => {
+    //             if (store.search !== "" && pair.map.name.toLowerCase().includes(store.search.toLowerCase())) {
+    //                 if (pair.map.publish.isPublished) {
+    //                     console.log(store.search);
+    //                     console.log(pair);
+    //                     return pair;
+    //                 }
+    //             }
+    //         });
+    //     } else if (store.filterSearch === "users" && store.search) {
+    //         console.log("2");
+    //         screenList = store.idNamePairs.filter(pair => {
+    //             if (store.search !== "" && pair.map.owner.toLowerCase() === store.search.toLowerCase()) {
+    //                 if (pair.map.publish.isPublished) {
+    //                     return pair;
+    //                 }
+    //             }
+    //         });
+    //     } else {
+    //         if (store.search !== "") {
+    //             console.log(store.search);
+    //             screenList = store.idNamePairs.filter(pair => pair.map.name.toLowerCase().startsWith(store.search.toLowerCase()));
+    //         } else {
+    //             console.log("herer");
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 if (pair.map.publish.isPublished) {
+    //                     return pair;
+    //                 }
+    //             })
+    //         }
+
+    //     }
+    //     return screenList;
+    // }
+    store.filterBySearch = function () {
+        let screenList = [];
+        if (store.filterSearch === "mapname" && store.search !== "") {
+            console.log("1");
+            console.log(store.search);
+            screenList = store.idNamePairs.filter(pair => {
+                const mapName = pair.map.name.toLowerCase();
+                return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+            });
+        } else if (store.filterSearch === "users" && store.search !== "") {
+            console.log("2");
+            console.log(store.search);
+            screenList = store.idNamePairs.filter(pair => {
+                const ownerName = pair.map.owner.toLowerCase();
+                return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+            });
+        } else {
+            console.log("3");
+            console.log(store.search);
+            console.log(store.filterSearch);
+            screenList = store.idNamePairs.filter(pair => {
+                const mapName = pair.map.name.toLowerCase();
+                return (store.search === "" && pair.map.publish.isPublished) ||
+                    (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+            });
+        }
+        return screenList;
+    };
+
 
     store.updateCurrentMap = function () {
         async function asyncUpdateCurrentMap() {

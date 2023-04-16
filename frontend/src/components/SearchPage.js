@@ -1,6 +1,6 @@
 // import Map from './Map.js';
 import { GlobalStoreContext } from '../store'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MapCard from './MapCard.js';
@@ -12,16 +12,21 @@ import Select from "@mui/material/Select";
 export default function SearchPage() {
     const [sort, setSort] = React.useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
-
+    useEffect(() => {
+        store.loadAllMaps();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const handleChange = (event) => {
         setSort(event.target.value);
     };
     let mapCard = [];
-    for (let i = 0; i < store.idNamePairs.length; i++) {
-        if (store.idNamePairs[i].map.publish.isPublished) {
-            mapCard.push(store.idNamePairs[i]);
-        }
-    }
+    // for (let i = 0; i < store.idNamePairs.length; i++) {
+    //     if (store.idNamePairs[i].map.publish.isPublished) {
+    //         mapCard.push(store.idNamePairs[i]);
+    //     }
+    // }
+
+    mapCard = store.filterBySearch();
 
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
