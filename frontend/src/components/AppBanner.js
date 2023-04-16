@@ -79,7 +79,7 @@ export default function AppBanner() {
 
     const handleSearchUser = () => {
         // store.clearSearch();
-        navigate('/public');
+        store.navigatePublic();
         setS("");
         store.setFilterSearch("users");
         console.log(store.filterSearch);
@@ -87,7 +87,7 @@ export default function AppBanner() {
     }
 
     const handleSearchMap = () => {
-        navigate('/public');
+        store.navigatePublic();
         setS("");
         store.setFilterSearch("mapname");
         setLabel("Search by map name")
@@ -120,12 +120,12 @@ export default function AppBanner() {
 
     const handleHomePage = () => {
         if (auth.loggedIn) {
-            navigate('/home')
+            store.navigateHome();
         }
     }
 
     const handlePublicMapsPage = () => {
-        navigate('/public')
+        store.navigatePublic();
     }
 
     const handleSearchPage = (event) => {

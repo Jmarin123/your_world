@@ -30,6 +30,7 @@ export const GlobalStoreActionType = {
     CLOSE_COMMENT: "CLOSE_COMMENT",
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
     SET_FILTER_SEARCH: "SET_FILTER_SEARCH",
+    DUPLICATE_MAP: "DUPLICATE_MAP",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -50,7 +51,6 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,
         idNamePairs: [],
-        newMapCounter: 0,
         uploadType: "",
         currentMap: null,
         openComment: false,
@@ -75,9 +75,22 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.UPLOAD_FILE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: payload.type,
                     currentMap: store.currentMap,
+                    openComment: false,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                });
+            }
+            case GlobalStoreActionType.DUPLICATE_MAP: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.newMap,
                     openComment: false,
                     mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
@@ -90,7 +103,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
@@ -105,7 +117,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: store.openComment,
@@ -120,7 +131,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: true,
@@ -135,7 +145,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -150,7 +159,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.MARK_MAP_FOR_DELETION,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -165,7 +173,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.EXPORT_MAP,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -182,7 +189,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: payload,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -198,7 +204,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.EDIT_MAP,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: false,
@@ -214,7 +219,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: payload.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: null,
                     openComment: false,
@@ -229,7 +233,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
@@ -243,7 +246,6 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: store.currentMap,
                     openComment: false,
@@ -251,6 +253,19 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: payload,
+                });
+            }
+            case GlobalStoreActionType.NAVIGATE_HOME: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: "",
+                    filterSearch: "",
                 });
             }
             default:
@@ -444,14 +459,31 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    //TODO: Remove later
-    store.navToMap = async function (obj) {
-        navigate("/map");
+    store.navigateHome = function (obj) {
+        storeReducer({
+            type: GlobalStoreActionType.NAVIGATE_HOME,
+            payload: { currentMap: null }
+        })
+        navigate("/home");
+        tps.clearAllTransactions();
     }
 
-    //TODO: Remove later
-    store.navToPubMap = async function (obj) {
-        navigate("/mapview");
+    store.navigatePublic = function (obj) {
+        storeReducer({
+            type: GlobalStoreActionType.NAVIGATE_HOME,
+            payload: { currentMap: null }
+        })
+        navigate("/public");
+        tps.clearAllTransactions();
+    }
+
+    store.navigateSearch = async function (obj) {
+        storeReducer({
+            type: GlobalStoreActionType.NAVIGATE_HOME,
+            payload: { currentMap: null }
+        })
+        navigate("/search");
+        tps.clearAllTransactions();
     }
 
     store.setSearch = function (search) {
@@ -484,75 +516,39 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    // store.filterBySearch = function (screenType) {
-    // store.filterBySearch = function () {
-    //     console.log(store.filterSearch);
-    //     console.log(store.search);
-    //     let screenList = [];
-    //     if (store.filterSearch === "mapname" && store.search) {
-    //         screenList = store.idNamePairs.filter(pair => {
-    //             if (store.search !== "" && pair.map.name.toLowerCase().includes(store.search.toLowerCase())) {
-    //                 if (pair.map.publish.isPublished) {
-    //                     console.log(store.search);
-    //                     console.log(pair);
-    //                     return pair;
-    //                 }
-    //             }
-    //         });
-    //     } else if (store.filterSearch === "users" && store.search) {
-    //         console.log("2");
-    //         screenList = store.idNamePairs.filter(pair => {
-    //             if (store.search !== "" && pair.map.owner.toLowerCase() === store.search.toLowerCase()) {
-    //                 if (pair.map.publish.isPublished) {
-    //                     return pair;
-    //                 }
-    //             }
-    //         });
-    //     } else {
-    //         if (store.search !== "") {
-    //             console.log(store.search);
-    //             screenList = store.idNamePairs.filter(pair => pair.map.name.toLowerCase().startsWith(store.search.toLowerCase()));
-    //         } else {
-    //             console.log("herer");
-    //             screenList = store.idNamePairs.filter(pair => {
-    //                 if (pair.map.publish.isPublished) {
-    //                     return pair;
-    //                 }
-    //             })
-    //         }
-
-    //     }
-    //     return screenList;
-    // }
     store.filterBySearch = function () {
         let screenList = [];
-        if (store.filterSearch === "mapname" && store.search !== "") {
-            console.log("1");
-            console.log(store.search);
-            screenList = store.idNamePairs.filter(pair => {
-                const mapName = pair.map.name.toLowerCase();
-                return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
-            });
-        } else if (store.filterSearch === "users" && store.search !== "") {
-            console.log("2");
-            console.log(store.search);
-            screenList = store.idNamePairs.filter(pair => {
-                const ownerName = pair.map.owner.toLowerCase();
-                return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
-            });
-        } else {
-            console.log("3");
-            console.log(store.search);
-            console.log(store.filterSearch);
-            screenList = store.idNamePairs.filter(pair => {
-                const mapName = pair.map.name.toLowerCase();
-                return (store.search === "" && pair.map.publish.isPublished) ||
-                    (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
-            });
-        }
+        // if(store.idNamePairs){
+        //     if (store.filterSearch === "mapname" && store.search !== "") {
+        //         console.log("1");
+        //         console.log(store.search);
+        //         screenList = store.idNamePairs.filter(pair => {
+        //             const mapName = pair.map.name.toLowerCase();
+        //             return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+        //         });
+        //     } else if (store.filterSearch === "users" && store.search !== "") {
+        //         console.log("2");
+        //         console.log(store.search);
+        //         screenList = store.idNamePairs.filter(pair => {
+        //             const ownerName = pair.map.owner.toLowerCase();
+        //             return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+        //         });
+        //     } else {
+        //         console.log("3");
+        //         console.log(store.search);
+        //         console.log(store.filterSearch);
+        //         console.log(store.idNamePairs);
+        //         screenList = store.idNamePairs.filter(pair => {
+        //             const mapName = pair.map.name.toLowerCase();
+        //             return (store.search === "" && pair.map.publish.isPublished) ||
+        //                 (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+        //         });
+        //     }
+        // }
+        
+        console.log("searched")
         return screenList;
     };
-
 
     store.updateCurrentMap = function () {
         async function asyncUpdateCurrentMap() {
@@ -629,16 +625,6 @@ function GlobalStoreContextProvider(props) {
                 let pairsArray = response.data.idNamePairs;
                 console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
                 let newMapName = map.name;
-                // for (let i = 0; i < pairsArray.length; i++) {
-                //     console.log(pairsArray[i].name);
-                //     console.log(newMapName);
-                //     if (pairsArray[i].name === newMapName) {
-                //         console.log("find the same");
-                //         newMapName = newMapName + pairsArray.length;
-                //         console.log("newMapName = ", newMapName);
-                //         break;
-                //     }
-                // }
                 async function asyncCreateMap() {
                     let payload = {
                         name: newMapName,
@@ -658,7 +644,7 @@ function GlobalStoreContextProvider(props) {
                         let newMap = response.data.map;
                         console.log("store.duplicateMap");
                         storeReducer({
-                            type: GlobalStoreActionType.CREATE_NEW_MAP,
+                            type: GlobalStoreActionType.DUPLICATE_MAP,
                             payload: newMap
                         }
                         );
@@ -666,6 +652,7 @@ function GlobalStoreContextProvider(props) {
                         // IF IT'S A VALID LIST THEN LET'S START EDITING IT
                         // history.push("/home/playlist/" + newList._id);
                         store.loadIdNamePairs();
+                        // navigate("/map/" + store.currentMap._id)
                     }
                     else {
                         console.log("API FAILED TO CREATE A NEW MAP");
@@ -678,7 +665,6 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncLoadIdNamePairs();
-        navigate("/home")
     }
 
     store.markMapForExport = function (map) {
