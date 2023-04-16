@@ -8,33 +8,51 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+// import { useLocation } from 'react-router-dom';
 
 export default function PublicPage() {
     const [sort, setSort] = React.useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+    // const location = useLocation();
+    // let mapCard = [];
 
     useEffect(() => {
         store.loadAllMaps();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // if (location.pathname !== '/public') {
+    //     store.clearSearch();
+    // }
+
     const handleChange = (event) => {
         setSort(event.target.value);
     };
     console.log(auth);
     console.log(store.idNamePairs);
     let mapCard = [];
-    for (let i = 0; i < store.idNamePairs.length; i++) {
-        if (store.idNamePairs[i].map.publish.isPublished) {
-            mapCard.push(store.idNamePairs[i]);
-        }
-    }
 
+    // for (let i = 0; i < store.idNamePairs.length; i++) {
+    //     if (store.idNamePairs[i].map.publish.isPublished) {
+    //         mapCard.push(store.idNamePairs[i]);
+    //     }
+    // }
+
+    // if (store.search !== "" && store.idNamePairs) {
+    //     mapCard = store.filterBySearch();
+    // }
+    mapCard = store.filterBySearch();
+    // let publicScreen = "Public Map Listing";
+    // let resultScreen = "Result";
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
             <Box id="publicBox" component="form" noValidate >
-                <section id="public">Public Map Listing</section>
+                <section id="public">
+                    {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
+                    <section id="public">Public Map Listing</section>
+                </section>
                 <FormControl variant="standard" sx={{
                     m: 1,
                     width: '100px',

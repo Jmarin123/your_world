@@ -36,15 +36,15 @@ export default function AppBanner() {
     const location = useLocation();
     const navigate = useNavigate();
     const [label, setLabel] = useState("Select an option to search for maps...");
+    const [s, setS] = useState("");
     let disabled = false;
+    // let mapCard = [];
 
     let id;
     if (store.currentMap) {
         const map = store.currentMap;
         id = map._id;
-        console.log(id);
     }
-
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
@@ -75,12 +75,21 @@ export default function AppBanner() {
         setAnchorEl(null);
         auth.logoutUser();
     }
+    console.log(store.filterSearch);
 
     const handleSearchUser = () => {
+        // store.clearSearch();
+        navigate('/public');
+        setS("");
+        store.setFilterSearch("users");
+        console.log(store.filterSearch);
         setLabel("Search by username")
     }
 
     const handleSearchMap = () => {
+        navigate('/public');
+        setS("");
+        store.setFilterSearch("mapname");
         setLabel("Search by map name")
     }
 
@@ -120,21 +129,13 @@ export default function AppBanner() {
     }
 
     const handleSearchPage = (event) => {
-        navigate('/search')
+        navigate('/result')
     }
 
-    // if (store.currentMap && store.currentMap.publish) {
-    // if (location.pathname === ('/mapview' + id)) {
-    //     console.log(disabled);
-    //     disabled = true;
-
-    // }
     console.log(location.pathname === '/mapview/' + id);
     if (location.pathname === '/mapview/' + id) {
         disabled = true;
     }
-
-
 
     let commentButton = <StyledIconButton
         edge="start"
@@ -259,7 +260,16 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
-        onClick={handleSearchPage}
+        // onClick={handleSearchPage}
+        onClick={(e) => {
+            e.preventDefault();
+            console.log(store.filterSearch);
+            store.setSearch(s);
+            console.log(store.filterSearch);
+            console.log(store.search);
+            e.target.value = "";
+            navigate('/search')
+        }}
     // disabled={disabled}
     // onClick={() => handleClick("/public")}
     >
@@ -336,26 +346,34 @@ export default function AppBanner() {
                                     id="outlined-basic"
                                     label={label}
                                     variant="standard"
-                                    size="small"
-                                    // label={store.search ? "" : "Search"}
+                                    value={s}
+                                    // size="small"
+                                    // label={store.search ? "" : label}
                                     // disabled={disabled}
 
-                                    defaultValue={store ? store.search : ""}
+                                    // defaultValue={store ? store.search : ""}
                                     // onKeyPress={event => store.setSearch("keypress", event)}
-                                    // onChange={event => store.setSearch("change", event)}
-                                    onKeyPress={(e) => {
+                                    // onChange={event => setLabel()}
+                                    onChange={(e) => {
                                         e.preventDefault();
                                         let search = e.target.value;
-                                        store.setSearch(search);
+                                        console.log(search);
+                                        setS(search);
                                         e.target.value = "";
-                                        // if (e.key === 'Enter') {
-                                        //     e.preventDefault();
-                                        //     let search = e.target.value;
-                                        //     store.setSearch(search);
-                                        //     e.target.value = "";
-                                        //     // navigate('/search')
-                                        // }
                                     }}
+                                // onKeyPress={(e) => {
+                                //     e.preventDefault();
+                                //     let search = e.target.value;
+                                //     store.setSearch(search);
+                                //     e.target.value = "";
+                                //     // if (e.key === 'Enter') {
+                                //     //     e.preventDefault();
+                                //     //     let search = e.target.value;
+                                //     //     store.setSearch(search);
+                                //     //     e.target.value = "";
+                                //     //     // navigate('/search')
+                                //     // }
+                                // }}
                                 />
                             </Box>
 
