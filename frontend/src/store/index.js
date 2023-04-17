@@ -766,7 +766,7 @@ function GlobalStoreContextProvider(props) {
             const re = await api.createMap(payload);
             if (re.status === 201) {
                 tps.clearAllTransactions();
-                let newMap = response.data.map;
+                let newMap = re.data.map;
                 console.log("store.duplicateMap");
                 storeReducer({
                     type: GlobalStoreActionType.DUPLICATE_MAP,
