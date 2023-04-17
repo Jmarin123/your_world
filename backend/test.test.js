@@ -33,6 +33,19 @@ describe('Post To Register', () => {
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ errorMessage: "Please enter a password of at least 8 characters." });
     })
+
+    test('Proper register', async () => {
+        const response = await request(app).post('/auth/register').send({ firstName: "joe", lastName: "aa", username: "lol", email: "test@gmail.com", password: "password1", passwordVerify: "password" });
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual({
+            success: true,
+            user: {
+                firstName: "joe",
+                lastName: "aa",
+                email: "test@gmail.com"
+            }
+        });
+    })
 })
 
 describe('Post To login', () => {
@@ -46,6 +59,25 @@ describe('Post To login', () => {
         const response = await request(app).post('/auth/login').send({ email: "joe", password: "joe" });
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
+    })
+
+    test('Fail to login due to wrong password', async () => {
+        const response = await request(app).post('/auth/login').send({ email: "test@gmail.com", password: "password" });
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
+    })
+
+    test('Successful login', async () => {
+        const response = await request(app).post('/auth/login').send({ email: "test@gmail.com", password: "password1" });
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            success: true,
+            user: {
+                firstName: "joe",
+                lastName: "aa",
+                email: "test@gmail.com"
+            }
+        });
     })
 
 })
