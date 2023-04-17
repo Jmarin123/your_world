@@ -33,7 +33,8 @@ export const GlobalStoreActionType = {
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
     SET_FILTER_SEARCH: "SET_FILTER_SEARCH",
     DUPLICATE_MAP: "DUPLICATE_MAP",
-    EDIT_MAP_VERTEX: "EDIT_MAP_VERTEX"
+    EDIT_MAP_VERTEX: "EDIT_MAP_VERTEX",
+    NAVIGATE_PUBLIC: "NAVIGATE_PUBLIC",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -63,6 +64,7 @@ function GlobalStoreContextProvider(props) {
         search: "",
         filterSearch: "",
         subregion: null,
+        publicPagePairs: [],
     });
     // const history = useHistory();
 
@@ -88,6 +90,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -103,6 +106,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -118,6 +122,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -133,6 +138,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -148,6 +154,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -163,6 +170,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -178,6 +186,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -193,6 +202,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             // GET ALL LISTS SO WE CAN PRESENT THEM
@@ -209,6 +219,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
 
@@ -225,6 +236,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -240,6 +252,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_SEARCH: {
@@ -254,6 +267,7 @@ function GlobalStoreContextProvider(props) {
                     search: payload,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_FILTER_SEARCH: {
@@ -268,6 +282,7 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: payload,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.NAVIGATE_HOME: {
@@ -282,6 +297,22 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: "",
                     subregion: null,
+                    publicPagePairs: [],
+                });
+            }
+            case GlobalStoreActionType.NAVIGATE_PUBLIC: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: "",
+                    filterSearch: "",
+                    subregion: null,
+                    publicPagePairs: payload.screenList,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -296,6 +327,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -310,6 +342,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: payload.feature,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.RENAME_SUBREGION: {
@@ -324,6 +357,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: null,
+                    publicPagePairs: [],
                 });
             }
             default:
@@ -527,12 +561,29 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.navigatePublic = function (obj) {
-        storeReducer({
-            type: GlobalStoreActionType.NAVIGATE_HOME,
-            payload: { currentMap: null }
-        })
-        navigate("/public");
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+
+                let screenList = []
+                screenList = pairsArray.filter(pair => {
+                                    return pair.map.publish.isPublished;
+                                });
+                                
+                storeReducer({
+                    type: GlobalStoreActionType.NAVIGATE_PUBLIC,
+                    payload: {screenList: screenList}
+                });
+            }
+            else {
+                console.log("navigatePublic - could not get list pairs");
+            }
+        }
+        asyncLoadIdNamePairs();
         tps.clearAllTransactions();
+
+        navigate("/public");
     }
 
     store.navigateSearch = async function (obj) {
@@ -574,37 +625,66 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.filterBySearch = function () {
+    // store.filterBySearch = function () {
+    //     let screenList = [];
+    //     if(store.idNamePairs){
+    //         if (store.filterSearch === "mapname" && store.search !== "") {
+    //             console.log("1");
+    //             console.log(store.search);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const mapName = pair.map.name.toLowerCase();
+    //                 return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+    //             });
+    //         } else if (store.filterSearch === "users" && store.search !== "") {
+    //             console.log("2");
+    //             console.log(store.search);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const ownerName = pair.map.owner.toLowerCase();
+    //                 return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+    //             });
+    //         } else {
+    //             console.log("3");
+    //             console.log(store.search);
+    //             console.log(store.filterSearch);
+    //             console.log(store.idNamePairs);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const mapName = pair.map.name.toLowerCase();
+    //                 return (store.search === "" && pair.map.publish.isPublished) ||
+    //                     (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+    //             });
+    //         }
+    //     }
+        
+    //     console.log("searched")
+    //     return screenList;
+    // };
+
+    store.getRecentlyPublished = function () {
         let screenList = [];
-        if(store.idNamePairs){
-            if (store.filterSearch === "mapname" && store.search !== "") {
-                console.log("1");
-                console.log(store.search);
-                screenList = store.idNamePairs.filter(pair => {
-                    const mapName = pair.map.name.toLowerCase();
-                    return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
-                });
-            } else if (store.filterSearch === "users" && store.search !== "") {
-                console.log("2");
-                console.log(store.search);
-                screenList = store.idNamePairs.filter(pair => {
-                    const ownerName = pair.map.owner.toLowerCase();
-                    return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
-                });
-            } else {
-                console.log("3");
-                console.log(store.search);
-                console.log(store.filterSearch);
-                console.log(store.idNamePairs);
-                screenList = store.idNamePairs.filter(pair => {
-                    const mapName = pair.map.name.toLowerCase();
-                    return (store.search === "" && pair.map.publish.isPublished) ||
-                        (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+
+                screenList = pairsArray.filter(pair => {
+                                    return pair.map.publish.isPublished;
+                                });
+                console.log("store.loadIdNamePairs");
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
                 });
             }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
         }
-        
-        console.log("searched")
+        asyncLoadIdNamePairs();
+        console.log(screenList)
+        tps.clearAllTransactions();
+
+
         return screenList;
     };
 
