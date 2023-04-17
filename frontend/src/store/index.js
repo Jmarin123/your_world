@@ -672,12 +672,11 @@ function GlobalStoreContextProvider(props) {
 
     store.setCurrentMap = async function (id) {
         let newMap = await api.getMapById(id);
-        if (newMap.success) {
+        if (newMap.data.success) {
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_MAP,
                 payload: { currentMap: newMap.data.map }
             });
-            console.log("EHHHH", store.currentMap);
         }
     }
 
