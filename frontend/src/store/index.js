@@ -763,8 +763,8 @@ function GlobalStoreContextProvider(props) {
                 publish: { isPublished: false, publishedDate: new Date() },
                 image: map.image
             };
-            const response = await api.createMap(payload);
-            if (response.status === 201) {
+            const re = await api.createMap(payload);
+            if (re.status === 201) {
                 tps.clearAllTransactions();
                 let newMap = response.data.map;
                 console.log("store.duplicateMap");

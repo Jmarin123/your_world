@@ -146,9 +146,6 @@ export default function Map() {
     });
 
   }
-  function handleRedo() {
-    return;
-  }
 
   // function printMesssageToConsole(event){
   //   console.log("Clicked");
