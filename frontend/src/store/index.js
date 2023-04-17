@@ -562,7 +562,7 @@ function GlobalStoreContextProvider(props) {
 
     store.navigatePublic = function (obj) {
         async function asyncLoadIdNamePairs() {
-            const response = await api.getMapPairs();
+            const response = await api.getAllMaps();
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
 
