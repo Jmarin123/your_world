@@ -6,7 +6,7 @@ import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
 import * as turf from '@turf/turf';
 import { GlobalStoreContext } from '../store'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import { styled } from '@mui/material/styles';
@@ -45,6 +45,10 @@ export default function Map() {
   const [center] = useState([20, 100]);
   //for new map editing
   const newMap =  JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
+
+  useEffect(() => {
+    console.log('State variable changed:', store.currentMap);
+  }, [store.currentMap]);
 
   // function findCenter() {
   //   console.log('Component mounted');
@@ -144,24 +148,35 @@ export default function Map() {
   //   console.log("Clicked");
   // };
 
-  // function changeCountryColor(event){
-  //   event.target.setStyle({
-  //     color: "green",
-  //     fillColor: color,
-  //     fillOpacity: 1,
-  //   });
-  // };
+  function changeCountryColor(event){
+    event.target.setStyle({
+      color: "#000000",
+      fillColor: "#64ec4c",
+      fillOpacity: 1,
+    });
+  };
 
-  function onEachCountry(country, layer) {
-    const countryName = country.properties.admin;
-    //console.log(countryName);
-    layer.bindPopup(countryName);
+  function markSubregion(event){ // for name change
+    console.log("marked subregion")
+    console.log(event.target.feature.properties.sovereignt)
 
-    layer.options.fillOpacity = Math.random();
+    store.markSubregion(event.target.feature)
+  }
+
+  const onEachCountry = (country, layer) => {
+    // layer.options.fillOpacity = Math.random();
 
     layer.on({
-      click: this.changeCountryColor,
+      click: changeCountryColor,
+      dblclick: markSubregion,
     });
+
+    console.log(country.properties)
+    let popupContent = `${country.properties.sovereignt}`;
+    if (country.properties && country.properties.popupContent) {
+      popupContent += country.properties.popupContent;
+    }
+    layer.bindPopup(popupContent);
   };
 
   function colorChange(event) {

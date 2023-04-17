@@ -24,6 +24,7 @@ export const GlobalStoreActionType = {
     HIDE_MODAL: "HIDE_MODAL",
     REMOVE_SUBREGION: "REMOVE_SUBREGION",
     RENAME_SUBREGION: "RENAME_SUBREGION",
+    MARK_SUBREGION_FOR_RENAME: "MARK_SUBREGION_FOR_RENAME",
     SET_SEARCH: "SET_SEARCH",
     SET_SORT: "SET_SORT",
     UPLOAD_FILE: "UPLOAD_FILE",
@@ -61,6 +62,7 @@ function GlobalStoreContextProvider(props) {
         mapMarkedForExport: null,
         search: "",
         filterSearch: "",
+        subregion: null,
     });
     // const history = useHistory();
 
@@ -85,6 +87,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -99,6 +102,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -113,6 +117,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -127,6 +132,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -141,6 +147,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -155,6 +162,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -169,6 +177,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -183,6 +192,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: payload.map,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             // GET ALL LISTS SO WE CAN PRESENT THEM
@@ -198,6 +208,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
 
@@ -213,7 +224,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
-
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -228,7 +239,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
-
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.SET_SEARCH: {
@@ -242,6 +253,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: payload,
                     filterSearch: store.filterSearch,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.SET_FILTER_SEARCH: {
@@ -255,6 +267,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: payload,
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.NAVIGATE_HOME: {
@@ -268,13 +281,13 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: "",
+                    subregion: null,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    newMapCounter: store.newListCounter,
                     uploadType: "",
                     currentMap: payload.currentMap,
                     openComment: store.openComment,
@@ -282,6 +295,35 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    subregion: null,
+                });
+            }
+            case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
+                return setStore({
+                    currentModal: CurrentModal.RENAME_SUBREGION,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: payload.feature,
+                });
+            }
+            case GlobalStoreActionType.RENAME_SUBREGION: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: null,
                 });
             }
             default:
@@ -619,6 +661,39 @@ function GlobalStoreContextProvider(props) {
             }
         }
         getMapToDelete(id);
+    }
+
+    store.markSubregion = function (feature) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME,
+            payload: { feature: feature }
+        });
+    }
+
+    store.changeSubregionName = function (newName) {
+        for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+            if(store.currentMap.dataFromMap.features[i].properties.sovereignt === store.subregion.properties.sovereignt){
+                store.currentMap.dataFromMap.features[i].properties.sovereignt = newName
+                // console.log("Found corresponding subregion name")
+                break
+            }
+        }
+
+        let id = store.currentMap._id;
+        let newMap = store.currentMap;
+        console.log(newMap)
+        async function asyncChangeMapName(id, newMap) {
+            let response = await api.updateMapById(id, newMap);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.RENAME_SUBREGION,
+                    payload: {
+                        currentMap: store.currentMap,
+                    }
+                });
+            }
+        }
+        asyncChangeMapName(id, newMap);
     }
 
     store.deleteMap = function (id) {
