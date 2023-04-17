@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import AuthContext from '../auth'
 import api from './store-request-api'
 import jsTPS from '../common/jsTPS'
+import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 //useContext
 // import { useHistory } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -533,33 +534,33 @@ function GlobalStoreContextProvider(props) {
 
     store.filterBySearch = function () {
         let screenList = [];
-        // if(store.idNamePairs){
-        //     if (store.filterSearch === "mapname" && store.search !== "") {
-        //         console.log("1");
-        //         console.log(store.search);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const mapName = pair.map.name.toLowerCase();
-        //             return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
-        //         });
-        //     } else if (store.filterSearch === "users" && store.search !== "") {
-        //         console.log("2");
-        //         console.log(store.search);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const ownerName = pair.map.owner.toLowerCase();
-        //             return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
-        //         });
-        //     } else {
-        //         console.log("3");
-        //         console.log(store.search);
-        //         console.log(store.filterSearch);
-        //         console.log(store.idNamePairs);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const mapName = pair.map.name.toLowerCase();
-        //             return (store.search === "" && pair.map.publish.isPublished) ||
-        //                 (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
-        //         });
-        //     }
-        // }
+        if(store.idNamePairs){
+            if (store.filterSearch === "mapname" && store.search !== "") {
+                console.log("1");
+                console.log(store.search);
+                screenList = store.idNamePairs.filter(pair => {
+                    const mapName = pair.map.name.toLowerCase();
+                    return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+                });
+            } else if (store.filterSearch === "users" && store.search !== "") {
+                console.log("2");
+                console.log(store.search);
+                screenList = store.idNamePairs.filter(pair => {
+                    const ownerName = pair.map.owner.toLowerCase();
+                    return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+                });
+            } else {
+                console.log("3");
+                console.log(store.search);
+                console.log(store.filterSearch);
+                console.log(store.idNamePairs);
+                screenList = store.idNamePairs.filter(pair => {
+                    const mapName = pair.map.name.toLowerCase();
+                    return (store.search === "" && pair.map.publish.isPublished) ||
+                        (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+                });
+            }
+        }
         
         console.log("searched")
         return screenList;
@@ -689,13 +690,64 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    //CURRENT MAP VERTEX EDITING:
-    store.editMapVertex = function (editedMap) {
+    //this function will be called from Map.js
+    store.editCurrentMapVertex = function (key, newFeature, oldFeature) {
+        this.addEditVertexTransaction(key, newFeature, oldFeature);
+    }
+
+    //this function will be called to add the edit into the transaction stack
+    store.addEditVertexTransaction = (key, newFeature, oldFeature) => {
+        let transaction = new EditVertex_Transaction(store, key, newFeature, oldFeature);
+        tps.addTransaction(transaction);
+    }
+
+    //this function will be called by the editvertex_transaction file to finally preform the functionality
+    store.editVertex = function (key, editedFeature) {
+        
+        store.currentMap.dataFromMap.features.forEach((feature) => {
+            if(key.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
+                const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+                if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
+                  for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+                    if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
+                      feature.geometry.coordinates[i] = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+                    }
+                  }        
+                }
+              } else { //if NO '-' than this means its a Polygon: key="CountryName"
+                if(feature.properties.admin === key){ //if the country name matches the custom key, this is the feature we are editing
+                  console.log("Edited Feature Coordinates Below")
+                  console.log(editedFeature.geometry.coordinates)
+                  console.log("Current Feature Coordinates Below")
+                  console.log(feature.geometry.coordinates)
+                    feature.geometry.coordinates = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+                }
+              }
+        });
+
+        //in the end we re-render by using storeReducer
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
-            payload: { currentMap: editedMap }
+            payload: { currentMap: store.currentMap }
         });
     }
+
+
+    //undo and redo transaction
+    store.undo = function () {
+        tps.undoTransaction();
+    }
+    store.redo = function () {
+        tps.doTransaction();
+    }
+
+    //CURRENT MAP VERTEX EDITING:
+    // store.editMapVertex = function (editedMap) {
+    //     storeReducer({
+    //         type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+    //         payload: { currentMap: editedMap }
+    //     });
+    // }
 
 
 

@@ -94,6 +94,19 @@ export default function Map() {
     navigate("/home");
   }
 
+  function handleUndo() {
+    store.undo();
+    console.log("the supposdly new feature of UNDO:")
+    console.log(store.currentMap.dataFromMap);
+  }
+
+  function handleRedo() {
+    store.redo();
+
+    console.log("the supposdly new feature of REDO:")
+    console.log(store.currentMap.dataFromMap);
+  }
+
   async function handleSaveMap() {
     // const element = featureGroupRef.current;
     // const canvas = await html2canvas(element);
@@ -119,7 +132,7 @@ export default function Map() {
       width: mapContainer.offsetWidth,
       height: mapContainer.offsetHeight,
     }).then(function(canvas) {
-      console.log(canvas)
+      //console.log(canvas)
       const imageData = canvas.toDataURL()
       store.currentMap.image = imageData;
       store.updateCurrentMap();
@@ -141,7 +154,7 @@ export default function Map() {
 
   function onEachCountry(country, layer) {
     const countryName = country.properties.admin;
-    console.log(countryName);
+    //console.log(countryName);
     layer.bindPopup(countryName);
 
     layer.options.fillOpacity = Math.random();
@@ -195,29 +208,48 @@ export default function Map() {
   };
 
   const handleEditable = (e) => {
-    const layers = e.layers;
-    layers.eachLayer(layer => {
+    //const layers = e.layers;
+    //layers.eachLayer(layer => { //ignore dis 4 now .3.
 
-    const editedKey = layer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
-    layer = layer.toGeoJSON()
+    let editedLayer = e.layers.getLayers()[0];
+    console.log(editedLayer);
+    const editedKey = editedLayer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
+    //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
+    
+    let layer = editedLayer.toGeoJSON();
     store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
       if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
         const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
         if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
-          for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
-            if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
-              feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-            }
-          }        
+          store.editCurrentMapVertex(editedKey, layer, feature);
         }
       } else { //if NO '-' than this means its a Polygon
         if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
-          feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+          store.editCurrentMapVertex(editedKey, layer, feature);
+
+          
         }
-      }  
+      }
+      
+      //ignore this is before undo/redo:
+      // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
+      //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+      //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
+      //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+      //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
+      //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+      //       }
+      //     }        
+      //   }
+      // } else { //if NO '-' than this means its a Polygon
+      //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
+      //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+      //   }
+      // }
     });
-    store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
-    });
+
+    //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
+    //});
   };
 
   return (
@@ -252,7 +284,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <UndoIcon style={{ fontSize: "45px" }} titleAccess="Undo" />
+            <UndoIcon style={{ fontSize: "45px" }} titleAccess="Undo" onClick={handleUndo} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -261,7 +293,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" />
+            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
           <StyledIconButton
