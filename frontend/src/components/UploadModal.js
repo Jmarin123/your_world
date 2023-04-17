@@ -71,12 +71,38 @@ export default function UploadModal() {
         })
     }
 
+    const assignName = (dataForMap) => {
+        for(let i = 0; i < dataForMap.features.length; i++){
+            if(typeof dataForMap.features[i].properties.NAME_4 !== 'undefined'){
+                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_4;
+            }
+            else if(typeof dataForMap.features[i].properties.NAME_3 !== 'undefined'){
+                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_3;
+            }
+            else if(typeof dataForMap.features[i].properties.NAME_2 !== 'undefined'){
+                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_2;
+            }
+            else if(typeof dataForMap.features[i].properties.NAME_1 !== 'undefined'){
+                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_1;
+            }
+            else if(typeof dataForMap.features[i].properties.NAME_0 !== 'undefined'){
+                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_0;
+            }
+            else{
+                dataForMap.features[i].properties.name = '';
+            }
+        }
+    
+        return dataForMap;
+    }
+
       async function handleSubmit(event) {
         if(store.uploadType === "shp/dbf"){
             const shpArray = await parseInputFile(file1)
             const dbfArray = await parseInputFile(file2)
 
-            const object = await shapefile.read(shpArray, dbfArray)
+            let object = await shapefile.read(shpArray, dbfArray)
+            assignName(object)
             
             store.createNewMap(object)
         }

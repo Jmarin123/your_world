@@ -95,12 +95,16 @@ getMapById = async (req, res) => {
 
 getAllMaps = async (req, res) => {
     try {
-        const maps = await Map.find({});
+        let maps = await Map.find({});
         if (!maps.length) {
             return res
                 .status(404)
                 .json({ success: false, error: `maps not found` });
         }
+
+        // for(let i = 0; i < maps.length; i++){
+        //     maps[i].dataFromMap = {}
+        // }
 
         // PUT ALL THE LISTS INTO ID, NAME PAIRS
         const pairs = maps.map((map) => {
@@ -132,6 +136,7 @@ getMapPairs = async (req, res) => {
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             let pairs = [];
             for (let key in maps) {
+                // maps[key].dataFromMap = {}
                 let map = maps[key];
                 let pair = {
                     _id: map._id,

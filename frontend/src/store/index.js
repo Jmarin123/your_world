@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import AuthContext from '../auth'
 import api from './store-request-api'
 import jsTPS from '../common/jsTPS'
+import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 //useContext
 // import { useHistory } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -23,6 +24,7 @@ export const GlobalStoreActionType = {
     HIDE_MODAL: "HIDE_MODAL",
     REMOVE_SUBREGION: "REMOVE_SUBREGION",
     RENAME_SUBREGION: "RENAME_SUBREGION",
+    MARK_SUBREGION_FOR_RENAME: "MARK_SUBREGION_FOR_RENAME",
     SET_SEARCH: "SET_SEARCH",
     SET_SORT: "SET_SORT",
     UPLOAD_FILE: "UPLOAD_FILE",
@@ -31,6 +33,8 @@ export const GlobalStoreActionType = {
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
     SET_FILTER_SEARCH: "SET_FILTER_SEARCH",
     DUPLICATE_MAP: "DUPLICATE_MAP",
+    EDIT_MAP_VERTEX: "EDIT_MAP_VERTEX",
+    NAVIGATE_PUBLIC: "NAVIGATE_PUBLIC",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -59,6 +63,8 @@ function GlobalStoreContextProvider(props) {
         mapMarkedForExport: null,
         search: "",
         filterSearch: "",
+        subregion: null,
+        publicPagePairs: [],
     });
     // const history = useHistory();
 
@@ -83,6 +89,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -97,6 +105,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -111,6 +121,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -125,6 +137,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -139,6 +153,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -153,6 +169,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -167,6 +185,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -181,6 +201,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: payload.map,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             // GET ALL LISTS SO WE CAN PRESENT THEM
@@ -196,6 +218,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
 
@@ -211,7 +235,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
-
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -226,7 +251,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     filterSearch: store.filterSearch,
-
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_SEARCH: {
@@ -240,6 +266,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: payload,
                     filterSearch: store.filterSearch,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_FILTER_SEARCH: {
@@ -253,6 +281,8 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: payload,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.NAVIGATE_HOME: {
@@ -266,6 +296,68 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: "",
+                    subregion: null,
+                    publicPagePairs: [],
+                });
+            }
+            case GlobalStoreActionType.NAVIGATE_PUBLIC: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: false,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: "",
+                    filterSearch: "",
+                    subregion: null,
+                    publicPagePairs: payload.screenList,
+                });
+            }
+            case GlobalStoreActionType.EDIT_MAP_VERTEX: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: null,
+                    publicPagePairs: [],
+                });
+            }
+            case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
+                return setStore({
+                    currentModal: CurrentModal.RENAME_SUBREGION,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: payload.feature,
+                    publicPagePairs: [],
+                });
+            }
+            case GlobalStoreActionType.RENAME_SUBREGION: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: null,
+                    publicPagePairs: [],
                 });
             }
             default:
@@ -437,12 +529,29 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.navigatePublic = function (obj) {
-        storeReducer({
-            type: GlobalStoreActionType.NAVIGATE_HOME,
-            payload: { currentMap: null }
-        })
-        navigate("/public");
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getAllMaps();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+
+                let screenList = []
+                screenList = pairsArray.filter(pair => {
+                    return pair.map.publish.isPublished;
+                });
+
+                storeReducer({
+                    type: GlobalStoreActionType.NAVIGATE_PUBLIC,
+                    payload: { screenList: screenList }
+                });
+            }
+            else {
+                console.log("navigatePublic - could not get list pairs");
+            }
+        }
+        asyncLoadIdNamePairs();
         tps.clearAllTransactions();
+
+        navigate("/public");
     }
 
     store.navigateSearch = async function (obj) {
@@ -484,37 +593,66 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.filterBySearch = function () {
-        let screenList = [];
-        // if(store.idNamePairs){
-        //     if (store.filterSearch === "mapname" && store.search !== "") {
-        //         console.log("1");
-        //         console.log(store.search);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const mapName = pair.map.name.toLowerCase();
-        //             return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
-        //         });
-        //     } else if (store.filterSearch === "users" && store.search !== "") {
-        //         console.log("2");
-        //         console.log(store.search);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const ownerName = pair.map.owner.toLowerCase();
-        //             return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
-        //         });
-        //     } else {
-        //         console.log("3");
-        //         console.log(store.search);
-        //         console.log(store.filterSearch);
-        //         console.log(store.idNamePairs);
-        //         screenList = store.idNamePairs.filter(pair => {
-        //             const mapName = pair.map.name.toLowerCase();
-        //             return (store.search === "" && pair.map.publish.isPublished) ||
-        //                 (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
-        //         });
-        //     }
-        // }
+    // store.filterBySearch = function () {
+    //     let screenList = [];
+    //     if(store.idNamePairs){
+    //         if (store.filterSearch === "mapname" && store.search !== "") {
+    //             console.log("1");
+    //             console.log(store.search);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const mapName = pair.map.name.toLowerCase();
+    //                 return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+    //             });
+    //         } else if (store.filterSearch === "users" && store.search !== "") {
+    //             console.log("2");
+    //             console.log(store.search);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const ownerName = pair.map.owner.toLowerCase();
+    //                 return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+    //             });
+    //         } else {
+    //             console.log("3");
+    //             console.log(store.search);
+    //             console.log(store.filterSearch);
+    //             console.log(store.idNamePairs);
+    //             screenList = store.idNamePairs.filter(pair => {
+    //                 const mapName = pair.map.name.toLowerCase();
+    //                 return (store.search === "" && pair.map.publish.isPublished) ||
+    //                     (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+    //             });
+    //         }
+    //     }
 
-        console.log("searched")
+    //     console.log("searched")
+    //     return screenList;
+    // };
+
+    store.getRecentlyPublished = function () {
+        let screenList = [];
+
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+
+                screenList = pairsArray.filter(pair => {
+                    return pair.map.publish.isPublished;
+                });
+                console.log("store.loadIdNamePairs");
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+        }
+        asyncLoadIdNamePairs();
+        console.log(screenList)
+        tps.clearAllTransactions();
+
+
         return screenList;
     };
 
@@ -567,6 +705,34 @@ function GlobalStoreContextProvider(props) {
                 payload: { id: id, map: map }
             });
         }
+    }
+
+
+
+    store.changeSubregionName = function (newName) {
+        for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
+            if (store.currentMap.dataFromMap.features[i].properties.sovereignt === store.subregion.properties.sovereignt) {
+                store.currentMap.dataFromMap.features[i].properties.sovereignt = newName
+                // console.log("Found corresponding subregion name")
+                break
+            }
+        }
+
+        let id = store.currentMap._id;
+        let newMap = store.currentMap;
+        console.log(newMap)
+        async function asyncChangeMapName(id, newMap) {
+            let response = await api.updateMapById(id, newMap);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.RENAME_SUBREGION,
+                    payload: {
+                        currentMap: store.currentMap,
+                    }
+                });
+            }
+        }
+        asyncChangeMapName(id, newMap);
     }
 
     store.deleteMap = async function (id) {
@@ -628,6 +794,66 @@ function GlobalStoreContextProvider(props) {
             payload: { map: map }
         });
     }
+
+    //this function will be called from Map.js
+    store.editCurrentMapVertex = function (key, newFeature, oldFeature) {
+        this.addEditVertexTransaction(key, newFeature, oldFeature);
+    }
+
+    //this function will be called to add the edit into the transaction stack
+    store.addEditVertexTransaction = (key, newFeature, oldFeature) => {
+        let transaction = new EditVertex_Transaction(store, key, newFeature, oldFeature);
+        tps.addTransaction(transaction);
+    }
+
+    //this function will be called by the editvertex_transaction file to finally preform the functionality
+    store.editVertex = function (key, editedFeature) {
+
+        store.currentMap.dataFromMap.features.forEach((feature) => {
+            if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+                const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+                if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
+                    for (let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+                        if (i === parseInt(parts[1])) { //see if the index of the feature is equal to "index_location_of_multipolygon"
+                            feature.geometry.coordinates[i] = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+                        }
+                    }
+                }
+            } else { //if NO '-' than this means its a Polygon: key="CountryName"
+                if (feature.properties.admin === key) { //if the country name matches the custom key, this is the feature we are editing
+                    console.log("Edited Feature Coordinates Below")
+                    console.log(editedFeature.geometry.coordinates)
+                    console.log("Current Feature Coordinates Below")
+                    console.log(feature.geometry.coordinates)
+                    feature.geometry.coordinates = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+                }
+            }
+        });
+
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+
+
+    //undo and redo transaction
+    store.undo = function () {
+        tps.undoTransaction();
+    }
+    store.redo = function () {
+        tps.doTransaction();
+    }
+
+    //CURRENT MAP VERTEX EDITING:
+    // store.editMapVertex = function (editedMap) {
+    //     storeReducer({
+    //         type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+    //         payload: { currentMap: editedMap }
+    //     });
+    // }
+
 
 
     return (

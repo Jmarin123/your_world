@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -45,21 +45,27 @@ const buttonBox = {
 
 export default function RenameModal() {
     const { store } = useContext(GlobalStoreContext);
-    // if (store.listMarkedForDeletion) {
-    //         name = store.listMarkedForDeletion.name;
-    //     }
-    function handleConfirmRename(event) {
-        // store.deleteMarkedList();
-        console.log("Confirm rename modal")
+    const [oldName, setOldName] = useState("");
+    const [newName, setNewName] = useState("");
+
+    useEffect(() => {
+        store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
+        setNewName("")
+      }, [store.subregion]);
+
+    function handleConfirmRename() {
+        store.changeSubregionName(newName);
     }
     function handleCloseModal(event) {
         store.hideModals();
     }
+    function handleUpdateName(event) {
+        setNewName(event.target.value)
+    }
 
     return (
         <Modal
-            // open={store.mapMarkedForDeletion !== null}
-            open={false}
+            open={store.currentModal === "RENAME_SUBREGION"}
         >
             <Grid container sx={style}>
                 <Grid container item >
@@ -70,7 +76,8 @@ export default function RenameModal() {
                 <Grid container item>
                     <Box>
                         <Typography id="modal-text" xs={4}>Name: </Typography>
-                        <TextField id="modal-textfield" xs={12} placeholder="Chicago"></TextField>
+                        <TextField id="modal-textfield" xs={12} 
+                            placeholder={oldName} value={newName} onChange={handleUpdateName}></TextField>
                     </Box>
                 </Grid>
                 <Grid container item sx={buttonBox}>
