@@ -47,7 +47,7 @@ function Comment(props) {
             event.preventDefault();
             map.comments.push([(auth.user ? userName : ""), event.target.value]);
 
-            store.updateCurrentMap(map);
+            store.updateCurrentMap();
             event.target.value = "";
         }
     }

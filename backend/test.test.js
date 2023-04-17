@@ -21,20 +21,6 @@ describe("Get To Splash", () => {
     })
 })
 
-describe('Post To login', () => {
-    test('Fail to login due to missing fields', async () => {
-        const response = await request(app).post('/auth/login').send({ email: "joe" });
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({ errorMessage: "Please enter all required fields." });
-    })
-
-    test('Fail to login due to no existing member', async () => {
-        const response = await request(app).post('/auth/login').send({ email: "joe", password: "joe" });
-        expect(response.status).toBe(401);
-        expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
-    })
-})
-
 describe('Post To Register', () => {
     test('Fail to register due to missing fields', async () => {
         const response = await request(app).post('/auth/register').send({ email: "joe" });
@@ -47,4 +33,19 @@ describe('Post To Register', () => {
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ errorMessage: "Please enter a password of at least 8 characters." });
     })
+})
+
+describe('Post To login', () => {
+    test('Fail to login due to missing fields', async () => {
+        const response = await request(app).post('/auth/login').send({ email: "joe" });
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ errorMessage: "Please enter all required fields." });
+    })
+
+    test('Fail to login due to no existing member', async () => {
+        const response = await request(app).post('/auth/login').send({ email: "joe", password: "joe" });
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({ errorMessage: "Wrong email or password provided." });
+    })
+
 })
