@@ -31,6 +31,7 @@ export const GlobalStoreActionType = {
     MARK_MAP_FOR_EXPORT: "MARK_MAP_FOR_EXPORT",
     SET_FILTER_SEARCH: "SET_FILTER_SEARCH",
     DUPLICATE_MAP: "DUPLICATE_MAP",
+    EDIT_MAP_VERTEX: "EDIT_MAP_VERTEX"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -266,6 +267,20 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: "",
                     filterSearch: "",
+                });
+            }
+            case GlobalStoreActionType.EDIT_MAP_VERTEX: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    newMapCounter: store.newListCounter,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
                 });
             }
             default:
@@ -673,6 +688,15 @@ function GlobalStoreContextProvider(props) {
             payload: { map: map }
         });
     }
+
+    //CURRENT MAP VERTEX EDITING:
+    store.editMapVertex = function (editedMap) {
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: editedMap }
+        });
+    }
+
 
 
     return (
