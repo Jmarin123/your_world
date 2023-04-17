@@ -26,7 +26,8 @@ export default function SearchPage() {
     //     }
     // }
 
-    mapCard = store.filterBySearch();
+    // mapCard = store.filterBySearch();
+    mapCard = [];
 
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
