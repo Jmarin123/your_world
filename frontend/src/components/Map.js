@@ -321,13 +321,13 @@ const buttonBox = {
       if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
         const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
         if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
-          store.editCurrentMapVertex(editedKey, layer, feature);
+          let copiedFeature = JSON.parse(JSON.stringify(feature));
+          store.editCurrentMapVertex(editedKey, layer, copiedFeature);
         }
       } else { //if NO '-' than this means its a Polygon
         if (feature.properties.admin === editedKey) { //if the country name matches the custom key, this is the feature we are editing
-          store.editCurrentMapVertex(editedKey, layer, feature);
-
-
+          let copiedFeature = JSON.parse(JSON.stringify(feature));
+          store.editCurrentMapVertex(editedKey, layer, copiedFeature);
         }
       }
 
