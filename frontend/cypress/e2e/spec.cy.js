@@ -44,7 +44,7 @@ describe('Try to login', () => {
     cy.location('pathname').should('eq', '/login');
     cy.get('#loginInput').type("check@gmail.com");
     cy.get('#loginPassword').type("password");
-    cy.get('[data-cy="registerButton"]').click();
+    cy.get('#loginButton').click();
     cy.location('pathname').should('eq', '/home')
   })
 })
