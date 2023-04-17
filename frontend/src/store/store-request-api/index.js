@@ -25,7 +25,8 @@ const api = axios.create({
 export const createMap = (payload) => api.post('/api/map/', payload)
 export const deleteMapById = (id) => api.delete(`/api/map/${id}`)
 export const getMapById = (id) => api.get(`/api/map/${id}`)
-export const getMapPairs = () => api.get('/api/mappairs/')
+export const getMapPairs = () => api.get('/api/mappairs/');
+export const updateMapNameById = (id, name) => api.put(`/api/map/${id}/name`, { name: name })
 export const updateMapById = (id, map) => {
     return api.put(`/api/map/${id}`, {
         // SPECIFY THE PAYLOAD
@@ -41,7 +42,8 @@ const apis = {
     getMapById,
     getMapPairs,
     getAllMaps,
-    updateMapById
+    updateMapById,
+    updateMapNameById
 }
 
 export default apis

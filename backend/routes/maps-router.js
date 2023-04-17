@@ -16,5 +16,6 @@ router.get('/mappairs', auth.verify, MapController.getMapPairs)
 // // router.get('/playlists', auth.verify, PlaylistController.getPlaylists)
 router.get('/maps', MapController.getAllMaps)
 router.put('/map/:id', MapController.updateMap)
+router.put('/map/:id/name', MapController.updateMapNameById)
 
 module.exports = router

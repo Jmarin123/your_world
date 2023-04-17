@@ -273,89 +273,60 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.showRenameModal = (mapToEdit) => {
-        storeReducer({
-            type: GlobalStoreActionType.EDIT_MAP,
-            payload: { currentMap: mapToEdit }
-        });
+    store.showRenameModal = async (id) => {
+        let response = await api.getMapById(id);
+        if (response.data.success) {
+            let map = response.data.map;
+            storeReducer({
+                type: GlobalStoreActionType.EDIT_MAP,
+                payload: { currentMap: map }
+            });
+        }
     }
     store.isRenameModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_MAP;
     }
-    store.changeMapName = function (newName) {
+    store.changeMapName = async function (newName) {
         // GET THE LIST
         let id = store.currentMap._id;
-        console.log(id);
-        async function asyncChangeMapName(id) {
-            let flag = 0;
-            // for (let i = 0; i < store.idNamePairs.length; i++) {
-            //     if (store.idNamePairs[i].name.toLowerCase() == newName.toLowerCase()) {
-            //         console.log("same name");
-            //         flag = 1;
-            //         storeReducer({
-            //             type: GlobalStoreActionType.SAME_NAME,
-            //             payload: {}
-            //         });
-            //     }
-            // }
-            if (!flag) {
-                let response = await api.getMapById(id);
-                if (response.data.success) {
-                    let map = response.data.map;
-                    map.name = newName;
-                    async function updateMap(map) {
-
-                        response = await api.updateMapById(map._id, map);
-                        console.log(map._id);
-                        if (response.data.success) {
-                            async function getMapPairs(map) {
-                                response = await api.getMapPairs();
-                                if (response.data.success) {
-                                    let pairsArray = response.data.idNamePairs;
-                                    console.log("store.changeMapName");
-                                    storeReducer({
-                                        type: GlobalStoreActionType.CHANGE_MAP_NAME,
-                                        payload: {
-                                            idNamePairs: pairsArray,
-                                        }
-                                    });
-
-                                }
-
-                            }
-                            getMapPairs(map);
-
-                        }
+        let response = await api.updateMapNameById(id, newName);
+        if (response.data.success) {
+            response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log("store.changeMapName");
+                storeReducer({
+                    type: GlobalStoreActionType.CHANGE_MAP_NAME,
+                    payload: {
+                        idNamePairs: pairsArray,
                     }
-                    updateMap(map);
-                }
-            }
+                });
 
+            }
         }
-        asyncChangeMapName(id);
+
+
     }
 
     // Update new list 
-    store.updateMap = function (map) {
-        async function asyncUpdateMap() {
-            const response = await api.updateMapById(map._id, map);
+    store.updateMap = async function (map) {
+        const response = await api.updateMapById(map._id, map);
+        if (response.data.success) {
+            console.log("store.updateMap");
+            const response = await api.getMapPairs();
             if (response.data.success) {
-                console.log("store.updateMap");
-                const response = await api.getMapPairs();
-                if (response.data.success) {
-                    let pairsArray = response.data.idNamePairs;
-                    storeReducer({
-                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                        payload: pairsArray
-                    });
-                }
-                else {
-                    console.log("API FAILED TO GET THE MAP PAIRS");
-                }
-
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
             }
+            else {
+                console.log("API FAILED TO GET THE MAP PAIRS");
+            }
+
         }
-        asyncUpdateMap();
+
     }
 
     store.showUpload = function (uploadType) {
@@ -377,22 +348,19 @@ function GlobalStoreContextProvider(props) {
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
-    store.loadIdNamePairs = function () {
-        async function asyncLoadIdNamePairs() {
-            const response = await api.getMapPairs();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                console.log("store.loadIdNamePairs");
-                storeReducer({
-                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
-                });
-            }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
-            }
+    store.loadIdNamePairs = async function () {
+        const response = await api.getMapPairs();
+        if (response.data.success) {
+            let pairsArray = response.data.idNamePairs;
+            console.log("store.loadIdNamePairs");
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
         }
-        asyncLoadIdNamePairs();
+        else {
+            console.log("API FAILED TO GET THE LIST PAIRS");
+        }
         tps.clearAllTransactions();
     }
 
@@ -545,35 +513,34 @@ function GlobalStoreContextProvider(props) {
         //         });
         //     }
         // }
-        
+
         console.log("searched")
         return screenList;
     };
 
-    store.updateCurrentMap = function () {
-        async function asyncUpdateCurrentMap() {
-            const response = await api.updateMapById(store.currentMap._id, store.currentMap);
-            if (response.data.success) {
-                console.log("store.updateCurrentMap");
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_MAP,
-                    payload: {
-                        currentMap: store.currentMap
-                    }
-                });
+    store.updateCurrentMap = async function () {
+        const response = await api.updateMapById(store.currentMap._id, store.currentMap);
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_MAP,
+                payload: {
+                    currentMap: store.currentMap
+                }
+            });
 
-            }
         }
-        asyncUpdateCurrentMap();
 
     }
 
-    store.setCurrentMap = function (newMap) {
-        console.log(newMap);
-        storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_MAP,
-            payload: { currentMap: newMap }
-        });
+    store.setCurrentMap = async function (id) {
+        let newMap = await api.getMapById(id);
+        if (newMap.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_MAP,
+                payload: { currentMap: newMap.data.map }
+            });
+            console.log("EHHHH", store.currentMap);
+        }
     }
 
     store.openCommentView = function () {
@@ -590,81 +557,69 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.markMapForDeletion = function (id) {
+    store.markMapForDeletion = async function (id) {
         console.log(id);
-        async function getMapToDelete(id) {
-            let response = await api.getMapById(id);
-            if (response.data.success) {
-                let map = response.data.map;
-                storeReducer({
-                    type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
-                    payload: { id: id, map: map }
-                });
-            }
+        let response = await api.getMapById(id);
+        if (response.data.success) {
+            let map = response.data.map;
+            storeReducer({
+                type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+                payload: { id: id, map: map }
+            });
         }
-        getMapToDelete(id);
     }
 
-    store.deleteMap = function (id) {
-        async function processDelete(id) {
-            await api.deleteMapById(id);
-            console.log("store.deleteList");
-            store.loadIdNamePairs();
-            navigate("/home");
-        }
-        processDelete(id);
+    store.deleteMap = async function (id) {
+        await api.deleteMapById(id);
+        console.log("store.deleteList");
+        store.loadIdNamePairs();
+        navigate("/home");
     }
+
     store.deleteMarkedMap = function () {
         store.deleteMap(store.mapIdMarkedForDeletion);
     }
 
-    store.duplicateMap = function (map) {
-        async function asyncLoadIdNamePairs() {
-            let response = await api.getMapPairs();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
-                let newMapName = map.name;
-                async function asyncCreateMap() {
-                    let payload = {
-                        name: newMapName,
-                        ownerEmail: auth.user.email,
-                        owner: auth.user.firstName + " " + auth.user.lastName,
-                        dataFromMap: map.dataFromMap,
-                        comments: [],
-                        likes: [],
-                        dislikes: [],
-                        publish: { isPublished: false, publishedDate: new Date() },
-                        image: map.image
-                    };
-                    const response = await api.createMap(payload);
-                    // console.log("createNewList response: " + response);
-                    if (response.status === 201) {
-                        tps.clearAllTransactions();
-                        let newMap = response.data.map;
-                        console.log("store.duplicateMap");
-                        storeReducer({
-                            type: GlobalStoreActionType.DUPLICATE_MAP,
-                            payload: newMap
-                        }
-                        );
-
-                        // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-                        // history.push("/home/playlist/" + newList._id);
-                        store.loadIdNamePairs();
-                        // navigate("/map/" + store.currentMap._id)
-                    }
-                    else {
-                        console.log("API FAILED TO CREATE A NEW MAP");
-                    }
+    store.duplicateMap = async function (map) {
+        let response = await api.getMapPairs();
+        if (response.data.success) {
+            let pairsArray = response.data.idNamePairs;
+            console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
+            let newMapName = map.name;
+            let payload = {
+                name: newMapName,
+                ownerEmail: auth.user.email,
+                owner: auth.user.firstName + " " + auth.user.lastName,
+                dataFromMap: map.dataFromMap,
+                comments: [],
+                likes: [],
+                dislikes: [],
+                publish: { isPublished: false, publishedDate: new Date() },
+                image: map.image
+            };
+            const response = await api.createMap(payload);
+            if (response.status === 201) {
+                tps.clearAllTransactions();
+                let newMap = response.data.map;
+                console.log("store.duplicateMap");
+                storeReducer({
+                    type: GlobalStoreActionType.DUPLICATE_MAP,
+                    payload: newMap
                 }
-                asyncCreateMap();
+                );
+
+                // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+                // history.push("/home/playlist/" + newList._id);
+                store.loadIdNamePairs();
+                // navigate("/map/" + store.currentMap._id)
             }
             else {
-                console.log("API FAILED TO GET THE MAP PAIRS");
+                console.log("API FAILED TO CREATE A NEW MAP");
             }
         }
-        asyncLoadIdNamePairs();
+        else {
+            console.log("API FAILED TO GET THE MAP PAIRS");
+        }
     }
 
     store.markMapForExport = function (map) {

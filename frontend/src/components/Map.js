@@ -81,6 +81,7 @@ export default function Map() {
 
   function handlePublishMap() {
     let newMap = store.currentMap;
+    console.log("TRYNNA PUBLISH AS THIS NEW MAP!", newMap);
     newMap.publish.isPublished = true;
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
@@ -90,7 +91,6 @@ export default function Map() {
     store.updateMap(newMap);
     navigate("/home");
   }
-
   async function handleSaveMap() {
     // const element = featureGroupRef.current;
     // const canvas = await html2canvas(element);
@@ -115,15 +115,19 @@ export default function Map() {
       useCORS: true,
       width: mapContainer.offsetWidth,
       height: mapContainer.offsetHeight,
-    }).then(function(canvas) {
+    }).then(function (canvas) {
       console.log(canvas)
       const imageData = canvas.toDataURL()
       store.currentMap.image = imageData;
       store.updateCurrentMap();
+
       // renderingArea.appendChild(canvas);
     });
-  }
 
+  }
+  function handleRedo() {
+    return;
+  }
 
   // function printMesssageToConsole(event){
   //   console.log("Clicked");
@@ -200,7 +204,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" />
+            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo()} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -332,17 +336,17 @@ export default function Map() {
 
       <Box id="mapBoxEdit" component="form" noValidate >
         <div id="mapContainer">
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={ center }>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {
-            store.currentMap ? renderedMap : <div></div>
-          }
-          <FeatureGroup ref={featureGroupRef}>
-            <EditControl
-              position='topright'
-            />
-          </FeatureGroup>
-        </MapContainer>
+          <MapContainer style={{ height: "80vh" }} zoom={2} center={center}>
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {
+              store.currentMap ? renderedMap : <div></div>
+            }
+            <FeatureGroup ref={featureGroupRef}>
+              <EditControl
+                position='topright'
+              />
+            </FeatureGroup>
+          </MapContainer>
         </div>
         <input
           type="color"
