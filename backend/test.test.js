@@ -35,7 +35,7 @@ describe('Post To Register', () => {
     })
 
     test('Proper register', async () => {
-        const response = await request(app).post('/auth/register').send({ firstName: "joe", lastName: "aa", username: "lol", email: "test@gmail.com", password: "password1", passwordVerify: "password" });
+        const response = await request(app).post('/auth/register').send({ firstName: "joe", lastName: "aa", username: "lol", email: "test@gmail.com", password: "password1", passwordVerify: "password1" });
         expect(response.status).toBe(200)
         expect(response.body).toEqual({
             success: true,
