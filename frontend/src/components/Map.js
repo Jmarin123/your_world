@@ -33,6 +33,11 @@ import Select from "@mui/material/Select";
 import { Button } from '@mui/material';
 import html2canvas from 'html2canvas';
 
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+
 // import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
 
@@ -46,9 +51,52 @@ export default function Map() {
   //for new map editing
   const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
 
+  const [oldName, setOldName] = useState("");
+  const [newName, setNewName] = useState("");
+
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
   }, [store.currentMap]);
+
+  useEffect(() => {
+    store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
+    setNewName("")
+  }, [store.subregion]);
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 423,
+    height: 311,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
+    p: 4,
+};
+
+const top = {
+    position: 'absolute',
+    width: 423,
+    height: 71,
+    left: 0,
+    top: 0,
+    bgcolor: '#756060',
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+    borderBottomLeftRadius: 2,
+    borderBottomRightRadius: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
+
+const buttonBox = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
 
   // function findCenter() {
   //   console.log('Component mounted');
@@ -67,6 +115,40 @@ export default function Map() {
   const handleChange = (event) => {
     setFont(event.target.value);
   };
+
+  function handleConfirmRename() {
+    store.changeSubregionName(newName);
+  }
+  function handleCloseModal(event) {
+      store.hideModals();
+  }
+  function handleUpdateName(event) {
+      setNewName(event.target.value)
+  }
+
+  let modal = <Modal
+  open={store.currentModal === "RENAME_SUBREGION"}
+>
+  <Grid container sx={style}>
+      <Grid container item >
+          <Box sx={top}>
+              <Typography id="modal-heading">Rename Subregion</Typography>
+          </Box>
+      </Grid>
+      <Grid container item>
+          <Box>
+              <Typography id="modal-text" xs={4}>Name: </Typography>
+              <TextField id="modal-textfield" xs={12} 
+                  placeholder={oldName} value={newName} onChange={handleUpdateName}></TextField>
+          </Box>
+      </Grid>
+      <Grid container item sx={buttonBox}>
+          <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
+          <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+
+      </Grid>
+  </Grid>
+</Modal>
 
   let StyledIconButton = styled(IconButton)({
     color: "black",
@@ -186,8 +268,8 @@ export default function Map() {
     setColor(event.target.value);
   };
 
-  store.currentMap.dataFromMap.features.forEach((feature, index) => {
-    store.currentMap.dataFromMap.features[index] = turf.flip(feature);
+  newMap.features.forEach((feature, index) => {
+    newMap.features[index] = turf.flip(feature);
   });
 
   let renderedMap = <GeoJSON
@@ -465,6 +547,7 @@ export default function Map() {
         />
       </Box>
       {/* <div id="renderingArea"></div> */}
+      {modal}
     </Box>
   );
 }

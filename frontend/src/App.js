@@ -11,7 +11,7 @@ import Map from './components/Map';
 import HomePage from './components/HomePage';
 import Mapview from './components/Mapview';
 import AppBanner from './components/AppBanner';
-import RenameModal from './components/RenameModal'
+// import RenameModal from './components/RenameModal'
 import DeleteModal from './components/DeleteModal'
 import ErrorModal from './components/ErrorModal'
 import ExportModal from './components/ExportModal'
@@ -47,7 +47,7 @@ const App = () => {
             <Route path="/map/:id" element={<Map />} />
             <Route path="/mapview/:id" element={<Mapview />} />
           </Routes>
-          <RenameModal />
+          {/* <RenameModal /> */}
           <RenameMapModal />
           <DeleteModal />
           <ErrorModal />

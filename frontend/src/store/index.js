@@ -836,6 +836,12 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.markSubregion = function (feature) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME,
+            payload: { feature: feature }
+        });
+    }
 
     //undo and redo transaction
     store.undo = function () {
