@@ -118,10 +118,22 @@ const buttonBox = {
 
   function handleConfirmRename() {
     store.changeSubregionName(newName);
+
+    // renderedMap = <GeoJSON
+    // style={countryStyle}
+    // data={store.currentMap ? store.currentMap.dataFromMap.features : null}
+    // //data={newMap ? newMap.features : null}
+    // onEachFeature={onEachCountry}
+    // />
+
+    
+    setMaplayout(newMap ? renderedMap : <div></div>)
   }
+
   function handleCloseModal(event) {
       store.hideModals();
       //store.updateSubregionName();
+      setMaplayout(newMap ? renderedMap : <div></div>)
   }
   function handleUpdateName(event) {
       setNewName(event.target.value)
@@ -287,6 +299,7 @@ const buttonBox = {
 
   function markSubregion(event) { // for name change
     console.log("marked subregion")
+    setMaplayout(<div></div>)
     console.log(event.target.feature.properties.sovereignt)
 
     store.markSubregion(event.target.feature)
@@ -307,6 +320,7 @@ const buttonBox = {
     }
     layer.bindPopup(popupContent);
   };
+
 
   function colorChange(event) {
     setColor(event.target.value);
