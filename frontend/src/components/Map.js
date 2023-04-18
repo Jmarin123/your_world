@@ -184,15 +184,58 @@ const buttonBox = {
 
   function handleUndo() {
     store.undo();
-    console.log("the supposdly new feature of UNDO:")
-    console.log(store.currentMap.dataFromMap);
+   
+    if (MapLayOutFLAG === 1) {
+      MapLayOutFLAG = 1
+      setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+            ));
+            return polygons;
+          }
+          return null;
+        })}
+        <EditControl
+          position='topright'
+          onEdited={handleEditable}
+        />
+      </FeatureGroup>)
+    } else {
+      MapLayOutFLAG = 0
+      setMaplayout(newMap ? renderedMap : <div></div>)
+    }
   }
 
   function handleRedo() {
     store.redo();
 
-    console.log("the supposdly new feature of REDO:")
-    console.log(store.currentMap.dataFromMap);
+    if (MapLayOutFLAG === 1) {
+      MapLayOutFLAG = 1
+      setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+            ));
+            return polygons;
+          }
+          return null;
+        })}
+        <EditControl
+          position='topright'
+          onEdited={handleEditable}
+        />
+      </FeatureGroup>)
+    } else {
+      MapLayOutFLAG = 0
+      setMaplayout(newMap ? renderedMap : <div></div>)
+    }
   }
 
   async function handleSaveMap() {

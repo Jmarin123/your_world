@@ -734,14 +734,6 @@ function GlobalStoreContextProvider(props) {
         asyncChangeMapName(id, newMap);
     }
 
-    store.updateSubregionName = function () {
-        storeReducer({
-            type: GlobalStoreActionType.RENAME_SUBREGION,
-            payload: {
-                currentMap: store.currentMap,
-            }
-        });
-    }
 
     store.deleteMap = async function (id) {
         await api.deleteMapById(id);
@@ -828,14 +820,6 @@ function GlobalStoreContextProvider(props) {
                             } else {
                                 feature.geometry.coordinates[i] = editedFeature.geometry.coordinates
                             }
-
-                            //feature.geometry.coordinates[i] = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-                            // console.log("Our Feature Coordinates:")
-                            // console.log(feature.geometry.coordinates[i])
-                            // console.log("Edited Feature Coordinates:")
-                            // console.log(editedFeature.geometry.coordinates)
-                            // console.log("Edited Feature Coordinates LENGTH:")
-                            // console.log(editedFeature.geometry.coordinates.length)
                         }
                     }
                 }
