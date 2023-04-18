@@ -1,42 +1,20 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom'
-//Component
-import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
-// import mapData from "./custom.json";
-import "leaflet/dist/leaflet.css";
-import * as turf from '@turf/turf';
-import { GlobalStoreContext } from '../store'
-import { useContext, useState, useEffect } from 'react'
-import { FeatureGroup, Polygon } from 'react-leaflet';
-import { EditControl } from "react-leaflet-draw"
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Statusbar from './Statusbar';
-import ExploreIcon from '@mui/icons-material/Explore';
-import IconButton from '@mui/material/IconButton';
-import SaveIcon from '@mui/icons-material/Save';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
-import CompressIcon from '@mui/icons-material/Compress';
-import GridViewIcon from '@mui/icons-material/GridView';
-import MergeIcon from '@mui/icons-material/Merge';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import EmojiFlagsIcon from '@mui/icons-material/EmojiFlags';
-import CreateIcon from '@mui/icons-material/Create';
-import TitleIcon from '@mui/icons-material/Title';
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { Button } from '@mui/material';
-import html2canvas from 'html2canvas';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import { GlobalStoreContext } from '../store'
+
+import { styled } from '@mui/material/styles';
+import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
+import { Explore, Save, Undo, Redo, Compress, GridView, Merge, 
+  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title } from '@mui/icons-material/';
+
+import Statusbar from './Statusbar';
+
+import "leaflet/dist/leaflet.css";
+import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw"
+import * as turf from '@turf/turf';
+import html2canvas from 'html2canvas';
 
 // import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
@@ -118,23 +96,14 @@ const buttonBox = {
 
   function handleConfirmRename() {
     store.changeSubregionName(newName);
-
-    // renderedMap = <GeoJSON
-    // style={countryStyle}
-    // data={store.currentMap ? store.currentMap.dataFromMap.features : null}
-    // //data={newMap ? newMap.features : null}
-    // onEachFeature={onEachCountry}
-    // />
-
-    
     setMaplayout(newMap ? renderedMap : <div></div>)
   }
 
   function handleCloseModal(event) {
       store.hideModals();
-      //store.updateSubregionName();
       setMaplayout(newMap ? renderedMap : <div></div>)
   }
+
   function handleUpdateName(event) {
       setNewName(event.target.value)
   }
@@ -158,14 +127,12 @@ const buttonBox = {
       <Grid container item sx={buttonBox}>
           <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
           <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
-
       </Grid>
   </Grid>
 </Modal>
 
   let StyledIconButton = styled(IconButton)({
     color: "black",
-
     '&:hover': {
       opacity: 1,
       transition: "color 0.7s, transform 0.7s",
@@ -275,7 +242,6 @@ const buttonBox = {
       width: mapContainer.offsetWidth,
       height: mapContainer.offsetHeight,
     }).then(function (canvas) {
-      //console.log(canvas)
       const imageData = canvas.toDataURL()
       store.currentMap.image = imageData;
       store.updateCurrentMap();
@@ -284,10 +250,6 @@ const buttonBox = {
     });
 
   }
-
-  // function printMesssageToConsole(event){
-  //   console.log("Clicked");
-  // };
 
   function changeCountryColor(event) {
     event.target.setStyle({
@@ -298,10 +260,7 @@ const buttonBox = {
   };
 
   function markSubregion(event) { // for name change
-    console.log("marked subregion")
     setMaplayout(<div></div>)
-    console.log(event.target.feature.properties.sovereignt)
-
     store.markSubregion(event.target.feature)
   }
 
@@ -313,14 +272,12 @@ const buttonBox = {
       dblclick: markSubregion,
     });
 
-    //console.log(country.properties)
-    let popupContent = `${country.properties.sovereignt}`;
+    let popupContent = country.properties.sovereignt;
     if (country.properties && country.properties.popupContent) {
       popupContent += country.properties.popupContent;
     }
     layer.bindPopup(popupContent);
   };
-
 
   function colorChange(event) {
     setColor(event.target.value);
@@ -423,7 +380,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <ExploreIcon style={{ fontSize: "45px" }} titleAccess="Navigate" onClick={handleNavigate} />
+            <Explore style={{ fontSize: "45px" }} titleAccess="Navigate" onClick={handleNavigate} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -433,7 +390,7 @@ const buttonBox = {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={() => handleSaveMap()}
           >
-            <SaveIcon style={{ fontSize: "45px" }} titleAccess="Save" />
+            <Save style={{ fontSize: "45px" }} titleAccess="Save" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -442,7 +399,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <UndoIcon style={{ fontSize: "45px" }} titleAccess="Undo" onClick={handleUndo} />
+            <Undo style={{ fontSize: "45px" }} titleAccess="Undo" onClick={handleUndo} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -451,7 +408,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
+            <Redo style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -460,7 +417,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <CompressIcon style={{ fontSize: "45px" }} titleAccess="Compress" />
+            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -469,7 +426,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <GridViewIcon style={{ fontSize: "45px" }} titleAccess="Split" />
+            <GridView style={{ fontSize: "45px" }} titleAccess="Split" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -478,7 +435,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <MergeIcon style={{ fontSize: "45px" }} titleAccess="Merge" />
+            <Merge style={{ fontSize: "45px" }} titleAccess="Merge" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -487,7 +444,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <ColorLensIcon style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
+            <ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -496,7 +453,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <FormatColorFillIcon style={{ fontSize: "45px" }} titleAccess="Color Background" />
+            <FormatColorFill style={{ fontSize: "45px" }} titleAccess="Color Background" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -505,7 +462,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <BorderColorIcon style={{ fontSize: "45px" }} titleAccess="Color Border" />
+            <BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -514,7 +471,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <EmojiFlagsIcon style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
+            <EmojiFlags style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -523,7 +480,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <CreateIcon style={{ fontSize: "45px" }} titleAccess="Edit Text" />
+            <Create style={{ fontSize: "45px" }} titleAccess="Edit Text" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -532,7 +489,7 @@ const buttonBox = {
             aria-label="open drawer"
             sx={{ marginBottom: "10px" }}
           >
-            <TitleIcon style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
+            <Title style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
           </StyledIconButton>
         </Box>
         <div id="edit-line2"></div>
@@ -573,10 +530,6 @@ const buttonBox = {
         </Button>
       </Box>
 
-
-
-
-
       <Box id="statusBoxEdit">
         <Statusbar />
       </Box>
@@ -585,17 +538,7 @@ const buttonBox = {
         <div id="mapContainer">
           <MapContainer style={{ height: "80vh" }} zoom={2} center={center}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {/* {
-            store.currentMap ? renderedMap : <div></div>
-          }
-          <FeatureGroup ref={featureGroupRef}>
-            <EditControl
-              position='topright'
-            />
-          </FeatureGroup> */}
             {maplayout}
-
-
           </MapContainer>
         </div>
         <input

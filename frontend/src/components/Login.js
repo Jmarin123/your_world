@@ -1,9 +1,11 @@
-import logo from './earthlogo.png'
-import { Button } from '@mui/material';
-import { Box } from '@mui/material';
+import { useContext } from 'react'
 import { Link } from "react-router-dom";
-import { useContext } from 'react';
+
 import AuthContext from '../auth/index'
+
+import { Box, Button } from '@mui/material';
+
+import logo from './earthlogo.png'
 
 function Login() {
   const { auth } = useContext(AuthContext);
@@ -31,7 +33,6 @@ function Login() {
         <input id='loginPassword' type="password" placeholder='password' sx={{
           "& fieldset": { border: 'none' },
         }} name="password" ></input>
-
 
         <Button id="loginButton" type="submit" sx={{ textTransform: `none` }}>
           <p id="text">Login</p>

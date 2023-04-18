@@ -1,12 +1,14 @@
+import { useNavigate } from 'react-router-dom'
+
 import { createContext, useContext, useState } from 'react'
 import { Outlet } from 'react-router-dom'
+
 import AuthContext from '../auth'
+
 import api from './store-request-api'
 import jsTPS from '../common/jsTPS'
+
 import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
-//useContext
-// import { useHistory } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
 
 export const GlobalStoreContext = createContext({});
 console.log("Creating GlobalStoreContext")
@@ -37,7 +39,6 @@ export const GlobalStoreActionType = {
     NAVIGATE_PUBLIC: "NAVIGATE_PUBLIC",
 }
 
-// WE'LL NEED THIS TO PROCESS TRANSACTIONS
 const tps = new jsTPS();
 
 export const CurrentModal = {
@@ -66,17 +67,12 @@ function GlobalStoreContextProvider(props) {
         subregion: null,
         publicPagePairs: [],
     });
-    // const history = useHistory();
 
     const { auth } = useContext(AuthContext);
-    // console.log("auth: " + auth);
-    // console.log("idnamepair: ", idNamePairs);
-    // HERE'S THE DATA STORE'S REDUCER, IT MUST
-    // HANDLE EVERY TYPE OF STATE CHANGE
+
     const storeReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
-            // LIST UPDATE OF ITS NAME
             case GlobalStoreActionType.CREATE_NEW_MAP: {
                 return setStore({
                     currentModal: CurrentModal.UPLOAD_FILE,
@@ -147,7 +143,7 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     uploadType: "",
                     currentMap: payload.currentMap,
-                    openComment: true,
+                    openComment: payload.toggle,
                     mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
@@ -205,9 +201,8 @@ function GlobalStoreContextProvider(props) {
                     publicPagePairs: [],
                 });
             }
-            // GET ALL LISTS SO WE CAN PRESENT THEM
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
-                console.log("LOAD_ID_NAME_PAIRES");
+                console.log("LOAD_ID_NAME_PAIRS");
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: payload,
@@ -222,9 +217,7 @@ function GlobalStoreContextProvider(props) {
                     publicPagePairs: [],
                 });
             }
-
             case GlobalStoreActionType.EDIT_MAP: {
-                // console.log("EDIT_MAP");
                 return setStore({
                     currentModal: CurrentModal.EDIT_MAP,
                     idNamePairs: store.idNamePairs,
@@ -240,7 +233,6 @@ function GlobalStoreContextProvider(props) {
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
-                console.log("CHANGE_MAP_NAME")
                 return setStore({
                     currentModal: CurrentModal.NONE,
                     idNamePairs: payload.idNamePairs,
@@ -375,9 +367,11 @@ function GlobalStoreContextProvider(props) {
             });
         }
     }
+
     store.isRenameModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_MAP;
     }
+
     store.changeMapName = async function (newName) {
         // GET THE LIST
         let id = store.currentMap._id;
@@ -396,15 +390,11 @@ function GlobalStoreContextProvider(props) {
 
             }
         }
-
-
     }
 
-    // Update new list 
     store.updateMap = async function (map) {
         const response = await api.updateMapById(map._id, map);
         if (response.data.success) {
-            console.log("store.updateMap");
             const response = await api.getMapPairs();
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
@@ -416,9 +406,7 @@ function GlobalStoreContextProvider(props) {
             else {
                 console.log("API FAILED TO GET THE MAP PAIRS");
             }
-
         }
-
     }
 
     store.showUpload = function (uploadType) {
@@ -439,12 +427,10 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         const response = await api.getMapPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
-            console.log("store.loadIdNamePairs");
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
@@ -480,7 +466,6 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.createNewMap = async function (obj) {
-        // let newMapName = "Untitled" + store.idNamePairs.length;
         let newMapName = "Untitled";
         let payload = {
             name: newMapName,
@@ -502,17 +487,11 @@ function GlobalStoreContextProvider(props) {
 
             console.log(newMap._id)
 
-            // console.log("store.createNewMap.  newmap: ", newMap);
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_MAP,
                 payload: { currentMap: newMap }
-                // payload: { newListCounter: newList.listCounter, playlist: newList }
-            }
-            );
+            });
             navigate("/map/" + newMap._id);
-
-
-
         }
         else {
             console.log("API FAILED TO CREATE A NEW MAP");
@@ -550,7 +529,6 @@ function GlobalStoreContextProvider(props) {
         }
         asyncLoadIdNamePairs();
         tps.clearAllTransactions();
-
         navigate("/public");
     }
 
@@ -627,35 +605,6 @@ function GlobalStoreContextProvider(props) {
     //     return screenList;
     // };
 
-    store.getRecentlyPublished = function () {
-        let screenList = [];
-
-        async function asyncLoadIdNamePairs() {
-            const response = await api.getMapPairs();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-
-                screenList = pairsArray.filter(pair => {
-                    return pair.map.publish.isPublished;
-                });
-                console.log("store.loadIdNamePairs");
-                storeReducer({
-                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
-                });
-            }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
-            }
-        }
-        asyncLoadIdNamePairs();
-        console.log(screenList)
-        tps.clearAllTransactions();
-
-
-        return screenList;
-    };
-
     store.updateCurrentMap = async function () {
         const response = await api.updateMapById(store.currentMap._id, store.currentMap);
         if (response.data.success) {
@@ -665,9 +614,7 @@ function GlobalStoreContextProvider(props) {
                     currentMap: store.currentMap
                 }
             });
-
         }
-
     }
 
     store.setCurrentMap = async function (id) {
@@ -681,9 +628,10 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.openCommentView = function () {
+        const toggle = !store.openComment
         storeReducer({
             type: GlobalStoreActionType.OPEN_COMMENT,
-            payload: { currentMap: store.currentMap, counter: store.newListCounter, }
+            payload: { currentMap: store.currentMap, counter: store.newListCounter, toggle: toggle}
         });
     }
 
@@ -705,8 +653,6 @@ function GlobalStoreContextProvider(props) {
             });
         }
     }
-
-
 
     store.changeSubregionName = function (newName) {
         for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
@@ -733,7 +679,6 @@ function GlobalStoreContextProvider(props) {
         }
         asyncChangeMapName(id, newMap);
     }
-
 
     store.deleteMap = async function (id) {
         await api.deleteMapById(id);
@@ -773,9 +718,6 @@ function GlobalStoreContextProvider(props) {
                     payload: newMap
                 }
                 );
-
-                // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-                // history.push("/home/playlist/" + newList._id);
                 store.loadIdNamePairs();
                 // navigate("/map/" + store.currentMap._id)
             }
@@ -808,7 +750,6 @@ function GlobalStoreContextProvider(props) {
 
     //this function will be called by the editvertex_transaction file to finally preform the functionality
     store.editVertex = function (key, editedFeature) {
-
         store.currentMap.dataFromMap.features.forEach((feature) => {
             if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
                 const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
@@ -859,8 +800,6 @@ function GlobalStoreContextProvider(props) {
     //         payload: { currentMap: editedMap }
     //     });
     // }
-
-
 
     return (
         <GlobalStoreContext.Provider value={{

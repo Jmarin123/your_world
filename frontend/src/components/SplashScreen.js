@@ -1,9 +1,12 @@
-import logo from './earthlogo.png'
 import { useContext } from 'react';
-import { Button } from '@mui/material';
-import globeLogo from './globelogo.png';
 import { Link } from "react-router-dom";
+
 import AuthContext from '../auth/index'
+
+import { Button } from '@mui/material';
+
+import logo from './earthlogo.png'
+import globeLogo from './globelogo.png';
 
 function SplashScreen() {
   const { auth } = useContext(AuthContext);
@@ -14,7 +17,6 @@ function SplashScreen() {
         <section>Your World</section>
         <img id="mainlogo" src={logo} alt="earthlogo" />
       </div>
-
 
       <section id="subtitle">Your Choice, Your Map, Your World</section>
       <section id="subtext">An interactive map design site, used to create your own custom maps and share with others! </section>
@@ -41,7 +43,6 @@ function SplashScreen() {
       <img id="globeLogo" src={globeLogo} alt="globeLogo" />
     </div>
   );
-
 }
 
 

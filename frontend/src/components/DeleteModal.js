@@ -1,11 +1,6 @@
 import { useContext } from 'react'
 import GlobalStoreContext from '../store';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
+import { Box, Modal, Button, Typography, Grid } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -75,7 +70,6 @@ export default function DeleteModal() {
                 <Grid container item sx={buttonBox}>
                     <Button id="modal-button" onClick={handleConfirmDelete}>Confirm</Button>
                     <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
-
                 </Grid>
             </Grid>
         </Modal>

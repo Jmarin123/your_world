@@ -1,12 +1,6 @@
-import { useContext, useState } from 'react'
-import GlobalStoreContext from '../store';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import { useContext, useState } from 'react';
+import { GlobalStoreContext } from '../store'
+import { Box, Modal, Button, Typography, Grid, TextField } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -52,9 +46,11 @@ export default function RenameMapModal() {
         store.changeMapName(name);
         console.log("Confirm rename modal")
     }
+
     function handleCloseModal(event) {
         store.hideModals();
     }
+
     function handleUpdateName(event) {
         setName(event.target.value);
     }
@@ -81,7 +77,6 @@ export default function RenameMapModal() {
                 <Grid container item sx={buttonBox}>
                     <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
                     <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
-
                 </Grid>
             </Grid>
         </Modal>

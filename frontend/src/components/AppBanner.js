@@ -1,44 +1,31 @@
 import { useContext, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+
 import { GlobalStoreContext } from '../store'
-import { Link } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import AuthContext from '../auth/index'
+
+import { styled } from '@mui/material/styles';
+import { Box, Menu, MenuItem, Toolbar, Typography, TextField, IconButton, AppBar } from '@mui/material';
+import { Public, Home, Search, AddToPhotos, TextsmsOutlined, AccountCircle, PersonOutline, Map, Workspaces } from '@mui/icons-material/';
 
 import UploadModal from './UploadModal'
-
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import PublicIcon from '@mui/icons-material/Public';
-import HomeIcon from '@mui/icons-material/Home';
-import SearchIcon from '@mui/icons-material/Search';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-import TextField from '@mui/material/TextField';
-import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { styled } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import MapIcon from '@mui/icons-material/Map';
-import WorkspacesIcon from '@mui/icons-material/Workspaces';
-import AuthContext from '../auth/index'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+
     const [anchorEl, setAnchorEl] = useState(null);
-    const isMenuOpen = Boolean(anchorEl);
     const [anchorE2, setAnchorE2] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
     const isUploadMenuOpen = Boolean(anchorE2);
+
     const location = useLocation();
     const navigate = useNavigate();
+
     const [label, setLabel] = useState("Select an option to search for maps...");
     const [s, setS] = useState("");
     let disabled = false;
-    // let mapCard = [];
+    let uploadDisabled = false;
 
     let id;
     if (store.currentMap) {
@@ -48,8 +35,6 @@ export default function AppBanner() {
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
-
-
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -75,14 +60,11 @@ export default function AppBanner() {
         setAnchorEl(null);
         auth.logoutUser();
     }
-    console.log(store.filterSearch);
 
     const handleSearchUser = () => {
-        // store.clearSearch();
         store.navigatePublic();
         setS("");
         store.setFilterSearch("users");
-        console.log(store.filterSearch);
         setLabel("Search by username")
     }
 
@@ -99,7 +81,6 @@ export default function AppBanner() {
 
     function handleComment() {
         store.openCommentView();
-        console.log(store.openComment);
     }
 
     const handleUploadMenuClose = () => {
@@ -107,13 +88,11 @@ export default function AppBanner() {
     };
 
     const handleUploadShapefile = () => {
-        console.log("shp/dbf")
         setAnchorE2(null);
         store.showUpload("shp/dbf")
     };
 
     const handleUploadGeojson = () => {
-        console.log("geojson")
         setAnchorE2(null);
         store.showUpload("geojson")
     };
@@ -132,9 +111,11 @@ export default function AppBanner() {
         navigate('/result')
     }
 
-    console.log(location.pathname === '/mapview/' + id);
     if (location.pathname === '/mapview/' + id) {
         disabled = true;
+    }
+    if (location.pathname.includes('/map/') || !auth.loggedIn) {
+        uploadDisabled = true;
     }
 
     let commentButton = <StyledIconButton
@@ -142,10 +123,9 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
-        // onClick={() => handleClick("/mapview-comment")}
         onClick={() => handleComment()}
     >
-        <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
+        <TextsmsOutlined style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
 
     const menuId = 'primary-search-account-menu';
@@ -220,28 +200,13 @@ export default function AppBanner() {
         menu = loggedInMenu;
     }
 
-    // function getAccountMenu(loggedIn) {
-    //     let userInitials = 'JD'
-    //     // console.log("userInitials: " + "JD");
-    //     if (loggedIn)
-    //         return <div>{userInitials}</div>;
-    //     // else
-    //     //     return <AccountCircle />;
-    // }
-
-    function handleHomescreen() {
-        // store.closeCurrentList();
-    }
-
     let globeIcon = <StyledIconButton
         edge="start"
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2, marginLeft: "5px" }}
-    // disabled={disabled}
-    // onClick={() => handleClick("/public")}
     >
-        <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+        <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}/>
     </StyledIconButton>
 
     let homeIcon = <StyledIconButton
@@ -250,9 +215,8 @@ export default function AppBanner() {
         aria-label="open drawer"
         sx={{ mr: 2 }}
         disabled={auth.loggedIn ? false : true}
-    // onClick={() => handleClick("/public")}
     >
-        <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
+        <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
     </StyledIconButton>
 
     let searchIcon = <StyledIconButton
@@ -260,7 +224,6 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
-        // onClick={handleSearchPage}
         onClick={(e) => {
             e.preventDefault();
             console.log(store.filterSearch);
@@ -270,10 +233,8 @@ export default function AppBanner() {
             e.target.value = "";
             navigate('/search')
         }}
-    // disabled={disabled}
-    // onClick={() => handleClick("/public")}
     >
-        <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+        <Search style={{ fontSize: "45px", float: "right" }}/>
     </StyledIconButton>
 
     if (location.pathname === '/public') {
@@ -283,7 +244,7 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
         >
-            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
+            <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}/>
         </StyledIconButton>
     }
     else if (location.pathname === '/home') {
@@ -294,7 +255,7 @@ export default function AppBanner() {
             sx={{ mr: 2, color: '#FDE66B' }}
             disabled={auth.loggedIn ? false : true}
         >
-            <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
+            <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
         </StyledIconButton>
     }
     else if (location.pathname === '/search') {
@@ -304,14 +265,13 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, color: '#FDE66B' }}
         >
-            <SearchIcon style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}></SearchIcon>
+            <Search style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}/>
         </StyledIconButton>
     }
 
-    let editToolbarMenu = "";
-    // if (auth.user || auth.type) {
+    let navigationBar = "";
     if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login') {
-        editToolbarMenu =
+        navigationBar =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">
                     <Toolbar id="toolBar">
@@ -320,7 +280,6 @@ export default function AppBanner() {
                             noWrap
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
-                            onClick={handleHomescreen}
                         >
                             {globeIcon}
                             {homeIcon}
@@ -347,13 +306,6 @@ export default function AppBanner() {
                                     label={label}
                                     variant="standard"
                                     value={s}
-                                    // size="small"
-                                    // label={store.search ? "" : label}
-                                    // disabled={disabled}
-
-                                    // defaultValue={store ? store.search : ""}
-                                    // onKeyPress={event => store.setSearch("keypress", event)}
-                                    // onChange={event => setLabel()}
                                     onChange={(e) => {
                                         e.preventDefault();
                                         let search = e.target.value;
@@ -384,7 +336,7 @@ export default function AppBanner() {
                                 sx={{ mr: 2, marginLeft: '5px' }}
                                 onClick={() => handleSearchUser()}
                             >
-                                <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
+                                <PersonOutline style={{ fontSize: "45px", float: "right" }}/>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -394,7 +346,7 @@ export default function AppBanner() {
                                 sx={{ mr: 2 }}
                                 onClick={() => handleSearchMap()}
                             >
-                                <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
+                                <Map style={{ fontSize: "45px", float: "right" }}/>
                             </StyledIconButton>
 
                             <StyledIconButton
@@ -404,7 +356,7 @@ export default function AppBanner() {
                                 sx={{ mr: 2 }}
                                 onClick={() => handleSearchProperty()}
                             >
-                                <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
+                                <Workspaces style={{ fontSize: "45px", float: "right" }}/>
                             </StyledIconButton>
                         </Typography>
 
@@ -429,10 +381,9 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                                disabled={auth.loggedIn ? false : true}
-                            // onClick={() => handleClick("/user-lists")}
+                                disabled={uploadDisabled}
                             >
-                                <AddToPhotosIcon
+                                <AddToPhotos
                                     size="large"
                                     edge="end"
                                     aria-label="account of current user"
@@ -441,9 +392,7 @@ export default function AppBanner() {
                                     onClick={handleUploadMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
-                                >
-                                    {/* {getAccountMenu(auth.loggedIn)} */}
-                                </AddToPhotosIcon>
+                                />
                             </StyledIconButton>
                         </Box>
 
@@ -453,10 +402,8 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                            // disabled={disabled}
-                            // onClick={() => handleClick("/user-lists")}
                             >
-                                <AccountCircleIcon
+                                <AccountCircle
                                     size="large"
                                     edge="end"
                                     aria-label="account of current user"
@@ -465,12 +412,9 @@ export default function AppBanner() {
                                     onClick={handleProfileMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
-                                >
-                                    {/* {getAccountMenu(auth.loggedIn)} */}
-                                </AccountCircleIcon>
+                                />
                             </StyledIconButton>
                         </Box>
-
                     </Toolbar>
                 </AppBar>
                 {
@@ -482,13 +426,10 @@ export default function AppBanner() {
                 {
                     <UploadModal />
                 }
-                {/* {
-                    menu
-                } */}
             </Box>);
     }
     return (
-        editToolbarMenu
+        navigationBar
     );
 
 }

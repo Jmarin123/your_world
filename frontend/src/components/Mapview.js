@@ -1,14 +1,16 @@
-import { GlobalStoreContext } from '../store'
 import { useContext } from 'react';
+
+import { GlobalStoreContext } from '../store'
+
+import { Box, Grid } from '@mui/material';
+
 import Comment from './Comment';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import Statusbar from './Statusbar';
+
+import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 
 export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
-    console.log(store.openComment);
 
     const countryStyle = {
         fillColor: "red",
@@ -19,7 +21,6 @@ export default function Mapview() {
 
     function onEachCountry(country, layer) {
         const countryName = country.properties.ADMIN;
-        // console.log(countryName);
         layer.bindPopup(countryName);
 
         layer.options.fillOpacity = Math.random();
@@ -49,8 +50,6 @@ export default function Mapview() {
                     }
                 </MapContainer>
             </Box>
-
-
         </Box>
 
     if (store.openComment) {

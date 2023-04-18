@@ -16,7 +16,6 @@ body {
     margin: 0;
 }
 
-
 #splashScreenBackground {
     position: relative;
     width: 100%;
@@ -762,6 +761,6 @@ input {
     font-weight: 900;
 }
 
-/* #commentText {
-    
-} */
+.uploadInput {
+    justify-content: right;
+  }

@@ -1,37 +1,24 @@
-import React from 'react'
-// import { GlobalStoreContext } from '../store'
-
-import { useNavigate } from 'react-router-dom'
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import ListItem from '@mui/material/ListItem';
-import MapCardSample from './/mapcardsample.jpg'
-import IconButton from '@mui/material/IconButton';
-import DownloadIcon from '@mui/icons-material/Download';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { useLocation } from "react-router-dom";
-// import Grid from '@mui/material/Grid';
+import React, { useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { GlobalStoreContext } from '../store'
-import { useContext } from 'react';
 import AuthContext from '../auth/index'
 
-// export default function MapCard() {
+import { styled } from '@mui/material/styles';
+import { Box, Typography, ListItem, IconButton } from '@mui/material';
+import { Download, FileCopy, DeleteOutline, BorderColor, ThumbDownOffAlt, ThumbUpOffAlt } from '@mui/icons-material/';
+
+import MapCardSample from './/mapcardsample.jpg'
+
 export default function MapCard(props) {
-    const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    // const [title] = useState("Atlantis");
+
+    const location = useLocation();
     const navigate = useNavigate();
 
-    // const [editActive, setEditActive] = useState(false);
-    // const [text, setText] = useState("");
     const { idNamePair } = props;
+
     let userName = "";
     if (auth.user) {
         userName = auth.user.firstName + " " + auth.user.lastName;
@@ -42,14 +29,11 @@ export default function MapCard(props) {
         disabled = true;
     }
 
-    // console.log(idNamePair);
     const handleDeleteMap = () => {
         store.markMapForDeletion(idNamePair._id);
     };
 
     const handleEditMapName = (id) => {
-        // store.renameMap(id);
-        // console.log("show rename modal")
         store.showRenameModal(idNamePair._id);
     };
 
@@ -113,7 +97,6 @@ export default function MapCard(props) {
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
-
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -135,7 +118,7 @@ export default function MapCard(props) {
             fontSize: '1em'
         }}
     >
-        <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+        <FileCopy style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
     let deleteButton = < StyledIconButton
         edge="start"
@@ -150,11 +133,9 @@ export default function MapCard(props) {
             fontSize: '1em'
         }}
     >
-        <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+        <DeleteOutline style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
-    // console.log(auth.user.email);
-    // console.log(map.ownerEmail);
-    // console.log(auth.email === map.ownerEmail);
+
     let publishedMapCard = <ListItem id='published-listItemMapCard'>
         <div
             id="mapCard1"
@@ -163,22 +144,12 @@ export default function MapCard(props) {
         >
 
             <Box sx={{ p: 0.5 }}>
-                <Box id='cardTitle'>
-                    {idNamePair.name}
-                </Box>
-
-                <Box id='map-card-line'>
-                    {/* <div id='map-card-line'></div> */}
-                </Box>
-
-
-                <Typography id='map-card-author'>
-                    By: {idNamePair.owner}
-                </Typography>
+                <Box id='cardTitle'> {idNamePair.name} </Box>
+                <Box id='map-card-line'></Box>
+                <Typography id='map-card-author'> By: {idNamePair.owner} </Typography>
             </Box>
 
             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
 
             <StyledIconButton
                 edge="start"
@@ -193,7 +164,7 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                <Download style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
             {!disabled ? deleteButton : <div></div>}
             <StyledIconButton
@@ -206,7 +177,7 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                <ThumbDownOffAlt style={{ fontSize: "35px", float: "right", positon: "absolute" }}
                     onClick={() => handleLikeDislike("dislike")} />
 
                 <strong style={{ color: 'black' }}>
@@ -224,7 +195,7 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                <ThumbUpOffAlt style={{ fontSize: "35px", float: "right", positon: "absolute" }}
                     onClick={() => handleLikeDislike("like")} />
 
                 <strong style={{ color: 'black' }}>
@@ -235,9 +206,9 @@ export default function MapCard(props) {
             {auth.loggedIn ? duplicateButton : <div></div>}
 
         </div>
-    </ListItem >
+    </ListItem>
 
-    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
+    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard'>
         <div
             key={idNamePair._id}
             id="mapCard2"
@@ -246,16 +217,9 @@ export default function MapCard(props) {
         >
 
             <Box sx={{ p: 0.5 }}>
-                <Box id='cardTitle'>
-                    {idNamePair.name}
-                </Box>
-
-                <Box id='map-card-line'>
-                </Box>
-
-                <Typography id='map-card-author'>
-                    By: {idNamePair.owner}
-                </Typography>
+                <Box id='cardTitle'> {idNamePair.name} </Box>
+                <Box id='map-card-line'></Box>
+                <Typography id='map-card-author'> By: {idNamePair.owner} </Typography>
             </Box>
 
             <img id="map-card-image" src={image} alt="mapcardsample" />
@@ -274,7 +238,7 @@ export default function MapCard(props) {
                         fontSize: '1em'
                     }}
                 >
-                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <Download style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -288,7 +252,7 @@ export default function MapCard(props) {
                         fontSize: '1em'
                     }}
                 >
-                    <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <FileCopy style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -304,7 +268,7 @@ export default function MapCard(props) {
                         fontSize: '1em'
                     }}
                 >
-                    <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <DeleteOutline style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -320,9 +284,8 @@ export default function MapCard(props) {
                         fontSize: '1em'
                     }}
                 >
-                    <BorderColorIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <BorderColor style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
-
             </Box>
         </div>
     </ListItem>
@@ -445,8 +408,6 @@ export default function MapCard(props) {
     //     // mapCards = [publishedMapCard, unpublishedMapCard]
     //     mapCards = [unpublishedMapCard]
     // }
-
-
 
     return (
         [mapCards]

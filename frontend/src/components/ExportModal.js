@@ -1,15 +1,6 @@
-import { useContext, useState } from 'react'
-import GlobalStoreContext from '../store';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { useContext, useState } from 'react';
+import { GlobalStoreContext } from '../store'
+import { Box, Modal, Button, Typography, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -51,12 +42,10 @@ export default function ExportModal() {
     const [name] = useState("Atlantis");
     const [format, setFormat] = useState("Format");
 
-    // if (store.listMarkedForDeletion) {
-//         name = store.listMarkedForDeletion.name;
-//     }
     function handleConfirmExport(event) {
         store.hideModals();
     }
+
     function handleCloseModal(event) {
         store.hideModals();
     }
@@ -101,7 +90,6 @@ export default function ExportModal() {
             <Grid container item sx={buttonBox}>
                 <Button id="modal-button" onClick={handleConfirmExport}>Confirm</Button> 
                 <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
-
             </Grid>
             </Grid>
         </Modal>

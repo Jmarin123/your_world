@@ -1,12 +1,6 @@
 const Map = require('../models/map-model')
 const User = require('../models/user-model');
-/*
-    This is our back-end API. It provides all the data services
-    our database needs. Note that this file contains the controller
-    functions for each endpoint.
-    
-    @author McKilla Gorilla
-*/
+
 createMap = (req, res) => {
     const body = req.body;
     // console.log("createMap body: " + JSON.stringify(body));
@@ -46,7 +40,6 @@ createMap = (req, res) => {
     })
 }
 
-
 deleteMap = async (req, res) => {
     console.log("delete map with id: " + JSON.stringify(req.params.id));
     console.log("delete " + req.params.id);
@@ -62,6 +55,11 @@ deleteMap = async (req, res) => {
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
         console.log("map.ownerEmail: " + map.ownerEmail);
+
+        var filtered = user.maps.filter(id => id.toString() !== req.params.id);
+        
+        user.maps = filtered || user.maps;
+        user.save();
 
         if (user._id.toString() === req.userId) {
             console.log("correct user!");
@@ -102,10 +100,6 @@ getAllMaps = async (req, res) => {
                 .json({ success: false, error: `maps not found` });
         }
 
-        // for(let i = 0; i < maps.length; i++){
-        //     maps[i].dataFromMap = {}
-        // }
-
         // PUT ALL THE LISTS INTO ID, NAME PAIRS
         const pairs = maps.map((map) => {
             return {
@@ -121,8 +115,6 @@ getAllMaps = async (req, res) => {
     }
 };
 
-
-
 getMapPairs = async (req, res) => {
     try {
         const maps = await Map.find({});
@@ -136,7 +128,6 @@ getMapPairs = async (req, res) => {
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             let pairs = [];
             for (let key in maps) {
-                // maps[key].dataFromMap = {}
                 let map = maps[key];
                 let pair = {
                     _id: map._id,
