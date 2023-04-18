@@ -121,6 +121,7 @@ const buttonBox = {
   }
   function handleCloseModal(event) {
       store.hideModals();
+      //store.updateSubregionName();
   }
   function handleUpdateName(event) {
       setNewName(event.target.value)
@@ -256,7 +257,7 @@ const buttonBox = {
       dblclick: markSubregion,
     });
 
-    console.log(country.properties)
+    //console.log(country.properties)
     let popupContent = `${country.properties.sovereignt}`;
     if (country.properties && country.properties.popupContent) {
       popupContent += country.properties.popupContent;
@@ -312,7 +313,7 @@ const buttonBox = {
     //layers.eachLayer(layer => { //ignore dis 4 now .3.
 
     let editedLayer = e.layers.getLayers()[0];
-    console.log(editedLayer);
+    //console.log(editedLayer);
     const editedKey = editedLayer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
     //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
 

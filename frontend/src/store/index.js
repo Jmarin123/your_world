@@ -734,6 +734,15 @@ function GlobalStoreContextProvider(props) {
         asyncChangeMapName(id, newMap);
     }
 
+    store.updateSubregionName = function () {
+        storeReducer({
+            type: GlobalStoreActionType.RENAME_SUBREGION,
+            payload: {
+                currentMap: store.currentMap,
+            }
+        });
+    }
+
     store.deleteMap = async function (id) {
         await api.deleteMapById(id);
         console.log("store.deleteList");
@@ -814,16 +823,24 @@ function GlobalStoreContextProvider(props) {
                 if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
                     for (let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
                         if (i === parseInt(parts[1])) { //see if the index of the feature is equal to "index_location_of_multipolygon"
-                            feature.geometry.coordinates[i] = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+                            if(editedFeature.geometry.coordinates.length > 1) {
+                                feature.geometry.coordinates[i] = editedFeature.geometry.coordinates[i] //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+                            } else {
+                                feature.geometry.coordinates[i] = editedFeature.geometry.coordinates
+                            }
+
+                            //feature.geometry.coordinates[i] = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+                            // console.log("Our Feature Coordinates:")
+                            // console.log(feature.geometry.coordinates[i])
+                            // console.log("Edited Feature Coordinates:")
+                            // console.log(editedFeature.geometry.coordinates)
+                            // console.log("Edited Feature Coordinates LENGTH:")
+                            // console.log(editedFeature.geometry.coordinates.length)
                         }
                     }
                 }
             } else { //if NO '-' than this means its a Polygon: key="CountryName"
                 if (feature.properties.admin === key) { //if the country name matches the custom key, this is the feature we are editing
-                    console.log("Edited Feature Coordinates Below")
-                    console.log(editedFeature.geometry.coordinates)
-                    console.log("Current Feature Coordinates Below")
-                    console.log(feature.geometry.coordinates)
                     feature.geometry.coordinates = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
                 }
             }
