@@ -750,26 +750,50 @@ function GlobalStoreContextProvider(props) {
 
     //this function will be called by the editvertex_transaction file to finally preform the functionality
     store.editVertex = function (key, editedFeature) {
-        store.currentMap.dataFromMap.features.forEach((feature) => {
-            if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-                const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-                if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
-                    for (let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
-                        if (i === parseInt(parts[1])) { //see if the index of the feature is equal to "index_location_of_multipolygon"
-                            if(editedFeature.geometry.coordinates.length > 1) {
-                                feature.geometry.coordinates[i] = editedFeature.geometry.coordinates[i] //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-                            } else {
-                                feature.geometry.coordinates[i] = editedFeature.geometry.coordinates
-                            }
-                        }
-                    }
+        
+        if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+            const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+            const index = parseInt(parts[0]);
+            const index2 = parseInt(parts[1]);
+
+            //store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] == editedFeature.geometry.coordinates[i];
+
+                if(editedFeature.geometry.coordinates.length > 1) {
+                    store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates[index2];
+                } else {
+                    store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates;
                 }
-            } else { //if NO '-' than this means its a Polygon: key="CountryName"
-                if (feature.properties.admin === key) { //if the country name matches the custom key, this is the feature we are editing
-                    feature.geometry.coordinates = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
-                }
-            }
-        });
+                  
+        } else { //if NO '-' than this means its a Polygon: key="CountryName"
+            const index = parseInt(key);
+            store.currentMap.dataFromMap.features[index].geometry.coordinates = editedFeature.geometry.coordinates;
+        }
+
+
+
+
+
+
+        // store.currentMap.dataFromMap.features.forEach((feature) => {
+        //     if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+        //         const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+        //         if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
+        //             for (let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+        //                 if (i === parseInt(parts[1])) { //see if the index of the feature is equal to "index_location_of_multipolygon"
+        //                     if(editedFeature.geometry.coordinates.length > 1) {
+        //                         feature.geometry.coordinates[i] = editedFeature.geometry.coordinates[i] //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+        //                     } else {
+        //                         feature.geometry.coordinates[i] = editedFeature.geometry.coordinates
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     } else { //if NO '-' than this means its a Polygon: key="CountryName"
+        //         if (feature.properties.admin === key) { //if the country name matches the custom key, this is the feature we are editing
+        //             feature.geometry.coordinates = editedFeature.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+        //         }
+        //     }
+        // });
 
         //in the end we re-render by using storeReducer
         storeReducer({
@@ -777,6 +801,8 @@ function GlobalStoreContextProvider(props) {
             payload: { currentMap: store.currentMap }
         });
     }
+
+    
 
     store.markSubregion = function (feature) {
         storeReducer({

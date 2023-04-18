@@ -169,10 +169,10 @@ const buttonBox = {
       setMaplayout(<FeatureGroup ref={featureGroupRef}  >
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
           } else if (feature.geometry.type === 'MultiPolygon') {
             const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
             ));
             return polygons;
           }
@@ -302,10 +302,10 @@ const buttonBox = {
       setMaplayout(<FeatureGroup ref={featureGroupRef}  >
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
           } else if (feature.geometry.type === 'MultiPolygon') {
             const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
             ));
             return polygons;
           }
@@ -332,19 +332,30 @@ const buttonBox = {
     //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
 
     let layer = editedLayer.toGeoJSON();
-    store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
-      if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-        const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-        if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
-          let copiedFeature = JSON.parse(JSON.stringify(feature));
-          store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-        }
-      } else { //if NO '-' than this means its a Polygon
-        if (feature.properties.admin === editedKey) { //if the country name matches the custom key, this is the feature we are editing
-          let copiedFeature = JSON.parse(JSON.stringify(feature));
-          store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-        }
-      }
+    // store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
+    //   if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+    //     const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+    //     if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
+    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
+    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+    //     }
+    //   } else { //if NO '-' than this means its a Polygon
+    //     if (feature.properties.admin === editedKey) { //if the country name matches the custom key, this is the feature we are editing
+    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
+    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+    //     }
+    //   }
+
+    if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+      const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+        let featureFound = store.currentMap.dataFromMap.features[parts[0]]
+        let copiedFeature = JSON.parse(JSON.stringify(featureFound));
+        store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+    } else { //if NO '-' than this means its a Polygon
+        let featureFound = store.currentMap.dataFromMap.features[editedKey]
+        let copiedFeature = JSON.parse(JSON.stringify(featureFound));
+        store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+    }
 
       //ignore this is before undo/redo:
       // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
@@ -361,7 +372,7 @@ const buttonBox = {
       //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
       //   }
       // }
-    });
+    //});
 
     //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
     //});
