@@ -5,8 +5,10 @@ import { GlobalStoreContext } from '../store'
 
 import { styled } from '@mui/material/styles';
 import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
-import { Explore, Save, Undo, Redo, Compress, GridView, Merge, 
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title } from '@mui/icons-material/';
+import {
+  Explore, Save, Undo, Redo, Compress, GridView, Merge,
+  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title
+} from '@mui/icons-material/';
 
 import Statusbar from './Statusbar';
 
@@ -26,6 +28,7 @@ export default function Map() {
   const navigate = useNavigate();
   const featureGroupRef = React.useRef();
   const [center] = useState([20, 100]);
+  console.log(store.currentMap);
   //for new map editing
   const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
 
@@ -52,9 +55,9 @@ export default function Map() {
     borderRadius: 1,
     boxShadow: 16,
     p: 4,
-};
+  };
 
-const top = {
+  const top = {
     position: 'absolute',
     width: 423,
     height: 71,
@@ -68,13 +71,13 @@ const top = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-}
+  }
 
-const buttonBox = {
+  const buttonBox = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-}
+  }
 
   // function findCenter() {
   //   console.log('Component mounted');
@@ -100,36 +103,36 @@ const buttonBox = {
   }
 
   function handleCloseModal(event) {
-      store.hideModals();
-      setMaplayout(newMap ? renderedMap : <div></div>)
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
   }
 
   function handleUpdateName(event) {
-      setNewName(event.target.value)
+    setNewName(event.target.value)
   }
 
   let modal = <Modal
-  open={store.currentModal === "RENAME_SUBREGION"}
->
-  <Grid container sx={style}>
+    open={store.currentModal === "RENAME_SUBREGION"}
+  >
+    <Grid container sx={style}>
       <Grid container item >
-          <Box sx={top}>
-              <Typography id="modal-heading">Rename Subregion</Typography>
-          </Box>
+        <Box sx={top}>
+          <Typography id="modal-heading">Rename Subregion</Typography>
+        </Box>
       </Grid>
       <Grid container item>
-          <Box>
-              <Typography id="modal-text" xs={4}>Name: </Typography>
-              <TextField id="modal-textfield" xs={12} 
-                  placeholder={oldName} value={newName} onChange={handleUpdateName}></TextField>
-          </Box>
+        <Box>
+          <Typography id="modal-text" xs={4}>Name: </Typography>
+          <TextField id="modal-textfield" xs={12}
+            placeholder={oldName} value={newName} onChange={handleUpdateName}></TextField>
+        </Box>
       </Grid>
       <Grid container item sx={buttonBox}>
-          <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
-          <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+        <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
+        <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
       </Grid>
-  </Grid>
-</Modal>
+    </Grid>
+  </Modal>
 
   let StyledIconButton = styled(IconButton)({
     color: "black",
@@ -163,7 +166,7 @@ const buttonBox = {
 
   function handleUndo() {
     store.undo();
-   
+
     if (MapLayOutFLAG === 1) {
       MapLayOutFLAG = 1
       setMaplayout(<FeatureGroup ref={featureGroupRef}  >
@@ -348,30 +351,30 @@ const buttonBox = {
 
     if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
       const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-        let featureFound = store.currentMap.dataFromMap.features[parts[0]]
-        let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-        store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+      let featureFound = store.currentMap.dataFromMap.features[parts[0]]
+      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
+      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
     } else { //if NO '-' than this means its a Polygon
-        let featureFound = store.currentMap.dataFromMap.features[editedKey]
-        let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-        store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+      let featureFound = store.currentMap.dataFromMap.features[editedKey]
+      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
+      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
     }
 
-      //ignore this is before undo/redo:
-      // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
-      //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-      //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
-      //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
-      //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
-      //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-      //       }
-      //     }        
-      //   }
-      // } else { //if NO '-' than this means its a Polygon
-      //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
-      //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
-      //   }
-      // }
+    //ignore this is before undo/redo:
+    // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
+    //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+    //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
+    //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+    //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
+    //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+    //       }
+    //     }        
+    //   }
+    // } else { //if NO '-' than this means its a Polygon
+    //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
+    //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+    //   }
+    // }
     //});
 
     //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered

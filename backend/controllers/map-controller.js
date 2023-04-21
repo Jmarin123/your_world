@@ -1,6 +1,12 @@
 const Map = require('../models/map-model')
 const User = require('../models/user-model');
-
+/*
+    This is our back-end API. It provides all the data services
+    our database needs. Note that this file contains the controller
+    functions for each endpoint.
+    
+    @author McKilla Gorilla
+*/
 createMap = (req, res) => {
     const body = req.body;
     // console.log("createMap body: " + JSON.stringify(body));
@@ -40,6 +46,7 @@ createMap = (req, res) => {
     })
 }
 
+
 deleteMap = async (req, res) => {
     console.log("delete map with id: " + JSON.stringify(req.params.id));
     console.log("delete " + req.params.id);
@@ -55,11 +62,6 @@ deleteMap = async (req, res) => {
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
         console.log("map.ownerEmail: " + map.ownerEmail);
-
-        var filtered = user.maps.filter(id => id.toString() !== req.params.id);
-        
-        user.maps = filtered || user.maps;
-        user.save();
 
         if (user._id.toString() === req.userId) {
             console.log("correct user!");
@@ -93,7 +95,7 @@ getMapById = async (req, res) => {
 
 getAllMaps = async (req, res) => {
     try {
-        let maps = await Map.find({});
+        const maps = await Map.find({});
         if (!maps.length) {
             return res
                 .status(404)
@@ -104,7 +106,8 @@ getAllMaps = async (req, res) => {
         const pairs = maps.map((map) => {
             return {
                 _id: map._id,
-                name: map.name, // add it 
+                name: map.name,
+                map: map // add it 
             };
         });
 
@@ -114,6 +117,8 @@ getAllMaps = async (req, res) => {
         return res.status(400).json({ success: false, error: err });
     }
 };
+
+
 
 getMapPairs = async (req, res) => {
     try {
@@ -131,13 +136,8 @@ getMapPairs = async (req, res) => {
                 let map = maps[key];
                 let pair = {
                     _id: map._id,
-                    name: map.name, // add it 
-                    ownerEmail: map.ownerEmail,
-                    owner: map.owner,
-                    likes: map.likes,
-                    dislikes: map.dislikes,
-                    image: map.image,
-                    publish: map.publish
+                    name: map.name,
+                    map: map // add it 
                 };
                 pairs.push(pair);
             }
@@ -149,39 +149,10 @@ getMapPairs = async (req, res) => {
     }
 }
 
-updateMapNameById = async (req, res) => {
-    const { name } = req.body;
-
-    if (!name) {
-        return res.status(400).json({
-            success: false,
-            error: 'You must provide a name to update',
-        })
-    }
-    try {
-        const map = await Map.findOne({ _id: req.params.id });
-        if (!map) {
-            return res.status(404).json({
-                message: 'Map not found!',
-            })
-        }
-        map.name = name;
-        await map.save();
-        return res.status(200).json({
-            success: true,
-            id: map._id,
-            message: 'Map updated!',
-        })
-    } catch (err) {
-        return res.status(404).json({
-            err,
-            message: 'Map name not updated!',
-        })
-    }
-}
 
 updateMap = async (req, res) => {
-    const body = req.body;
+    const body = req.body
+    console.log("req.body.name: " + req.body.name);
 
     if (!body) {
         return res.status(400).json({
@@ -200,23 +171,26 @@ updateMap = async (req, res) => {
             })
         }
 
-        map.name = body.map.name || map.name;
-        map.ownerEmail = body.map.ownerEmail || map.ownerEmail;
-        map.owner = body.map.owner || map.owner;
-        map.dataFromMap = body.map.dataFromMap || map.dataFromMap;
-        map.comments = body.map.comments || map.comments;
-        map.likes = body.map.likes || map.likes;
-        map.dislikes = body.map.dislikes || map.dislikes;
-        map.publish = body.map.publish || map.publush;
-        map.image = body.map.image || map.image;
+        map.name = body.map.name;
+        map.ownerEmail = body.map.ownerEmail;
+        map.owner = body.map.owner;
+        map.dataFromMap = body.map.dataFromMap;
+        map.comments = body.map.comments;
+        map.likes = body.map.likes;
+        map.dislikes = body.map.dislikes;
+        map.publish = body.map.publish;
+        map.image = body.map.image;
 
         await map.save();
+
+        console.log("SUCCESS!!!");
         return res.status(200).json({
             success: true,
             id: map._id,
             message: 'Map updated!',
         })
     } catch (error) {
+        console.log("FAILURE: " + JSON.stringify(error));
         return res.status(404).json({
             error,
             message: 'Map not updated!',
@@ -232,5 +206,4 @@ module.exports = {
     getAllMaps,
     // getPlaylists,
     updateMap,
-    updateMapNameById,
 }
