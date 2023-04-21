@@ -1,31 +1,45 @@
 import { useContext, useState } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-
 import { GlobalStoreContext } from '../store'
-import AuthContext from '../auth/index'
-
-import { styled } from '@mui/material/styles';
-import { Box, Menu, MenuItem, Toolbar, Typography, TextField, IconButton, AppBar } from '@mui/material';
-import { Public, Home, Search, AddToPhotos, TextsmsOutlined, AccountCircle, PersonOutline, Map, Workspaces } from '@mui/icons-material/';
+import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import UploadModal from './UploadModal'
+
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import PublicIcon from '@mui/icons-material/Public';
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import TextField from '@mui/material/TextField';
+import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MapIcon from '@mui/icons-material/Map';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
+import AuthContext from '../auth/index'
 
 export default function AppBanner() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-
     const [anchorEl, setAnchorEl] = useState(null);
-    const [anchorE2, setAnchorE2] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    const [anchorE2, setAnchorE2] = useState(null);
     const isUploadMenuOpen = Boolean(anchorE2);
-
     const location = useLocation();
     const navigate = useNavigate();
-
     const [label, setLabel] = useState("Select an option to search for maps...");
     const [s, setS] = useState("");
     let disabled = false;
-    let uploadDisabled = false;
+    let isPubPage = false;
+
 
     let id;
     if (store.currentMap) {
@@ -35,6 +49,8 @@ export default function AppBanner() {
 
     let StyledIconButton = styled(IconButton)({
         color: "black",
+
+
         '&:hover': {
             opacity: 1,
             transition: "color 0.7s, transform 0.7s",
@@ -60,16 +76,23 @@ export default function AppBanner() {
         setAnchorEl(null);
         auth.logoutUser();
     }
+    console.log(store.filterSearch);
+
+    if (location.pathname === '/public' || location.pathname === '/search') {
+        isPubPage = true;
+    }
 
     const handleSearchUser = () => {
-        store.navigatePublic();
+        // store.clearSearch();
+        navigate('/public');
         setS("");
         store.setFilterSearch("users");
+        console.log(store.filterSearch);
         setLabel("Search by username")
     }
 
     const handleSearchMap = () => {
-        store.navigatePublic();
+        navigate('/public');
         setS("");
         store.setFilterSearch("mapname");
         setLabel("Search by map name")
@@ -81,6 +104,7 @@ export default function AppBanner() {
 
     function handleComment() {
         store.openCommentView();
+        console.log(store.openComment);
     }
 
     const handleUploadMenuClose = () => {
@@ -88,34 +112,38 @@ export default function AppBanner() {
     };
 
     const handleUploadShapefile = () => {
+        console.log("shp/dbf")
         setAnchorE2(null);
         store.showUpload("shp/dbf")
     };
 
     const handleUploadGeojson = () => {
+        console.log("geojson")
         setAnchorE2(null);
         store.showUpload("geojson")
     };
 
     const handleHomePage = () => {
         if (auth.loggedIn) {
-            store.navigateHome();
+            navigate('/home')
         }
     }
 
     const handlePublicMapsPage = () => {
-        store.navigatePublic();
+        navigate('/public')
     }
 
     const handleSearchPage = (event) => {
-        navigate('/result')
+        navigate('/search')
     }
 
+    function handleHomescreen() {
+        // store.closeCurrentList();
+    }
+
+    console.log(location.pathname === '/mapview/' + id);
     if (location.pathname === '/mapview/' + id) {
         disabled = true;
-    }
-    if (location.pathname.includes('/map/') || !auth.loggedIn) {
-        uploadDisabled = true;
     }
 
     let commentButton = <StyledIconButton
@@ -123,9 +151,10 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
+        // onClick={() => handleClick("/mapview-comment")}
         onClick={() => handleComment()}
     >
-        <TextsmsOutlined style={{ fontSize: "45px", float: "right" }} />
+        <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
 
     const menuId = 'primary-search-account-menu';
@@ -205,8 +234,10 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2, marginLeft: "5px" }}
+    // disabled={disabled}
+    // onClick={() => handleClick("/public")}
     >
-        <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}/>
+        <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
     </StyledIconButton>
 
     let homeIcon = <StyledIconButton
@@ -215,8 +246,9 @@ export default function AppBanner() {
         aria-label="open drawer"
         sx={{ mr: 2 }}
         disabled={auth.loggedIn ? false : true}
+    // onClick={() => handleClick("/public")}
     >
-        <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
+        <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
     </StyledIconButton>
 
     let searchIcon = <StyledIconButton
@@ -224,6 +256,8 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
+
+        // onClick={handleSearchPage}
         onClick={(e) => {
             e.preventDefault();
             console.log(store.filterSearch);
@@ -234,7 +268,68 @@ export default function AppBanner() {
             navigate('/search')
         }}
     >
-        <Search style={{ fontSize: "45px", float: "right" }}/>
+        <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+    </StyledIconButton>
+
+    let searchfield = <Box
+        component="form"
+        sx={{
+            '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
+            display: 'inline',
+            fontSize: "40px",
+            marginLeft: 'auto',
+            "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
+                borderColor: '#FDE66B'
+            },
+            "& label.Mui-focused": {
+                color: '#756060'
+            },
+
+        }}
+    >
+        <TextField
+            id="outlined-basic"
+            label={label}
+            variant="standard"
+            value={s}
+            onChange={(e) => {
+                e.preventDefault();
+                let search = e.target.value;
+                console.log(search);
+                setS(search);
+                e.target.value = "";
+            }}
+        />
+    </Box>
+
+    let searchByUserNameIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2, marginLeft: '5px' }}
+        onClick={() => handleSearchUser()}
+    >
+        <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
+    </StyledIconButton>
+
+    let searchByMapNameIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={() => handleSearchMap()}
+    >
+        <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
+    </StyledIconButton>
+
+    let searchByMapProperty = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={() => handleSearchProperty()}
+    >
+        <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
     </StyledIconButton>
 
     if (location.pathname === '/public') {
@@ -244,7 +339,7 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
         >
-            <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}/>
+            <PublicIcon sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}></PublicIcon>
         </StyledIconButton>
     }
     else if (location.pathname === '/home') {
@@ -255,7 +350,7 @@ export default function AppBanner() {
             sx={{ mr: 2, color: '#FDE66B' }}
             disabled={auth.loggedIn ? false : true}
         >
-            <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
+            <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
         </StyledIconButton>
     }
     else if (location.pathname === '/search') {
@@ -265,13 +360,14 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, color: '#FDE66B' }}
         >
-            <Search style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}/>
+            <SearchIcon style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}></SearchIcon>
         </StyledIconButton>
     }
 
-    let navigationBar = "";
+    let editToolbarMenu = "";
+    // if (auth.user || auth.type) {
     if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login') {
-        navigationBar =
+        editToolbarMenu =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">
                     <Toolbar id="toolBar">
@@ -280,110 +376,35 @@ export default function AppBanner() {
                             noWrap
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
+                            onClick={handleHomescreen}
                         >
                             {globeIcon}
                             {homeIcon}
-                            {searchIcon}
+                            {isPubPage ? searchIcon : <div></div>}
+                            {/* {searchIcon} */}
 
-                            <Box
-                                component="form"
-                                sx={{
-                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
-                                    display: 'inline',
-                                    fontSize: "40px",
-                                    marginLeft: 'auto',
-                                    "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
-                                        borderColor: '#FDE66B'
-                                    },
-                                    "& label.Mui-focused": {
-                                        color: '#756060'
-                                    },
+                            {isPubPage ? searchfield : <div></div>}
+                            {isPubPage ? searchByUserNameIcon : <div></div>}
+                            {isPubPage ? searchByMapNameIcon : <div></div>}
+                            {isPubPage ? searchByMapProperty : <div></div>}
 
-                                }}
-                            >
-                                <TextField
-                                    id="outlined-basic"
-                                    label={label}
-                                    variant="standard"
-                                    value={s}
-                                    onChange={(e) => {
-                                        e.preventDefault();
-                                        let search = e.target.value;
-                                        console.log(search);
-                                        setS(search);
-                                        e.target.value = "";
-                                    }}
-                                // onKeyPress={(e) => {
-                                //     e.preventDefault();
-                                //     let search = e.target.value;
-                                //     store.setSearch(search);
-                                //     e.target.value = "";
-                                //     // if (e.key === 'Enter') {
-                                //     //     e.preventDefault();
-                                //     //     let search = e.target.value;
-                                //     //     store.setSearch(search);
-                                //     //     e.target.value = "";
-                                //     //     // navigate('/search')
-                                //     // }
-                                // }}
-                                />
-                            </Box>
 
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2, marginLeft: '5px' }}
-                                onClick={() => handleSearchUser()}
-                            >
-                                <PersonOutline style={{ fontSize: "45px", float: "right" }}/>
-                            </StyledIconButton>
 
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={() => handleSearchMap()}
-                            >
-                                <Map style={{ fontSize: "45px", float: "right" }}/>
-                            </StyledIconButton>
 
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={() => handleSearchProperty()}
-                            >
-                                <Workspaces style={{ fontSize: "45px", float: "right" }}/>
-                            </StyledIconButton>
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                         {disabled ? commentButton : <div></div>}
-                        {/* <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                            disabled={disabled}
-                            // onClick={() => handleClick("/mapview-comment")}
-                            onClick={() => handleComment()}
-                        >
-                            <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
-                        </StyledIconButton> */}
-
-
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
-                                disabled={uploadDisabled}
+                                disabled={auth.loggedIn ? false : true}
+                            // onClick={() => handleClick("/user-lists")}
                             >
-                                <AddToPhotos
+                                <AddToPhotosIcon
                                     size="large"
                                     edge="end"
                                     aria-label="account of current user"
@@ -392,7 +413,9 @@ export default function AppBanner() {
                                     onClick={handleUploadMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
-                                />
+                                >
+                                    {/* {getAccountMenu(auth.loggedIn)} */}
+                                </AddToPhotosIcon>
                             </StyledIconButton>
                         </Box>
 
@@ -402,8 +425,10 @@ export default function AppBanner() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 sx={{ mr: 2 }}
+                            // disabled={disabled}
+                            // onClick={() => handleClick("/user-lists")}
                             >
-                                <AccountCircle
+                                <AccountCircleIcon
                                     size="large"
                                     edge="end"
                                     aria-label="account of current user"
@@ -412,9 +437,12 @@ export default function AppBanner() {
                                     onClick={handleProfileMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
-                                />
+                                >
+                                    {/* {getAccountMenu(auth.loggedIn)} */}
+                                </AccountCircleIcon>
                             </StyledIconButton>
                         </Box>
+
                     </Toolbar>
                 </AppBar>
                 {
@@ -426,10 +454,13 @@ export default function AppBanner() {
                 {
                     <UploadModal />
                 }
+                {/* {
+                    menu
+                } */}
             </Box>);
     }
     return (
-        navigationBar
+        editToolbarMenu
     );
 
 }

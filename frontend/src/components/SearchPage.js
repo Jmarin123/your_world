@@ -1,21 +1,24 @@
-import React, { useContext, useEffect } from 'react';
+// import Map from './Map.js';
 import { GlobalStoreContext } from '../store'
-import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import React, { useContext, useEffect } from 'react'
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
 import MapCard from './MapCard.js';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 export default function SearchPage() {
-    const { store } = useContext(GlobalStoreContext);
     const [sort, setSort] = React.useState("Map Title");
-
+    const { store } = useContext(GlobalStoreContext);
     useEffect(() => {
         store.loadAllMaps();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
     const handleChange = (event) => {
         setSort(event.target.value);
     };
-
     let mapCard = [];
     // for (let i = 0; i < store.idNamePairs.length; i++) {
     //     if (store.idNamePairs[i].map.publish.isPublished) {
@@ -23,7 +26,8 @@ export default function SearchPage() {
     //     }
     // }
 
-    // mapCard = store.filterBySearch();
+    mapCard = store.filterBySearch();
+
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
             <Box id="publicBox" component="form" noValidate >

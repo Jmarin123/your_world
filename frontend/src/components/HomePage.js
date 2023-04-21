@@ -1,17 +1,23 @@
 import React, { useContext, useState, useEffect } from 'react'
-
 import { GlobalStoreContext } from '../store'
-import AuthContext from '../auth/index'
+import AuthContext from '../auth'
 
-import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
-
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
 import MapCard from './MapCard.js';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
+// import Grid from '@mui/material/Grid';
 export default function HomePage() {
+    const [sort, setSort] = useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-
-    const [sort, setSort] = useState("Map Title");
+    const handleChange = (event) => {
+        setSort(event.target.value);
+    };
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -19,27 +25,24 @@ export default function HomePage() {
     }, []);
 
     let mapCard = [];
+
     for (let i = 0; i < store.idNamePairs.length; i++) {
-        if (auth && auth.user && auth.user.email === store.idNamePairs[i].ownerEmail) {
+        if (auth && auth.user.email === store.idNamePairs[i].map.ownerEmail) {
             mapCard.push(store.idNamePairs[i]);
         }
     }
-
-    const handleChange = (event) => {
-        setSort(event.target.value);
-    };
-    
     // if (store.search !== "" && store.idNamePairs) {
     //     listCard = store.filterBySearch("home");
     // }
     // if (listCard.length > 0 && store && store.sort !== "") {
     //     listCard = store.sortList(listCard);
     // }
-
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
             <Box id="publicBox" component="form" noValidate >
                 <section id="public">Your Maps</section>
+
+
                 <FormControl variant="standard" sx={{
                     m: 1,
                     width: '100px',
@@ -71,6 +74,7 @@ export default function HomePage() {
                     </Select>
                 </FormControl>
 
+
                 <div id='line'></div>
 
                 <List id="map-cards-list"
@@ -89,6 +93,7 @@ export default function HomePage() {
                         ))
                     }
                 </List>
+
             </Box>
         </Box>
     );

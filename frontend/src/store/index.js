@@ -65,7 +65,7 @@ function GlobalStoreContextProvider(props) {
         search: "",
         filterSearch: "",
         subregion: null,
-        publicPagePairs: [],
+        // publicPagePairs: [],
     });
 
     const { auth } = useContext(AuthContext);
@@ -86,7 +86,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: store.publicPagePairs,
+                    // publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -94,7 +94,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal: CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     uploadType: "",
-                    currentMap: payload.newMap,
+                    currentMap: store.currentMap,
                     openComment: false,
                     mapIdMarkedForDeletion: null,
                     mapMarkedForDeletion: null,
@@ -102,7 +102,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -118,7 +118,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: store.publicPagePairs,
+                    // publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -134,7 +134,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: store.publicPagePairs,
+                    // publicPagePairs: store.publicPagePairs,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -150,7 +150,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -166,7 +166,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -182,7 +182,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -198,7 +198,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
@@ -214,9 +214,10 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
+
             case GlobalStoreActionType.EDIT_MAP: {
                 return setStore({
                     currentModal: CurrentModal.EDIT_MAP,
@@ -229,7 +230,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -244,7 +245,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_SEARCH: {
@@ -259,7 +260,7 @@ function GlobalStoreContextProvider(props) {
                     search: payload,
                     filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.SET_FILTER_SEARCH: {
@@ -274,7 +275,7 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: payload,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.NAVIGATE_HOME: {
@@ -289,24 +290,24 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: "",
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
-            case GlobalStoreActionType.NAVIGATE_PUBLIC: {
-                return setStore({
-                    currentModal: CurrentModal.NONE,
-                    idNamePairs: store.idNamePairs,
-                    uploadType: "",
-                    currentMap: payload.currentMap,
-                    openComment: false,
-                    mapMarkedForDeletion: null,
-                    mapMarkedForExport: null,
-                    search: "",
-                    filterSearch: "",
-                    subregion: null,
-                    publicPagePairs: payload.screenList,
-                });
-            }
+            // case GlobalStoreActionType.NAVIGATE_PUBLIC: {
+            //     return setStore({
+            //         currentModal: CurrentModal.NONE,
+            //         idNamePairs: store.idNamePairs,
+            //         uploadType: "",
+            //         currentMap: payload.currentMap,
+            //         openComment: false,
+            //         mapMarkedForDeletion: null,
+            //         mapMarkedForExport: null,
+            //         search: "",
+            //         filterSearch: "",
+            //         subregion: null,
+            //         // publicPagePairs: payload.screenList,
+            //     });
+            // }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
@@ -318,8 +319,9 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -333,8 +335,9 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: payload.feature,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             case GlobalStoreActionType.RENAME_SUBREGION: {
@@ -348,8 +351,9 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: null,
-                    publicPagePairs: [],
+                    // publicPagePairs: [],
                 });
             }
             default:
@@ -357,39 +361,58 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.showRenameModal = async (id) => {
-        let response = await api.getMapById(id);
-        if (response.data.success) {
-            let map = response.data.map;
-            storeReducer({
-                type: GlobalStoreActionType.EDIT_MAP,
-                payload: { currentMap: map }
-            });
-        }
+    store.showRenameModal = (mapToEdit) => {
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP,
+            payload: { currentMap: mapToEdit }
+        });
     }
 
     store.isRenameModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_MAP;
     }
 
-    store.changeMapName = async function (newName) {
+    store.changeMapName = function (newName) {
         // GET THE LIST
         let id = store.currentMap._id;
-        let response = await api.updateMapNameById(id, newName);
-        if (response.data.success) {
-            response = await api.getMapPairs();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                console.log("store.changeMapName");
-                storeReducer({
-                    type: GlobalStoreActionType.CHANGE_MAP_NAME,
-                    payload: {
-                        idNamePairs: pairsArray,
-                    }
-                });
+        console.log(id);
+        async function asyncChangeMapName(id) {
+            let flag = 0;
+            if (!flag) {
+                let response = await api.getMapById(id);
+                if (response.data.success) {
+                    let map = response.data.map;
+                    map.name = newName;
+                    async function updateMap(map) {
 
+                        response = await api.updateMapById(map._id, map);
+                        console.log(map._id);
+                        if (response.data.success) {
+                            async function getMapPairs(map) {
+                                response = await api.getMapPairs();
+                                if (response.data.success) {
+                                    let pairsArray = response.data.idNamePairs;
+                                    console.log("store.changeMapName");
+                                    storeReducer({
+                                        type: GlobalStoreActionType.CHANGE_MAP_NAME,
+                                        payload: {
+                                            idNamePairs: pairsArray,
+                                        }
+                                    });
+
+                                }
+
+                            }
+                            getMapPairs(map);
+
+                        }
+                    }
+                    updateMap(map);
+                }
             }
+
         }
+        asyncChangeMapName(id);
     }
 
     store.updateMap = async function (map) {
@@ -427,24 +450,29 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.loadIdNamePairs = async function () {
-        const response = await api.getMapPairs();
-        if (response.data.success) {
-            let pairsArray = response.data.idNamePairs;
-            storeReducer({
-                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
-            });
+    store.loadIdNamePairs = function () {
+        async function asyncLoadIdNamePairs() {
+            const response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log("store.loadIdNamePairs");
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+                console.log(store.idNamePairs);
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
         }
-        else {
-            console.log("API FAILED TO GET THE LIST PAIRS");
-        }
-        tps.clearAllTransactions();
+        asyncLoadIdNamePairs();
+        // tps.clearAllTransactions();
     }
 
     // THIS FUNCTION LOAD ALL THE MAPS WITHOUT VERIFY
     store.loadAllMaps = async function () {
-        console.log("store.loadMaps");
+        console.log("store.loadAllMaps");
         try {
             const response = await api.getAllMaps();
 
@@ -471,7 +499,6 @@ function GlobalStoreContextProvider(props) {
             name: newMapName,
             ownerEmail: auth.user.email,
             owner: auth.user.firstName + " " + auth.user.lastName,
-            // dataFromMap: JSON.stringify(obj),
             dataFromMap: obj,
             comments: [],
             likes: [],
@@ -507,30 +534,30 @@ function GlobalStoreContextProvider(props) {
         tps.clearAllTransactions();
     }
 
-    store.navigatePublic = function (obj) {
-        async function asyncLoadIdNamePairs() {
-            const response = await api.getAllMaps();
-            if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
+    // store.navigatePublic = function (obj) {
+    //     async function asyncLoadIdNamePairs() {
+    //         const response = await api.getAllMaps();
+    //         if (response.data.success) {
+    //             let pairsArray = response.data.idNamePairs;
 
-                let screenList = []
-                screenList = pairsArray.filter(pair => {
-                    return pair.map.publish.isPublished;
-                });
+    //             let screenList = []
+    //             screenList = pairsArray.filter(pair => {
+    //                 return pair.map.publish.isPublished;
+    //             });
 
-                storeReducer({
-                    type: GlobalStoreActionType.NAVIGATE_PUBLIC,
-                    payload: { screenList: screenList }
-                });
-            }
-            else {
-                console.log("navigatePublic - could not get list pairs");
-            }
-        }
-        asyncLoadIdNamePairs();
-        tps.clearAllTransactions();
-        navigate("/public");
-    }
+    //             storeReducer({
+    //                 type: GlobalStoreActionType.NAVIGATE_PUBLIC,
+    //                 payload: { screenList: screenList }
+    //             });
+    //         }
+    //         else {
+    //             console.log("navigatePublic - could not get list pairs");
+    //         }
+    //     }
+    //     asyncLoadIdNamePairs();
+    //     tps.clearAllTransactions();
+    //     navigate("/public");
+    // }
 
     store.navigateSearch = async function (obj) {
         storeReducer({
@@ -571,39 +598,34 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    // store.filterBySearch = function () {
-    //     let screenList = [];
-    //     if(store.idNamePairs){
-    //         if (store.filterSearch === "mapname" && store.search !== "") {
-    //             console.log("1");
-    //             console.log(store.search);
-    //             screenList = store.idNamePairs.filter(pair => {
-    //                 const mapName = pair.map.name.toLowerCase();
-    //                 return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
-    //             });
-    //         } else if (store.filterSearch === "users" && store.search !== "") {
-    //             console.log("2");
-    //             console.log(store.search);
-    //             screenList = store.idNamePairs.filter(pair => {
-    //                 const ownerName = pair.map.owner.toLowerCase();
-    //                 return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
-    //             });
-    //         } else {
-    //             console.log("3");
-    //             console.log(store.search);
-    //             console.log(store.filterSearch);
-    //             console.log(store.idNamePairs);
-    //             screenList = store.idNamePairs.filter(pair => {
-    //                 const mapName = pair.map.name.toLowerCase();
-    //                 return (store.search === "" && pair.map.publish.isPublished) ||
-    //                     (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
-    //             });
-    //         }
-    //     }
-
-    //     console.log("searched")
-    //     return screenList;
-    // };
+    store.filterBySearch = function () {
+        let screenList = [];
+        if (store.filterSearch === "mapname" && store.search !== "") {
+            console.log("1");
+            console.log(store.search);
+            screenList = store.idNamePairs.filter(pair => {
+                const mapName = pair.map.name.toLowerCase();
+                return store.search !== "" && mapName.includes(store.search.toLowerCase()) && pair.map.publish.isPublished;
+            });
+        } else if (store.filterSearch === "users" && store.search !== "") {
+            console.log("2");
+            console.log(store.search);
+            screenList = store.idNamePairs.filter(pair => {
+                const ownerName = pair.map.owner.toLowerCase();
+                return store.search !== "" && ownerName === store.search.toLowerCase() && pair.map.publish.isPublished;
+            });
+        } else {
+            console.log("3");
+            console.log(store.search);
+            console.log(store.filterSearch);
+            screenList = store.idNamePairs.filter(pair => {
+                const mapName = pair.map.name.toLowerCase();
+                return (store.search === "" && pair.map.publish.isPublished) ||
+                    (store.search !== "" && mapName.startsWith(store.search.toLowerCase()) && pair.map.publish.isPublished);
+            });
+        }
+        return screenList;
+    };
 
     store.updateCurrentMap = async function () {
         const response = await api.updateMapById(store.currentMap._id, store.currentMap);
@@ -617,21 +639,19 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.setCurrentMap = async function (id) {
-        let newMap = await api.getMapById(id);
-        if (newMap.data.success) {
-            storeReducer({
-                type: GlobalStoreActionType.SET_CURRENT_MAP,
-                payload: { currentMap: newMap.data.map }
-            });
-        }
+    store.setCurrentMap = function (newMap) {
+        console.log(newMap);
+        storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_MAP,
+            payload: { currentMap: newMap }
+        });
     }
 
     store.openCommentView = function () {
         const toggle = !store.openComment
         storeReducer({
             type: GlobalStoreActionType.OPEN_COMMENT,
-            payload: { currentMap: store.currentMap, counter: store.newListCounter, toggle: toggle}
+            payload: { currentMap: store.currentMap, counter: store.newListCounter, toggle: toggle }
         });
     }
 
@@ -691,43 +711,53 @@ function GlobalStoreContextProvider(props) {
         store.deleteMap(store.mapIdMarkedForDeletion);
     }
 
-    store.duplicateMap = async function (map) {
-        let response = await api.getMapPairs();
-        if (response.data.success) {
-            let pairsArray = response.data.idNamePairs;
-            console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
-            let newMapName = map.name;
-            let payload = {
-                name: newMapName,
-                ownerEmail: auth.user.email,
-                owner: auth.user.firstName + " " + auth.user.lastName,
-                dataFromMap: map.dataFromMap,
-                comments: [],
-                likes: [],
-                dislikes: [],
-                publish: { isPublished: false, publishedDate: new Date() },
-                image: map.image
-            };
-            const re = await api.createMap(payload);
-            if (re.status === 201) {
-                tps.clearAllTransactions();
-                let newMap = re.data.map;
-                console.log("store.duplicateMap");
-                storeReducer({
-                    type: GlobalStoreActionType.DUPLICATE_MAP,
-                    payload: newMap
+    store.duplicateMap = function (map) {
+        async function asyncLoadIdNamePairs() {
+            let response = await api.getMapPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
+                let newMapName = map.name;
+                async function asyncCreateMap() {
+                    let payload = {
+                        name: newMapName,
+                        ownerEmail: auth.user.email,
+                        owner: auth.user.firstName + " " + auth.user.lastName,
+                        dataFromMap: map.dataFromMap,
+                        comments: [],
+                        likes: [],
+                        dislikes: [],
+                        publish: { isPublished: false, publishedDate: new Date() },
+                        image: map.image
+                    };
+                    const response = await api.createMap(payload);
+                    // console.log("createNewList response: " + response);
+                    if (response.status === 201) {
+                        tps.clearAllTransactions();
+                        let newMap = response.data.map;
+                        console.log("store.duplicateMap");
+                        storeReducer({
+                            type: GlobalStoreActionType.DUPLICATE_MAP,
+                            payload: newMap
+                        }
+                        );
+
+                        // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+                        // history.push("/home/playlist/" + newList._id);
+                        store.loadIdNamePairs();
+                    }
+                    else {
+                        console.log("API FAILED TO CREATE A NEW MAP");
+                    }
                 }
-                );
-                store.loadIdNamePairs();
-                // navigate("/map/" + store.currentMap._id)
+                asyncCreateMap();
             }
             else {
-                console.log("API FAILED TO CREATE A NEW MAP");
+                console.log("API FAILED TO GET THE MAP PAIRS");
             }
         }
-        else {
-            console.log("API FAILED TO GET THE MAP PAIRS");
-        }
+        asyncLoadIdNamePairs();
+        navigate("/home")
     }
 
     store.markMapForExport = function (map) {
@@ -750,7 +780,7 @@ function GlobalStoreContextProvider(props) {
 
     //this function will be called by the editvertex_transaction file to finally preform the functionality
     store.editVertex = function (key, editedFeature) {
-        
+
         if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
             const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
             const index = parseInt(parts[0]);
@@ -758,12 +788,12 @@ function GlobalStoreContextProvider(props) {
 
             //store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] == editedFeature.geometry.coordinates[i];
 
-                if(editedFeature.geometry.coordinates.length > 1) {
-                    store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates[index2];
-                } else {
-                    store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates;
-                }
-                  
+            if (editedFeature.geometry.coordinates.length > 1) {
+                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates[index2];
+            } else {
+                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates;
+            }
+
         } else { //if NO '-' than this means its a Polygon: key="CountryName"
             const index = parseInt(key);
             store.currentMap.dataFromMap.features[index].geometry.coordinates = editedFeature.geometry.coordinates;
@@ -802,7 +832,7 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    
+
 
     store.markSubregion = function (feature) {
         storeReducer({
