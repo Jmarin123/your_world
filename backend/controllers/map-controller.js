@@ -107,7 +107,15 @@ getAllMaps = async (req, res) => {
             return {
                 _id: map._id,
                 name: map.name,
-                map: map // add it 
+                // map: map // add it 
+                map: {
+                    ownerEmail: map.ownerEmail,
+                    owner: map.owner,
+                    likes: map.likes,
+                    dislikes: map.dislikes,
+                    image: map.image,
+                    publish: map.publish
+                }
             };
         });
 
@@ -137,7 +145,16 @@ getMapPairs = async (req, res) => {
                 let pair = {
                     _id: map._id,
                     name: map.name,
-                    map: map // add it 
+                    // map: map // add it 
+                    map: {
+                        ownerEmail: map.ownerEmail,
+                        owner: map.owner,
+                        likes: map.likes,
+                        dislikes: map.dislikes,
+                        image: map.image,
+                        publish: map.publish
+                    }
+
                 };
                 pairs.push(pair);
             }
