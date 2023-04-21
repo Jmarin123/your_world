@@ -38,7 +38,8 @@ export default function AppBanner() {
     const [label, setLabel] = useState("Select an option to search for maps...");
     const [s, setS] = useState("");
     let disabled = false;
-    // let mapCard = [];
+    let isPubPage = false;
+
 
     let id;
     if (store.currentMap) {
@@ -76,6 +77,10 @@ export default function AppBanner() {
         auth.logoutUser();
     }
     console.log(store.filterSearch);
+
+    if (location.pathname === '/public' || location.pathname === '/search') {
+        isPubPage = true;
+    }
 
     const handleSearchUser = () => {
         // store.clearSearch();
@@ -129,7 +134,11 @@ export default function AppBanner() {
     }
 
     const handleSearchPage = (event) => {
-        navigate('/result')
+        navigate('/search')
+    }
+
+    function handleHomescreen() {
+        // store.closeCurrentList();
     }
 
     console.log(location.pathname === '/mapview/' + id);
@@ -220,19 +229,6 @@ export default function AppBanner() {
         menu = loggedInMenu;
     }
 
-    // function getAccountMenu(loggedIn) {
-    //     let userInitials = 'JD'
-    //     // console.log("userInitials: " + "JD");
-    //     if (loggedIn)
-    //         return <div>{userInitials}</div>;
-    //     // else
-    //     //     return <AccountCircle />;
-    // }
-
-    function handleHomescreen() {
-        // store.closeCurrentList();
-    }
-
     let globeIcon = <StyledIconButton
         edge="start"
         color="inherit"
@@ -260,6 +256,7 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
+
         // onClick={handleSearchPage}
         onClick={(e) => {
             e.preventDefault();
@@ -270,10 +267,69 @@ export default function AppBanner() {
             e.target.value = "";
             navigate('/search')
         }}
-    // disabled={disabled}
-    // onClick={() => handleClick("/public")}
     >
         <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
+    </StyledIconButton>
+
+    let searchfield = <Box
+        component="form"
+        sx={{
+            '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
+            display: 'inline',
+            fontSize: "40px",
+            marginLeft: 'auto',
+            "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
+                borderColor: '#FDE66B'
+            },
+            "& label.Mui-focused": {
+                color: '#756060'
+            },
+
+        }}
+    >
+        <TextField
+            id="outlined-basic"
+            label={label}
+            variant="standard"
+            value={s}
+            onChange={(e) => {
+                e.preventDefault();
+                let search = e.target.value;
+                console.log(search);
+                setS(search);
+                e.target.value = "";
+            }}
+        />
+    </Box>
+
+    let searchByUserNameIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2, marginLeft: '5px' }}
+        onClick={() => handleSearchUser()}
+    >
+        <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
+    </StyledIconButton>
+
+    let searchByMapNameIcon = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={() => handleSearchMap()}
+    >
+        <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
+    </StyledIconButton>
+
+    let searchByMapProperty = <StyledIconButton
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={() => handleSearchProperty()}
+    >
+        <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
     </StyledIconButton>
 
     if (location.pathname === '/public') {
@@ -324,105 +380,21 @@ export default function AppBanner() {
                         >
                             {globeIcon}
                             {homeIcon}
-                            {searchIcon}
+                            {isPubPage ? searchIcon : <div></div>}
+                            {/* {searchIcon} */}
 
-                            <Box
-                                component="form"
-                                sx={{
-                                    '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
-                                    display: 'inline',
-                                    fontSize: "40px",
-                                    marginLeft: 'auto',
-                                    "& .css-v4u5dn-MuiInputBase-root-MuiInput-root:after": {
-                                        borderColor: '#FDE66B'
-                                    },
-                                    "& label.Mui-focused": {
-                                        color: '#756060'
-                                    },
+                            {isPubPage ? searchfield : <div></div>}
+                            {isPubPage ? searchByUserNameIcon : <div></div>}
+                            {isPubPage ? searchByMapNameIcon : <div></div>}
+                            {isPubPage ? searchByMapProperty : <div></div>}
 
-                                }}
-                            >
-                                <TextField
-                                    id="outlined-basic"
-                                    label={label}
-                                    variant="standard"
-                                    value={s}
-                                    // size="small"
-                                    // label={store.search ? "" : label}
-                                    // disabled={disabled}
 
-                                    // defaultValue={store ? store.search : ""}
-                                    // onKeyPress={event => store.setSearch("keypress", event)}
-                                    // onChange={event => setLabel()}
-                                    onChange={(e) => {
-                                        e.preventDefault();
-                                        let search = e.target.value;
-                                        console.log(search);
-                                        setS(search);
-                                        e.target.value = "";
-                                    }}
-                                // onKeyPress={(e) => {
-                                //     e.preventDefault();
-                                //     let search = e.target.value;
-                                //     store.setSearch(search);
-                                //     e.target.value = "";
-                                //     // if (e.key === 'Enter') {
-                                //     //     e.preventDefault();
-                                //     //     let search = e.target.value;
-                                //     //     store.setSearch(search);
-                                //     //     e.target.value = "";
-                                //     //     // navigate('/search')
-                                //     // }
-                                // }}
-                                />
-                            </Box>
 
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2, marginLeft: '5px' }}
-                                onClick={() => handleSearchUser()}
-                            >
-                                <PersonOutlineIcon style={{ fontSize: "45px", float: "right" }}> </PersonOutlineIcon>
-                            </StyledIconButton>
 
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={() => handleSearchMap()}
-                            >
-                                <MapIcon style={{ fontSize: "45px", float: "right" }}> </MapIcon>
-                            </StyledIconButton>
-
-                            <StyledIconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={() => handleSearchProperty()}
-                            >
-                                <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
-                            </StyledIconButton>
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                         {disabled ? commentButton : <div></div>}
-                        {/* <StyledIconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                            disabled={disabled}
-                            // onClick={() => handleClick("/mapview-comment")}
-                            onClick={() => handleComment()}
-                        >
-                            <TextsmsOutlinedIcon style={{ fontSize: "45px", float: "right" }} />
-                        </StyledIconButton> */}
-
-
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <StyledIconButton
                                 edge="start"

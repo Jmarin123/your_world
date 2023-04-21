@@ -51,7 +51,7 @@ export default function PublicPage() {
             <Box id="publicBox" component="form" noValidate >
                 <section id="public">
                     {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
-                    <section id="public">Public Map Listing</section>
+                    <section id="public">Public Maps</section>
                 </section>
                 <FormControl variant="standard" sx={{
                     m: 1,
