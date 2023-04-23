@@ -1,9 +1,8 @@
+// import './App.css';
 import { React } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
 import { AuthContextProvider } from './auth/index';
 import { GlobalStoreContextProvider } from './store'
-
 import Register from './components/Register';
 import Login from './components/Login';
 import SplashScreen from './components/SplashScreen';
@@ -18,7 +17,17 @@ import ErrorModal from './components/ErrorModal'
 import ExportModal from './components/ExportModal'
 import SearchPage from './components/SearchPage';
 import RenameMapModal from './components/RenameMapModal';
-
+/*
+    This is our application's top-level component.
+    
+    @author McKilla Gorilla
+*/
+/*
+  This is the entry-point for our application. Notice that we
+  inject our store into all the components in our application.
+  
+  @author McKilla Gorilla
+*/
 const App = () => {
   if (process.env.NODE_ENV === "production") {
     console.log = function () { }
@@ -27,7 +36,6 @@ const App = () => {
     <BrowserRouter>
       <AuthContextProvider>
         <GlobalStoreContextProvider>
-          
           <AppBanner />
           <Routes>
             <Route path="/" element={<SplashScreen />} />
@@ -44,6 +52,8 @@ const App = () => {
           <DeleteModal />
           <ErrorModal />
           <ExportModal />
+          {/* <MUIAlertModal /> */}
+          {/* <MUIRemoveSongModal /> */}
 
         </GlobalStoreContextProvider>
       </AuthContextProvider>

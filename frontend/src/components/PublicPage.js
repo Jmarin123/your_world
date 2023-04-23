@@ -1,6 +1,6 @@
 import { GlobalStoreContext } from '../store'
 import React, { useContext, useEffect } from 'react'
-import AuthContext from '../auth/index'
+//import AuthContext from '../auth/index'
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MapCard from './MapCard.js';
@@ -13,9 +13,8 @@ import Select from "@mui/material/Select";
 export default function PublicPage() {
     const [sort, setSort] = React.useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
-    const { auth } = useContext(AuthContext);
+    //const { auth } = useContext(AuthContext);
     // const location = useLocation();
-    // let mapCard = [];
 
     useEffect(() => {
         store.loadAllMaps();
@@ -29,8 +28,6 @@ export default function PublicPage() {
     const handleChange = (event) => {
         setSort(event.target.value);
     };
-    console.log(auth);
-    console.log(store.idNamePairs);
     let mapCard = [];
 
     // for (let i = 0; i < store.idNamePairs.length; i++) {

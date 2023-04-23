@@ -39,7 +39,7 @@ export default function AppBanner() {
     const [s, setS] = useState("");
     let disabled = false;
     let isPubPage = false;
-
+    // let mapCard = [];
 
     let id;
     if (store.currentMap) {
@@ -125,16 +125,16 @@ export default function AppBanner() {
 
     const handleHomePage = () => {
         if (auth.loggedIn) {
-            navigate('/home')
+            store.navigateHome();
         }
     }
 
     const handlePublicMapsPage = () => {
-        navigate('/public')
+        navigate('/public');
     }
 
     const handleSearchPage = (event) => {
-        navigate('/search')
+        navigate('/result')
     }
 
     function handleHomescreen() {
@@ -256,7 +256,6 @@ export default function AppBanner() {
         color="inherit"
         aria-label="open drawer"
         sx={{ mr: 2 }}
-
         // onClick={handleSearchPage}
         onClick={(e) => {
             e.preventDefault();
@@ -267,10 +266,11 @@ export default function AppBanner() {
             e.target.value = "";
             navigate('/search')
         }}
+    // disabled={disabled}
+    // onClick={() => handleClick("/public")}
     >
         <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
     </StyledIconButton>
-
     let searchfield = <Box
         component="form"
         sx={{
@@ -331,7 +331,6 @@ export default function AppBanner() {
     >
         <WorkspacesIcon style={{ fontSize: "45px", float: "right" }}> </WorkspacesIcon>
     </StyledIconButton>
-
     if (location.pathname === '/public') {
         globeIcon = <StyledIconButton
             edge="start"
@@ -455,8 +454,8 @@ export default function AppBanner() {
                     <UploadModal />
                 }
                 {/* {
-                    menu
-                } */}
+                menu
+            } */}
             </Box>);
     }
     return (

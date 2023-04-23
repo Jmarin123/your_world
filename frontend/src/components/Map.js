@@ -28,7 +28,6 @@ export default function Map() {
   const navigate = useNavigate();
   const featureGroupRef = React.useRef();
   const [center] = useState([20, 100]);
-  console.log(store.currentMap);
   //for new map editing
   const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
 
@@ -101,12 +100,10 @@ export default function Map() {
     store.changeSubregionName(newName);
     setMaplayout(newMap ? renderedMap : <div></div>)
   }
-
   function handleCloseModal(event) {
     store.hideModals();
     setMaplayout(newMap ? renderedMap : <div></div>)
   }
-
   function handleUpdateName(event) {
     setNewName(event.target.value)
   }
@@ -245,6 +242,7 @@ export default function Map() {
       width: mapContainer.offsetWidth,
       height: mapContainer.offsetHeight,
     }).then(function (canvas) {
+      //console.log(canvas)
       const imageData = canvas.toDataURL()
       store.currentMap.image = imageData;
       store.updateCurrentMap();
@@ -274,8 +272,7 @@ export default function Map() {
       click: changeCountryColor,
       dblclick: markSubregion,
     });
-
-    let popupContent = country.properties.sovereignt;
+    let popupContent = `${country.properties.sovereignt}`;
     if (country.properties && country.properties.popupContent) {
       popupContent += country.properties.popupContent;
     }
@@ -380,6 +377,7 @@ export default function Map() {
     //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
     //});
   };
+
 
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">

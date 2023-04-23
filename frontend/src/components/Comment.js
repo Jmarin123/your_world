@@ -1,11 +1,23 @@
-import React, { useContext } from 'react';
-
+// import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth/index'
 
+// import React, { useContext, useState, useRef } from 'react';
+import React, { useContext } from 'react';
+// import { Typography, TextField, Button, ListItemText } from '@mui/material';
+import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { TextField, Box, List, ListItem, ListItemText, Card, CardActions, CardContent, IconButton } from '@mui/material';
-import { CloseOutlined } from '@mui/icons-material/';
+import Box from '@mui/material/Box';
+import { List, ListItem, ListItemText } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+
+// import Grid from '@mui/material/Grid';
+
+import CardContent from '@mui/material/CardContent';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import IconButton from '@mui/material/IconButton';
+
 
 function Comment(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -18,6 +30,7 @@ function Comment(props) {
     }
     let disabled = false;
 
+
     let StyledIconButton = styled(IconButton)({
         color: "black",
         '&:hover': {
@@ -28,6 +41,7 @@ function Comment(props) {
         }
     });
 
+    // const navigate = useNavigate();
     function handleUpdateComments(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -47,6 +61,16 @@ function Comment(props) {
         disabled = true;
     }
 
+    // Hardcode the comment
+    // let comments = [["Annie", "I live your map!!!"], ["Joe", "The map looks nice."], ["John", "Beautiful map!"], ["AJA", "Amazing work!"],
+    // ["Annie", "Second comment."], ["Joe", "The map looks nice2."], ["John", "Beautiful map2!"], ["AJA", "Amazing work2!"],
+    // ["Annie", "Third comment."], ["Joe", "The map looks nice3."], ["John", "Beautiful map3!"],
+    // ["Annie", "Fourth comment"], ["Joe", "The map looks nice4."], ["John", "Beautiful map4!"],
+    // ];
+    // let reversed = [];
+    // for (let k = comments.length - 1; k >= 0; k--) {
+    //     reversed.push(comments[k]);
+    // }
     //Make sure newest comments are at the top by reversing the comments list
     let reversed = [];
     if (map) {
@@ -61,6 +85,7 @@ function Comment(props) {
         disabled = true;
     }
     return (
+
         <Card sx={{
             width: '102%',
             position: 'relative',
@@ -76,11 +101,46 @@ function Comment(props) {
                     color="inherit"
                     aria-label="open drawer"
                     sx={{ mr: 2, float: "right", display: "inline" }}
+                    // disabled={disabled}
                     onClick={() => handleCloseComment()}
                 >
-                    <CloseOutlined style={{ fontSize: "25px", float: "right" }}/>
+                    <CloseOutlinedIcon
+                        style={{ fontSize: "25px", float: "right" }}
+
+                    ></CloseOutlinedIcon>
                 </StyledIconButton>
 
+                {/* <Grid container spacing={1} style={{
+                    top: '300px',
+                    left: '10px',
+                    height: '700px',
+                    overflowY: 'auto',
+
+                }}>
+
+                    {
+                        reversed.map((comment, i) => (
+
+                            <Grid item key={i} xs={12}
+                                sx={{
+
+                                    borderRadius: "12px",
+                                    backgroundColor: "#ECF2FF",
+                                    margin: '10px',
+                                    fontsize: "8pt",
+                                    marginTop: '1px',
+
+                                }}
+
+                            >
+                                <strong>
+                                    <u id="commentName" style={{ color: "#756060" }}>{comment[0]}</u>
+                                </strong><br />
+                                <div id="commentText" style={{ fontSize: '20px' }}>{comment[1]}</div>
+                            </Grid>
+                        ))
+                    }
+                </Grid> */}
                 <List style={{
                     top: '15px',
                     left: '10px',
@@ -111,6 +171,7 @@ function Comment(props) {
             <CardActions>
                 {
                     auth && auth.type !== "guest" ?
+
                         <Box
                             component="form"
                             sx={{
@@ -126,7 +187,11 @@ function Comment(props) {
                             <TextField
                                 sx={{
                                     backgroundColor: "#ECECEC",
+                                    // top: '320px',
                                     top: '50px',
+
+                                    // borderRadius: "20px",
+                                    // borderColor: '#ffe5ec',
                                 }}
                                 fullWidth
                                 rows={2}
@@ -136,10 +201,11 @@ function Comment(props) {
                             />
                         </Box>
                         :
-                        <Box></Box>
+                        <Box ></Box>
                 }
             </CardActions>
         </Card>
+
     );
 };
 

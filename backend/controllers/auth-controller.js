@@ -93,12 +93,16 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
+        //console.log("in registeruser")
+        //console.log(req.body)
         const { firstName, lastName, username, email, password, passwordVerify } = req.body;
+        //console.log("create user: " + firstName + " " + lastName + " " + username + " " + email + " " + password + " " + passwordVerify);
         if (!firstName || !lastName || !username || !email || !password || !passwordVerify) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
         }
+        //console.log("all fields provided");
         if (password.length < 8) {
             return res
                 .status(400)
@@ -106,6 +110,7 @@ registerUser = async (req, res) => {
                     errorMessage: "Please enter a password of at least 8 characters."
                 });
         }
+        //console.log("password long enough");
         if (password !== passwordVerify) {
             return res
                 .status(400)
@@ -113,7 +118,9 @@ registerUser = async (req, res) => {
                     errorMessage: "Please enter the same password twice."
                 })
         }
+        //console.log("password and password verify match");
         const existingUser = await User.findOne({ email: email });
+        //console.log("existingUser: " + existingUser);
         if (existingUser) {
             return res
                 .status(400)
@@ -133,6 +140,7 @@ registerUser = async (req, res) => {
         });
         const savedUser = await newUser.save();
 
+        // LOGIN THE USER
         const token = auth.signToken(savedUser._id);
 
         await res.cookie("token", token, {
@@ -147,6 +155,7 @@ registerUser = async (req, res) => {
                 email: savedUser.email
             }
         })
+
     } catch (err) {
         console.error(err);
         res.status(500).send();

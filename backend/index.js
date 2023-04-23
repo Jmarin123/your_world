@@ -29,8 +29,8 @@ db.once("open", function () {
 // const bodyParser = require('body-parser');
 
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: "50mb"}));
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 app.use(cookieParser())
 // app.use(bodyParser.json());

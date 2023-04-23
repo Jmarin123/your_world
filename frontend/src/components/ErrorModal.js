@@ -1,6 +1,12 @@
 import { useContext } from 'react'
+// import GlobalStoreContext from '../store';
 import AuthContext from '../auth/index'
-import { Box, Modal, Button, Typography, Grid } from '@mui/material';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 const style = {
     position: 'absolute',
@@ -37,8 +43,10 @@ const buttonBox = {
     justifyContent: 'center',
 }
 
-export default function ErrorModal() {
+export default function MUIErrorModal() {
     const { auth } = useContext(AuthContext);
+    if (auth.error)
+        console.log("auth.error: " + auth.error.message + typeof (auth.error.message));
 
     function handleCloseModal(event) {
         auth.hideModals();
@@ -61,6 +69,7 @@ export default function ErrorModal() {
             </Grid>
             <Grid container item sx={buttonBox}>
                 <Button id="modal-button" onClick={handleCloseModal}>Close</Button>
+
             </Grid>
             </Grid>
         </Modal>

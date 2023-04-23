@@ -1,6 +1,12 @@
 import { useContext, useState } from 'react'
-import { GlobalStoreContext } from '../store'
-import { Box, Modal, Button, Typography, Grid } from '@mui/material'
+import GlobalStoreContext from '../store';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+
 var shapefile = require("shapefile");
 
 const style = {
@@ -40,11 +46,9 @@ const buttonBox = {
 
 export default function UploadModal() {
     const { store } = useContext(GlobalStoreContext);
-
     const [file1, setFile1] = useState(null);
     const [file2, setFile2] = useState(null);
 
-    // This function is for parsing uploaded GeoJSON files
     async function parseJsonFile(file) {
         return new Promise((resolve, reject) => {
           const fileReader = new FileReader()
@@ -54,7 +58,6 @@ export default function UploadModal() {
         })
       }
 
-    // This function is specifically for parsing shp/dbf files into a Uint8Array
     async function parseInputFile(file) {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader()
@@ -68,8 +71,6 @@ export default function UploadModal() {
         })
     }
 
-    // Shapefiles don't come with a "sovereignt" field
-    // This function assigns "sovereignt" in the converted featurecollection depending on adm level of shapefile
     const assignName = (dataForMap) => {
         for(let i = 0; i < dataForMap.features.length; i++){
             if(typeof dataForMap.features[i].properties.NAME_4 !== 'undefined'){
@@ -91,6 +92,7 @@ export default function UploadModal() {
                 dataForMap.features[i].properties.name = '';
             }
         }
+    
         return dataForMap;
     }
 
@@ -106,6 +108,7 @@ export default function UploadModal() {
         }
         else{
             const object = await parseJsonFile(file1)
+            // assignName(object)
 
             store.createNewMap(object)
         }

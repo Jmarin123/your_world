@@ -12,9 +12,9 @@ const auth = require('../auth')
 router.post('/map', auth.verify, MapController.createMap)
 router.delete('/map/:id', auth.verify, MapController.deleteMap)
 router.get('/map/:id', MapController.getMapById)
-router.get('/mappairs', auth.verify, MapController.getMapPairs)
 // // router.get('/playlists', auth.verify, PlaylistController.getPlaylists)
 router.get('/maps', MapController.getAllMaps)
 router.put('/map/:id', MapController.updateMap)
+router.put('/map/:id/name', MapController.updateMapNameById)
 
 module.exports = router

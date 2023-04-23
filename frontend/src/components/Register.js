@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
-import { Link } from "react-router-dom";
-
-import AuthContext from '../auth/index'
-
-import { Box, Button } from '@mui/material';
-
+import { React } from "react";
 import logo from './earthlogo.png'
+import { Button } from '@mui/material';
+import { Box } from '@mui/material';
+import { Link } from "react-router-dom";
+import { useContext } from 'react';
+import AuthContext from '../auth/index'
 
 function Register() {
   const { auth } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
+    console.log("in handleSubmit")
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get('firstName'))
@@ -23,6 +23,7 @@ function Register() {
       formData.get('repassword')
     );
   };
+
 
   return (
     <div>
@@ -55,6 +56,7 @@ function Register() {
         </Button>
       </Box>
     </div>
+
   );
 }
 
