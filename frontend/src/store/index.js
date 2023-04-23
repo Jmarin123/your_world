@@ -632,7 +632,19 @@ function GlobalStoreContextProvider(props) {
         }
 
     }
-
+    store.updateLikesDislikes = async function (idPair) {
+        const response = await api.updateMapById(idPair._id, { likes: idPair.likes, dislikes: idPair.dislikes });
+        if (response.data.success) {
+            const res = await api.getAllMaps();
+            if (res.data.success) {
+                let pairsArray = res.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+            }
+        }
+    }
     store.setCurrentMap = async function (id) {
         let newMap = await api.getMapById(id);
         if (newMap.data.success) {
@@ -709,11 +721,10 @@ function GlobalStoreContextProvider(props) {
         store.deleteMap(store.mapIdMarkedForDeletion);
     }
 
-    store.duplicateMap = async function (map) {
-        let response = await api.getAllMaps();
-        if (response.data.success) {
-            let pairsArray = response.data.idNamePairs;
-            console.log("store.loadIdNamePairs, THE user' pairsArray = ", pairsArray);
+    store.duplicateMap = async function (id) {
+        let res = await api.getMapById(id);
+        if (res.data.success) {
+            let map = res.data.map;
             let newMapName = map.name;
             let payload = {
                 name: newMapName,
@@ -746,9 +757,6 @@ function GlobalStoreContextProvider(props) {
             else {
                 console.log("API FAILED TO CREATE A NEW MAP");
             }
-        }
-        else {
-            console.log("API FAILED TO GET THE MAP PAIRS");
         }
     }
 

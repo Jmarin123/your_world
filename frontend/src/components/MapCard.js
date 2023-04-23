@@ -104,9 +104,7 @@ export default function MapCard(props) {
                     idNamePair.dislikes.push(userName);
                 }
             }
-            store.currentMap.likes = idNamePair.likes;
-            store.currentMap.dislikes = idNamePair.dislikes;
-            store.updateCurrentMap();
+            store.updateLikesDislikes(idNamePair);
         }
     }
 
