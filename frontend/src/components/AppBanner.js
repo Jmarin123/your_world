@@ -135,6 +135,8 @@ export default function AppBanner() {
     }
 
     const handlePublicMapsPage = () => {
+        store.clearSearch();
+        setS("");
         navigate('/public');
     }
 
