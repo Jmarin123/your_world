@@ -75,6 +75,8 @@ export default function AppBanner() {
     const handleLogout = () => {
         setAnchorEl(null);
         auth.logoutUser();
+        store.clearSearch();
+        setS("");
     }
     console.log(store.filterSearch);
 
@@ -126,6 +128,9 @@ export default function AppBanner() {
     const handleHomePage = () => {
         if (auth.loggedIn) {
             store.navigateHome();
+            store.clearSearch();
+            setS("");
+
         }
     }
 
@@ -134,7 +139,7 @@ export default function AppBanner() {
     }
 
     const handleSearchPage = (event) => {
-        navigate('/result')
+        navigate('/search')
     }
 
     function handleHomescreen() {
