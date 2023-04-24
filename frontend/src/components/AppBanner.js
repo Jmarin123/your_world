@@ -90,7 +90,7 @@ export default function AppBanner() {
         setS("");
         store.setFilterSearch("users");
         console.log(store.filterSearch);
-        setLabel("Search by username")
+        setLabel("Search by first and last name")
     }
 
     const handleSearchMap = () => {
@@ -279,7 +279,7 @@ export default function AppBanner() {
         <SearchIcon style={{ fontSize: "45px", float: "right" }}></SearchIcon>
     </StyledIconButton>
     let searchfield = <Box
-        component="form"
+        // component="form"
         sx={{
             '& > :not(style)': { width: '35ch', backgroundColor: "#D9D9D9", marginTop: '0.75%', borderRadius: '5px' },
             display: 'inline',
@@ -302,9 +302,16 @@ export default function AppBanner() {
             onChange={(e) => {
                 e.preventDefault();
                 let search = e.target.value;
-                console.log(search);
                 setS(search);
                 e.target.value = "";
+            }}
+            onKeyPress={(e) => {
+                if(e.key === "Enter"){
+                    e.preventDefault();
+                    store.setSearch(s);
+                    e.target.value = "";
+                    navigate('/search')
+                }
             }}
         />
     </Box>
