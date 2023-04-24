@@ -20,6 +20,7 @@ import html2canvas from 'html2canvas';
 
 // import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
+let mergeFLAG = 0;
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
@@ -33,6 +34,8 @@ export default function Map() {
 
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
+
+  let mergeFeature = null;
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -78,7 +81,8 @@ export default function Map() {
     justifyContent: 'center',
   }
 
-  // function findCenter() {
+  // Find the center, s.t. when opened the map is centered on the uploaded geometry
+  // function findCenter() { 
   //   console.log('Component mounted');
   //   console.log(store.currentMap)
   //   // handleSaveMap();
@@ -252,12 +256,67 @@ export default function Map() {
 
   }
 
-  function changeCountryColor(event) {
-    event.target.setStyle({
+  function clickFeature(event) {
+    if(mergeFLAG){ // Merge active. Mark region if first, and merge if second. 
+
+      event.target.setStyle({
+      color: "#000000",
+      fillColor: "#FDE66B",
+      fillOpacity: 1,
+    });
+
+    if(!mergeFeature){
+      mergeFeature = event.target
+    }
+    else{
+      mergeFeature.setStyle({
+        color: "black",
+        fillColor: "red",
+        fillOpacity: 1,
+      });
+      event.target.setStyle({
+        color: "black",
+        fillColor: "red",
+        fillOpacity: 1,
+      });
+
+      let poly_arr_1 = []
+      for (let i = 0; i < mergeFeature.feature.geometry.coordinates.length; i++){
+        poly_arr_1.push(mergeFeature.feature.geometry.coordinates[i][0])
+      }
+      let poly_arr_2 = []
+      for (let i = 0; i < event.target.feature.geometry.coordinates.length; i++){
+        poly_arr_2.push(event.target.feature.geometry.coordinates[i][0])
+      }
+
+      // var poly1 = turf.polygon(poly_arr_1)
+      // var poly2 = turf.polygon(poly_arr_2)
+      var union = turf.union(mergeFeature.feature, event.target.feature);
+
+      store.currentMap.dataFromMap.features.forEach((feature, index) => {
+        console.log(store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin)
+        if(store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin){
+          console.log(store.currentMap.dataFromMap.features[index])
+          let newProperties = JSON.parse(JSON.stringify(store.currentMap.dataFromMap.features[index].properties));
+          union.properties = newProperties
+          store.currentMap.dataFromMap.features[index] = union
+          setMaplayout(newMap ? renderedMap : <div></div>)
+        }
+      });
+
+
+
+      mergeFeature = null
+    }
+
+    }
+    else{ // Merge inactive
+      event.target.setStyle({
       color: "#000000",
       fillColor: "#64ec4c",
       fillOpacity: 1,
     });
+    }
   };
 
   function markSubregion(event) { // for name change
@@ -266,10 +325,8 @@ export default function Map() {
   }
 
   const onEachCountry = (country, layer) => {
-    // layer.options.fillOpacity = Math.random();
-
     layer.on({
-      click: changeCountryColor,
+      click: clickFeature,
       dblclick: markSubregion,
     });
     let popupContent = `${country.properties.sovereignt}`;
@@ -321,6 +378,20 @@ export default function Map() {
       setMaplayout(newMap ? renderedMap : <div></div>)
     }
   };
+
+  function handleMerge(event) {
+    if (MapLayOutFLAG !== 1) {
+      if(mergeFLAG){
+        mergeFLAG = 0
+      }
+      else{
+        mergeFLAG = 1
+      }
+      setMaplayout(newMap ? renderedMap : <div></div>)
+    } else {
+      // setMaplayout()
+    }
+  }
 
   const handleEditable = (e) => {
     //const layers = e.layers;
@@ -446,6 +517,7 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={() => handleMerge()}
           >
             <Merge style={{ fontSize: "45px" }} titleAccess="Merge" />
           </StyledIconButton>

@@ -18,15 +18,16 @@ export default function Mapview() {
     };
 
     function onEachCountry(country, layer) {
-        const countryName = country.properties.ADMIN;
-        // console.log(countryName);
-        layer.bindPopup(countryName);
+        // layer.on({
+        //     click: this.changeCountryColor,
+        // });
 
-        layer.options.fillOpacity = Math.random();
-
-        layer.on({
-            click: this.changeCountryColor,
-        });
+        let popupContent = `${country.properties.sovereignt}`;
+        if (country.properties && country.properties.popupContent) {
+          popupContent += country.properties.popupContent;
+        }
+        
+        layer.bindPopup(popupContent);
     };
 
     let renderedMap = <GeoJSON
