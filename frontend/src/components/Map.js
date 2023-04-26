@@ -21,10 +21,12 @@ import html2canvas from 'html2canvas';
 // import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
 let mergeFLAG = 0;
+let colorFill = "#ffff00";
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [color, setColor] = useState("#ffff00");
+  //const [COLOR, setColor] = useState("#ffff00");
+  //const state = { color: "#ffff00" };
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
   const featureGroupRef = React.useRef();
@@ -311,9 +313,10 @@ export default function Map() {
 
     }
     else{ // Merge inactive
+      console.log(colorFill);
       event.target.setStyle({
       color: "#000000",
-      fillColor: "#64ec4c",
+      fillColor: colorFill,
       fillOpacity: 1,
     });
     }
@@ -337,7 +340,10 @@ export default function Map() {
   };
 
   function colorChange(event) {
-    setColor(event.target.value);
+    //setColor(event.target.value);
+    colorFill = event.target.value
+    //console.log("Change is made");
+    //console.log(colorFill)
   };
 
   newMap.features.forEach((feature, index) => {
@@ -387,7 +393,7 @@ export default function Map() {
       else{
         mergeFLAG = 1
       }
-      setMaplayout(newMap ? renderedMap : <div></div>)
+      //setMaplayout(newMap ? renderedMap : <div></div>)
     } else {
       // setMaplayout()
     }
@@ -627,7 +633,7 @@ export default function Map() {
         </div>
         <input
           type="color"
-          value={color}
+          value={colorFill}
           onChange={colorChange}
         />
       </Box>
