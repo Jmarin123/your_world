@@ -1,16 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
+
 import { GlobalStoreContext } from '../store'
-import AuthContext from '../auth'
+import AuthContext from '../auth/index'
 
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
+import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+
 import MapCard from './MapCard.js';
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
-// import Grid from '@mui/material/Grid';
 export default function HomePage() {
     const [sort, setSort] = useState("Map Title");
     const { store } = useContext(GlobalStoreContext);

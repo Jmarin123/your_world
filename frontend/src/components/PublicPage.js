@@ -1,45 +1,22 @@
-import { GlobalStoreContext } from '../store'
-import React, { useContext, useEffect } from 'react'
-//import AuthContext from '../auth/index'
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
+import React, { useContext, useEffect } from 'react';
+import { GlobalStoreContext } from '../store';
+import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import MapCard from './MapCard.js';
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-// import { useLocation } from 'react-router-dom';
 
 export default function PublicPage() {
     const [sort, setSort] = React.useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
-    //const { auth } = useContext(AuthContext);
-    // const location = useLocation();
-
     useEffect(() => {
         store.loadAllMaps();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    // if (location.pathname !== '/public') {
-    //     store.clearSearch();
-    // }
 
     const handleChange = (event) => {
         setSort(event.target.value);
     };
     let mapCard = [];
 
-    // for (let i = 0; i < store.idNamePairs.length; i++) {
-    //     if (store.idNamePairs[i].map.publish.isPublished) {
-    //         mapCard.push(store.idNamePairs[i]);
-    //     }
-    // }
-
-    // if (store.search !== "" && store.idNamePairs) {
-    //     mapCard = store.filterBySearch();
-    // }
-    // mapCard = store.filterBySearch();
+    mapCard = store.filterBySearch();
     // let publicScreen = "Public Map Listing";
     // let resultScreen = "Result";
     return (

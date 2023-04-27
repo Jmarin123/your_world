@@ -1,15 +1,16 @@
-import { createContext, useContext, useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import AuthContext from '../auth'
-import api from './store-request-api'
-import jsTPS from '../common/jsTPS'
-import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
-//useContext
-// import { useHistory } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
+import { createContext, useContext, useState } from 'react'
+import { Outlet } from 'react-router-dom'
+
+import AuthContext from '../auth'
+
+import api from './store-request-api'
+import jsTPS from '../common/jsTPS'
+
+import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
+
 export const GlobalStoreContext = createContext({});
-console.log("Creating GlobalStoreContext")
 
 export const GlobalStoreActionType = {
     CHANGE_MAP_NAME: "CHANGE_MAP_NAME",
@@ -512,13 +513,11 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.createNewMap = async function (obj) {
-        // let newMapName = "Untitled" + store.idNamePairs.length;
         let newMapName = "Untitled";
         let payload = {
             name: newMapName,
             ownerEmail: auth.user.email,
             owner: auth.user.firstName + " " + auth.user.lastName,
-            // dataFromMap: JSON.stringify(obj),
             dataFromMap: obj,
             comments: [],
             likes: [],

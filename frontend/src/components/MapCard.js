@@ -1,27 +1,15 @@
-import React from 'react'
-// import { GlobalStoreContext } from '../store'
-
-import { useNavigate } from 'react-router-dom'
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import ListItem from '@mui/material/ListItem';
-import MapCardSample from './/mapcardsample.jpg'
-import IconButton from '@mui/material/IconButton';
-import DownloadIcon from '@mui/icons-material/Download';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { useLocation } from "react-router-dom";
-// import Grid from '@mui/material/Grid';
+import React, { useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { GlobalStoreContext } from '../store'
-import { useContext } from 'react';
 import AuthContext from '../auth/index'
 
-// export default function MapCard() {
+import { styled } from '@mui/material/styles';
+import { Box, Typography, ListItem, IconButton } from '@mui/material';
+import { Download, FileCopy, DeleteOutline, BorderColor, ThumbDownOffAlt, ThumbUpOffAlt } from '@mui/icons-material/';
+
+import MapCardSample from './/mapcardsample.jpg'
+
 export default function MapCard(props) {
     const location = useLocation();
     const { store } = useContext(GlobalStoreContext);
@@ -133,7 +121,7 @@ export default function MapCard(props) {
         }}
         data-cy="dup-btn"
     >
-        <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+        <FileCopy style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
     let deleteButton = < StyledIconButton
         edge="start"
@@ -149,7 +137,7 @@ export default function MapCard(props) {
         }}
         data-cy="del-btn"
     >
-        <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+        <DeleteOutline style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
     // console.log(auth.user.email);
     // console.log(map.ownerEmail);
@@ -193,7 +181,7 @@ export default function MapCard(props) {
                 }}
                 data-cy="download-btn"
             >
-                <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                <Download style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
             {!disabled ? deleteButton : <div></div>}
             <StyledIconButton
@@ -206,7 +194,7 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                <ThumbDownOffAlt style={{ fontSize: "35px", float: "right", positon: "absolute" }}
                     onClick={() => handleLikeDislike("dislike")} />
 
                 <strong style={{ color: 'black' }}>
@@ -224,7 +212,7 @@ export default function MapCard(props) {
                     fontSize: '1em'
                 }}
             >
-                <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }}
+                <ThumbUpOffAlt style={{ fontSize: "35px", float: "right", positon: "absolute" }}
                     onClick={() => handleLikeDislike("like")} />
 
                 <strong style={{ color: 'black' }}>
@@ -274,7 +262,7 @@ export default function MapCard(props) {
                         fontSize: '1em'
                     }}
                 >
-                    <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <Download style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -289,7 +277,7 @@ export default function MapCard(props) {
                     }}
                     data-cy="dup-btn"
                 >
-                    <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <FileCopy style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -306,7 +294,7 @@ export default function MapCard(props) {
                     }}
                     data-cy="del-btn"
                 >
-                    <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <DeleteOutline style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
                 <StyledIconButton
@@ -323,7 +311,7 @@ export default function MapCard(props) {
                     }}
                     data-cy="rename-btn"
                 >
-                    <BorderColorIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
+                    <BorderColor style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
 
             </Box>
