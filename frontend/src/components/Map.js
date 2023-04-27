@@ -1,130 +1,76 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { GlobalStoreContext } from '../store'
-
-import { styled } from '@mui/material/styles';
-import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
-import {
-  Explore, Save, Undo, Redo, Compress, GridView, Merge,
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title
-} from '@mui/icons-material/';
-
-import Statusbar from './Statusbar';
-import Recenter from './Recenter'
-import Screenshot from './Screenshot'
-
+import React from "react";
+import { useNavigate } from 'react-router-dom'
+//Component
+import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+// import mapData from "./custom.json";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
-import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
+import { GlobalStoreContext } from '../store'
+import { useContext, useState, useEffect } from 'react'
+import { FeatureGroup, Polygon } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw"
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Statusbar from './Statusbar';
+import ExploreIcon from '@mui/icons-material/Explore';
+import IconButton from '@mui/material/IconButton';
+import SaveIcon from '@mui/icons-material/Save';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
+import CompressIcon from '@mui/icons-material/Compress';
+import GridViewIcon from '@mui/icons-material/GridView';
+import MergeIcon from '@mui/icons-material/Merge';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import EmojiFlagsIcon from '@mui/icons-material/EmojiFlags';
+import CreateIcon from '@mui/icons-material/Create';
+import TitleIcon from '@mui/icons-material/Title';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { Button } from '@mui/material';
+import html2canvas from 'html2canvas';
 
+// import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
-let mergeFLAG = 0;
-let colorFill = "#ffff00";
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  //const [COLOR, setColor] = useState("#ffff00");
-  //const state = { color: "#ffff00" };
+  const [color, setColor] = useState("#ffff00");
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
-  const [center, setCenter] = useState({lat: 20, lng: 100});
-  const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
-
-  const [oldName, setOldName] = useState("");
-  const [newName, setNewName] = useState("");
-
-  let mergeFeature = null;
+  const featureGroupRef = React.useRef();
+  const [center] = useState([20, 100]);
+  //for new map editing
+  const newMap =  JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
-    let newCenter = (turf.center(store.currentMap.dataFromMap)).geometry.coordinates
-    let newCenterObject = {lat: newCenter[1], lng: newCenter[0]}
-    setCenter(newCenterObject)
   }, [store.currentMap]);
 
-  useEffect(() => {
-    store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
-    setNewName("")
-  }, [store.subregion]);;
-
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 423,
-    height: 311,
-    bgcolor: '#ECF2FF',
-    borderRadius: 1,
-    boxShadow: 16,
-    p: 4,
-  };
-
-  const top = {
-    position: 'absolute',
-    width: 423,
-    height: 71,
-    left: 0,
-    top: 0,
-    bgcolor: '#756060',
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-    borderBottomLeftRadius: 2,
-    borderBottomRightRadius: 2,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-
-  const buttonBox = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+  // function findCenter() {
+  //   console.log('Component mounted');
+  //   console.log(store.currentMap)
+  //   // handleSaveMap();
+  //   let centerPoint = [20,100]
+  //   if(store.currentMap){
+  //     const [minX, minY, maxX, maxY] = bbox(store.currentMap.dataFromMap);
+  //     centerPoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+  //     console.log(centerPoint);
+  //   }
+  //   setCenter(centerPoint)
+  //   return centerPoint
+  // }
 
   const handleChange = (event) => {
     setFont(event.target.value);
   };
 
-  function handleConfirmRename() {
-    store.changeSubregionName(newName);
-    setMaplayout(newMap ? renderedMap : <div></div>)
-  }
-  function handleCloseModal(event) {
-    store.hideModals();
-    setMaplayout(newMap ? renderedMap : <div></div>)
-  }
-  function handleUpdateName(event) {
-    setNewName(event.target.value)
-  }
-
-  let modal = <Modal
-    open={store.currentModal === "RENAME_SUBREGION"}
-  >
-    <Grid container sx={style}>
-      <Grid container item >
-        <Box sx={top}>
-          <Typography id="modal-heading">Rename Subregion</Typography>
-        </Box>
-      </Grid>
-      <Grid container item>
-        <Box>
-          <Typography id="modal-text" xs={4}>Name: </Typography>
-          <TextField id="modal-textfield" xs={12}
-            placeholder={oldName} value={newName} onChange={handleUpdateName}></TextField>
-        </Box>
-      </Grid>
-      <Grid container item sx={buttonBox}>
-        <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
-        <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
-      </Grid>
-    </Grid>
-  </Modal>
-
   let StyledIconButton = styled(IconButton)({
     color: "black",
+
     '&:hover': {
       opacity: 1,
       transition: "color 0.7s, transform 0.7s",
@@ -142,7 +88,6 @@ export default function Map() {
 
   function handlePublishMap() {
     let newMap = store.currentMap;
-    console.log("TRYNNA PUBLISH AS THIS NEW MAP!", newMap);
     newMap.publish.isPublished = true;
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
@@ -155,138 +100,78 @@ export default function Map() {
 
   function handleUndo() {
     store.undo();
-
-    if (MapLayOutFLAG === 1) {
-      MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-        />
-      </FeatureGroup>)
-    } else {
-      MapLayOutFLAG = 0
-      setMaplayout(newMap ? renderedMap : <div></div>)
-    }
+    console.log("the supposdly new feature of UNDO:")
+    console.log(store.currentMap.dataFromMap);
   }
 
   function handleRedo() {
     store.redo();
 
-    if (MapLayOutFLAG === 1) {
-      MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-        />
-      </FeatureGroup>)
-    } else {
-      MapLayOutFLAG = 0
-      setMaplayout(newMap ? renderedMap : <div></div>)
-    }
+    console.log("the supposdly new feature of REDO:")
+    console.log(store.currentMap.dataFromMap);
   }
 
   async function handleSaveMap() {
-    store.updateThumbnail()
+    // const element = featureGroupRef.current;
+    // const canvas = await html2canvas(element);
+
+    // const data = canvas.toDataURL('image/jpg');
+    // const link = document.createElement('a');
+
+    // if (typeof link.download === 'string') {
+    //   link.href = data;
+    //   link.download = 'image.jpg';
+
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   window.open(data);
+    // }
+    /////////////////////
+    let mapContainer = document.getElementById("mapContainer");
+    // let renderingArea = document.getElementById("renderingArea");
+    html2canvas(mapContainer, {
+      useCORS: true,
+      width: mapContainer.offsetWidth,
+      height: mapContainer.offsetHeight,
+    }).then(function(canvas) {
+      //console.log(canvas)
+      const imageData = canvas.toDataURL()
+      store.currentMap.image = imageData;
+      store.updateCurrentMap();
+      // renderingArea.appendChild(canvas);
+    });
   }
 
-  function clickFeature(event) {
-    if(mergeFLAG){ // Merge active. Mark region if first, and merge if second. 
+  // function printMesssageToConsole(event){
+  //   console.log("Clicked");
+  // };
 
-      event.target.setStyle({
+  function changeCountryColor(event){
+    event.target.setStyle({
       color: "#000000",
-      fillColor: "#FDE66B",
+      fillColor: "#64ec4c",
       fillOpacity: 1,
     });
-
-    if(!mergeFeature){
-      mergeFeature = event.target
-    }
-    else{
-      mergeFeature.setStyle({
-        color: "black",
-        fillColor: "red",
-        fillOpacity: 1,
-      });
-      event.target.setStyle({
-        color: "black",
-        fillColor: "red",
-        fillOpacity: 1,
-      });
-
-      let poly_arr_1 = []
-      for (let i = 0; i < mergeFeature.feature.geometry.coordinates.length; i++){
-        poly_arr_1.push(mergeFeature.feature.geometry.coordinates[i][0])
-      }
-      let poly_arr_2 = []
-      for (let i = 0; i < event.target.feature.geometry.coordinates.length; i++){
-        poly_arr_2.push(event.target.feature.geometry.coordinates[i][0])
-      }
-
-      // var poly1 = turf.polygon(poly_arr_1)
-      // var poly2 = turf.polygon(poly_arr_2)
-      var union = turf.union(mergeFeature.feature, event.target.feature);
-
-      store.currentMap.dataFromMap.features.forEach((feature, index) => {
-        console.log(store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin)
-        if(store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin){
-          console.log(store.currentMap.dataFromMap.features[index])
-          let newProperties = JSON.parse(JSON.stringify(store.currentMap.dataFromMap.features[index].properties));
-          union.properties = newProperties
-          store.currentMap.dataFromMap.features[index] = union
-          setMaplayout(newMap ? renderedMap : <div></div>)
-        }
-      });
-
-
-
-      mergeFeature = null
-    }
-
-    }
-    else{ // Merge inactive
-      console.log(colorFill);
-      event.target.setStyle({
-      color: "#000000",
-      fillColor: colorFill,
-      fillOpacity: 1,
-    });
-    }
   };
 
-  function markSubregion(event) { // for name change
-    setMaplayout(<div></div>)
+  function markSubregion(event){ // for name change
+    console.log("marked subregion")
+    console.log(event.target.feature.properties.sovereignt)
+
     store.markSubregion(event.target.feature)
   }
 
   const onEachCountry = (country, layer) => {
+    // layer.options.fillOpacity = Math.random();
+
     layer.on({
-      click: clickFeature,
+      click: changeCountryColor,
       dblclick: markSubregion,
     });
+
+    console.log(country.properties)
     let popupContent = `${country.properties.sovereignt}`;
     if (country.properties && country.properties.popupContent) {
       popupContent += country.properties.popupContent;
@@ -295,14 +180,11 @@ export default function Map() {
   };
 
   function colorChange(event) {
-    //setColor(event.target.value);
-    colorFill = event.target.value
-    //console.log("Change is made");
-    //console.log(colorFill)
+    setColor(event.target.value);
   };
 
-  newMap.features.forEach((feature, index) => {
-    newMap.features[index] = turf.flip(feature);
+  store.currentMap.dataFromMap.features.forEach((feature, index) => {
+    store.currentMap.dataFromMap.features[index] = turf.flip(feature);
   });
 
   let renderedMap = <GeoJSON
@@ -315,101 +197,75 @@ export default function Map() {
   const [maplayout, setMaplayout] = useState(newMap ? renderedMap : <div></div>);
 
   const handleNavigate = (e) => {
-    if (MapLayOutFLAG !== 1) {
+    if(MapLayOutFLAG !== 1) {
       MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
+      setMaplayout(<FeatureGroup  ref={featureGroupRef}  >
+      {newMap && newMap.features.map((feature, index) => {
+        if (feature.geometry.type === 'Polygon') {
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin}  />;
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin +"-"+polygonIndex} />
+          ));
+          return polygons;
+        }
+        return null;
         })}
         <EditControl
           position='topright'
           onEdited={handleEditable}
         />
-      </FeatureGroup>)
-    } else {
+      </FeatureGroup>) 
+    } else  {
       MapLayOutFLAG = 0
       setMaplayout(newMap ? renderedMap : <div></div>)
     }
   };
-
-  function handleMerge(event) {
-    if (MapLayOutFLAG !== 1) {
-      if(mergeFLAG){
-        mergeFLAG = 0
-      }
-      else{
-        mergeFLAG = 1
-      }
-      //setMaplayout(newMap ? renderedMap : <div></div>)
-    } else {
-      // setMaplayout()
-    }
-  }
 
   const handleEditable = (e) => {
     //const layers = e.layers;
     //layers.eachLayer(layer => { //ignore dis 4 now .3.
 
     let editedLayer = e.layers.getLayers()[0];
-    //console.log(editedLayer);
+    console.log(editedLayer);
     const editedKey = editedLayer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
     //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
-
+    
     let layer = editedLayer.toGeoJSON();
-    // store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
-    //   if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-    //     const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-    //     if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
-    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
-    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    //     }
-    //   } else { //if NO '-' than this means its a Polygon
-    //     if (feature.properties.admin === editedKey) { //if the country name matches the custom key, this is the feature we are editing
-    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
-    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    //     }
-    //   }
+    store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
+      if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
+        const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+        if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
+          store.editCurrentMapVertex(editedKey, layer, feature);
+        }
+      } else { //if NO '-' than this means its a Polygon
+        if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
+          store.editCurrentMapVertex(editedKey, layer, feature);
 
-    if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-      const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-      let featureFound = store.currentMap.dataFromMap.features[parts[0]]
-      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    } else { //if NO '-' than this means its a Polygon
-      let featureFound = store.currentMap.dataFromMap.features[editedKey]
-      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    }
-
-    //ignore this is before undo/redo:
-    // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
-    //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-    //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
-    //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
-    //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
-    //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-    //       }
-    //     }        
-    //   }
-    // } else { //if NO '-' than this means its a Polygon
-    //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
-    //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
-    //   }
-    // }
-    //});
+          
+        }
+      }
+      
+      //ignore this is before undo/redo:
+      // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
+      //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+      //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
+      //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
+      //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
+      //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
+      //       }
+      //     }        
+      //   }
+      // } else { //if NO '-' than this means its a Polygon
+      //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
+      //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
+      //   }
+      // }
+    });
 
     //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
     //});
   };
-
 
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
@@ -424,7 +280,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Explore style={{ fontSize: "45px" }} titleAccess="Navigate" onClick={handleNavigate} />
+            <ExploreIcon style={{ fontSize: "45px" }} titleAccess="Navigate" onClick={handleNavigate}/>
           </StyledIconButton>
 
           <StyledIconButton
@@ -434,7 +290,7 @@ export default function Map() {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={() => handleSaveMap()}
           >
-            <Save style={{ fontSize: "45px" }} titleAccess="Save" />
+            <SaveIcon style={{ fontSize: "45px" }} titleAccess="Save" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -443,7 +299,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Undo style={{ fontSize: "45px" }} titleAccess="Undo" onClick={handleUndo} />
+            <UndoIcon style={{ fontSize: "45px" }} titleAccess="Undo" onClick={handleUndo} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -452,7 +308,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Redo style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
+            <RedoIcon style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -461,7 +317,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" />
+            <CompressIcon style={{ fontSize: "45px" }} titleAccess="Compress" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -470,17 +326,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <GridView style={{ fontSize: "45px" }} titleAccess="Split" />
-          </StyledIconButton>
-
-          <StyledIconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ flex: "1 0 50%", marginBottom: "10px" }}
-            onClick={() => handleMerge()}
-          >
-            <Merge style={{ fontSize: "45px" }} titleAccess="Merge" />
+            <GridViewIcon style={{ fontSize: "45px" }} titleAccess="Split" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -489,7 +335,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
+            <MergeIcon style={{ fontSize: "45px" }} titleAccess="Merge" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -498,7 +344,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <FormatColorFill style={{ fontSize: "45px" }} titleAccess="Color Background" />
+            <ColorLensIcon style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -507,7 +353,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />
+            <FormatColorFillIcon style={{ fontSize: "45px" }} titleAccess="Color Background" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -516,7 +362,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <EmojiFlags style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
+            <BorderColorIcon style={{ fontSize: "45px" }} titleAccess="Color Border" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -525,7 +371,16 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Create style={{ fontSize: "45px" }} titleAccess="Edit Text" />
+            <EmojiFlagsIcon style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
+          </StyledIconButton>
+
+          <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+          >
+            <CreateIcon style={{ fontSize: "45px" }} titleAccess="Edit Text" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -534,7 +389,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ marginBottom: "10px" }}
           >
-            <Title style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
+            <TitleIcon style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
           </StyledIconButton>
         </Box>
         <div id="edit-line2"></div>
@@ -575,26 +430,40 @@ export default function Map() {
         </Button>
       </Box>
 
+
+
+
+
       <Box id="statusBoxEdit">
         <Statusbar />
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
         <div id="mapContainer">
-          <MapContainer id="uniqueId" style={{ height: "80vh" }} zoom={3} center={center} doubleClickZoom={false}>
-            <Recenter lat={center.lat} lng={center.lng} />
-            <Screenshot />
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {maplayout}
-          </MapContainer>
+        <MapContainer style={{ height: "80vh" }} zoom={2} center={ center }>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {/* {
+            store.currentMap ? renderedMap : <div></div>
+          }
+          <FeatureGroup ref={featureGroupRef}>
+            <EditControl
+              position='topright'
+            />
+          </FeatureGroup> */}
+          {maplayout}
+
+
+        </MapContainer>
         </div>
         <input
           type="color"
-          value={colorFill}
+          value={color}
           onChange={colorChange}
         />
       </Box>
-      {modal}
+      {/* <div id="renderingArea"></div> */}
     </Box>
   );
 }
+
+// export default Map;

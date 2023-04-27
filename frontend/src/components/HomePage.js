@@ -27,7 +27,7 @@ export default function HomePage() {
     let mapCard = [];
 
     for (let i = 0; i < store.idNamePairs.length; i++) {
-        if (auth && auth.user && auth.user.email === store.idNamePairs[i].ownerEmail) {
+        if (auth && auth.user.email === store.idNamePairs[i].map.ownerEmail) {
             mapCard.push(store.idNamePairs[i]);
         }
     }
