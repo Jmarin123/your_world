@@ -5,6 +5,7 @@ const Recenter = ({lat,lng}) => {
     const map = useMap();
     useEffect(() => {
         map.setView([lat, lng]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lat, lng]);
     return null;
 }
