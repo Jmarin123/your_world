@@ -75,12 +75,13 @@ export default function RenameMapModal() {
                         <TextField id="modal-textfield" xs={12}
                             defaultValue={name}
                             onChange={handleUpdateName}
+                            data-cy="rename-map-text"
                         />
                     </Box>
                 </Grid>
                 <Grid container item sx={buttonBox}>
-                    <Button id="modal-button" onClick={handleConfirmRename}>Confirm</Button>
-                    <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+                    <Button id="modal-button" onClick={handleConfirmRename} data-cy="rename-map-confirm">Confirm</Button>
+                    <Button id="modal-button" onClick={handleCloseModal} data-cy="rename-map-cancel">Cancel</Button>
 
                 </Grid>
             </Grid>

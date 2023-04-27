@@ -131,6 +131,7 @@ export default function MapCard(props) {
             left: '49px',
             fontSize: '1em'
         }}
+        data-cy="dup-btn"
     >
         <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
@@ -146,6 +147,7 @@ export default function MapCard(props) {
             left: '93px',
             fontSize: '1em'
         }}
+        data-cy="del-btn"
     >
         <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
     </StyledIconButton>
@@ -160,7 +162,7 @@ export default function MapCard(props) {
         >
 
             <Box sx={{ p: 0.5 }}>
-                <Box id='cardTitle'>
+                <Box id='cardTitle' data-cy="title-of-map-card">
                     {idNamePair.name}
                 </Box>
 
@@ -189,6 +191,7 @@ export default function MapCard(props) {
                     left: '5px',
                     fontSize: '1em'
                 }}
+                data-cy="download-btn"
             >
                 <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
             </StyledIconButton>
@@ -243,7 +246,7 @@ export default function MapCard(props) {
         >
 
             <Box sx={{ p: 0.5 }}>
-                <Box id='cardTitle'>
+                <Box id='cardTitle' data-cy="title-of-map-card">
                     {idNamePair.name}
                 </Box>
 
@@ -284,6 +287,7 @@ export default function MapCard(props) {
                         left: '49px',
                         fontSize: '1em'
                     }}
+                    data-cy="dup-btn"
                 >
                     <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
@@ -300,6 +304,7 @@ export default function MapCard(props) {
                         left: '93px',
                         fontSize: '1em'
                     }}
+                    data-cy="del-btn"
                 >
                     <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>
@@ -316,6 +321,7 @@ export default function MapCard(props) {
                         left: '137px',
                         fontSize: '1em'
                     }}
+                    data-cy="rename-btn"
                 >
                     <BorderColorIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
                 </StyledIconButton>

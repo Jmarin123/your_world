@@ -81,7 +81,9 @@ export default function HomePage() {
                     sx={{
                         display: 'flex',
                         // overflowY: 'auto',
-                    }}>
+                    }}
+                    data-cy="list-of-cards"
+                >
                     {
                         mapCard.map((pair) => (
                             <MapCard

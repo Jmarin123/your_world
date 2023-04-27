@@ -73,8 +73,8 @@ export default function DeleteModal() {
                     </Box>
                 </Grid>
                 <Grid container item sx={buttonBox}>
-                    <Button id="modal-button" onClick={handleConfirmDelete}>Confirm</Button>
-                    <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+                    <Button id="modal-button" onClick={handleConfirmDelete} data-cy='delete-map-confirm'>Confirm</Button>
+                    <Button id="modal-button" onClick={handleCloseModal} data-cy='delete-map-cancel'>Cancel</Button>
 
                 </Grid>
             </Grid>

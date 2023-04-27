@@ -183,8 +183,8 @@ export default function AppBanner() {
             open={isUploadMenuOpen}
             onClose={handleUploadMenuClose}
         >
-            <MenuItem onClick={handleUploadShapefile}> Upload Shapefile/DBF Combo</MenuItem>
-            <MenuItem onClick={handleUploadGeojson}> Upload GeoJSON</MenuItem>
+            <MenuItem onClick={handleUploadShapefile} data-cy='upload-shp-dbf-btn'> Upload Shapefile/DBF Combo</MenuItem>
+            <MenuItem onClick={handleUploadGeojson} data-cy='upload-geojson-btn'> Upload GeoJSON</MenuItem>
         </Menu>
     );
 
@@ -203,9 +203,10 @@ export default function AppBanner() {
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
+            data-cy='guest-login-register-btn'
         >
-            <MenuItem component={Link} to="/login" onClick={handleMenuClose}><Link to='/login'>Login</Link></MenuItem>
-            <MenuItem component={Link} to="/register" onClick={handleMenuClose}><Link to='/register'>Create New Account</Link></MenuItem>
+            <MenuItem component={Link} to="/login" onClick={handleMenuClose} data-cy='guest-login-btn'><Link to='/login'>Login</Link></MenuItem>
+            <MenuItem component={Link} to="/register" onClick={handleMenuClose} data-cy='guest-register-btn'><Link to='/register'>Create New Account</Link></MenuItem>
         </Menu>
     );
 
@@ -224,8 +225,9 @@ export default function AppBanner() {
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
+            data-cy="logout-menu"
         >
-            <MenuItem component={Link} to="/" onClick={handleLogout}><Link to='/'>Log Out Of Account</Link></MenuItem>
+            <MenuItem component={Link} to="/" onClick={handleLogout} data-cy="logout-menu-btn"><Link to='/'>Log Out Of Account</Link></MenuItem>
         </Menu>
     );
 
@@ -253,6 +255,7 @@ export default function AppBanner() {
         aria-label="open drawer"
         sx={{ mr: 2 }}
         disabled={auth.loggedIn ? false : true}
+        data-cy="home-icon"
     // onClick={() => handleClick("/public")}
     >
         <HomeIcon style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}></HomeIcon>
@@ -306,7 +309,7 @@ export default function AppBanner() {
                 e.target.value = "";
             }}
             onKeyPress={(e) => {
-                if(e.key === "Enter"){
+                if (e.key === "Enter") {
                     e.preventDefault();
                     store.setSearch(s);
                     e.target.value = "";
@@ -426,6 +429,7 @@ export default function AppBanner() {
                                     onClick={handleUploadMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
+                                    data-cy='upload-menu-btn'
                                 >
                                     {/* {getAccountMenu(auth.loggedIn)} */}
                                 </AddToPhotosIcon>
@@ -450,6 +454,7 @@ export default function AppBanner() {
                                     onClick={handleProfileMenuOpen}
                                     fontSize='large'
                                     style={{ fontSize: "45px" }}
+                                    data-cy="login-or-logout-value"
                                 >
                                     {/* {getAccountMenu(auth.loggedIn)} */}
                                 </AccountCircleIcon>

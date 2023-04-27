@@ -51,62 +51,62 @@ export default function UploadModal() {
 
     async function parseJsonFile(file) {
         return new Promise((resolve, reject) => {
-          const fileReader = new FileReader()
-          fileReader.onload = event => resolve(JSON.parse(event.target.result))
-          fileReader.onerror = error => reject(error)
-          fileReader.readAsText(file)
+            const fileReader = new FileReader()
+            fileReader.onload = event => resolve(JSON.parse(event.target.result))
+            fileReader.onerror = error => reject(error)
+            fileReader.readAsText(file)
         })
-      }
+    }
 
     async function parseInputFile(file) {
-    return new Promise((resolve, reject) => {
-        const fileReader = new FileReader()
-        fileReader.readAsArrayBuffer(file);
-        fileReader.onload = function() {
-            var arrayBuffer = fileReader.result
-            var bytes = new Uint8Array(arrayBuffer);
-            resolve(bytes);
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader()
+            fileReader.readAsArrayBuffer(file);
+            fileReader.onload = function () {
+                var arrayBuffer = fileReader.result
+                var bytes = new Uint8Array(arrayBuffer);
+                resolve(bytes);
             }
-        fileReader.onerror = error => reject(error)
+            fileReader.onerror = error => reject(error)
         })
     }
 
     const assignName = (dataForMap) => {
-        for(let i = 0; i < dataForMap.features.length; i++){
-            if(typeof dataForMap.features[i].properties.NAME_4 !== 'undefined'){
+        for (let i = 0; i < dataForMap.features.length; i++) {
+            if (typeof dataForMap.features[i].properties.NAME_4 !== 'undefined') {
                 dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_4;
             }
-            else if(typeof dataForMap.features[i].properties.NAME_3 !== 'undefined'){
+            else if (typeof dataForMap.features[i].properties.NAME_3 !== 'undefined') {
                 dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_3;
             }
-            else if(typeof dataForMap.features[i].properties.NAME_2 !== 'undefined'){
+            else if (typeof dataForMap.features[i].properties.NAME_2 !== 'undefined') {
                 dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_2;
             }
-            else if(typeof dataForMap.features[i].properties.NAME_1 !== 'undefined'){
+            else if (typeof dataForMap.features[i].properties.NAME_1 !== 'undefined') {
                 dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_1;
             }
-            else if(typeof dataForMap.features[i].properties.NAME_0 !== 'undefined'){
+            else if (typeof dataForMap.features[i].properties.NAME_0 !== 'undefined') {
                 dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_0;
             }
-            else{
+            else {
                 dataForMap.features[i].properties.name = '';
             }
         }
-    
+
         return dataForMap;
     }
 
-      async function handleSubmit(event) {
-        if(store.uploadType === "shp/dbf"){
+    async function handleSubmit(event) {
+        if (store.uploadType === "shp/dbf") {
             const shpArray = await parseInputFile(file1)
             const dbfArray = await parseInputFile(file2)
 
             let object = await shapefile.read(shpArray, dbfArray)
             assignName(object)
-            
+
             store.createNewMap(object)
         }
-        else{
+        else {
             const object = await parseJsonFile(file1)
             // assignName(object)
 
@@ -118,34 +118,41 @@ export default function UploadModal() {
         store.hideModals();
     }
 
-    let uploadShpInput = <div>
+    let uploadShpInput = (<div>
         <form>
-        <input type="file" accept=".shp" onChange={(e) => setFile1(e.target.files[0])}/>
-        <input type="file" accept=".dbf" onChange={(e) => setFile2(e.target.files[0])}/></form></div>
+            <input type="file" accept=".shp" onChange={(e) => setFile1(e.target.files[0])} data-cy='upload-shp' />
+            <input type="file" accept=".dbf" onChange={(e) => setFile2(e.target.files[0])} data-cy='upload-dbf' />
+        </form>
+    </div>)
 
-    let uploadGeojsonInput = <div><form><input type="file" accept=".geojson,.json" onChange={(e) => setFile1(e.target.files[0])}/></form></div>
+    let uploadGeojsonInput = (<div>
+        <form>
+            <input type="file" accept=".geojson,.json" onChange={(e) => setFile1(e.target.files[0])} data-cy='upload-geojson' />
+        </form>
+    </div>)
 
     return (
         <Modal
             open={store.currentModal === "UPLOAD_FILE"}
+            data-cy='upload-modal'
         >
             <Grid container sx={style}>
-            <Grid container item >
-                <Box sx={top}>
-                    <Typography id="modal-heading">Upload Files</Typography>
-                </Box>
-            </Grid>
-            <Grid container item>
-                <Box>
-                    {
-                        store.uploadType === "shp/dbf" ? uploadShpInput : uploadGeojsonInput
-                    }
-                </Box>
-            </Grid>
-            <Grid container item sx={buttonBox}>
-                <Button id="modal-button" onClick={handleSubmit}>Confirm</Button> 
-                <Button id="modal-button" onClick={handleCancel}>Cancel</Button>
-            </Grid>
+                <Grid container item >
+                    <Box sx={top}>
+                        <Typography id="modal-heading">Upload Files</Typography>
+                    </Box>
+                </Grid>
+                <Grid container item>
+                    <Box>
+                        {
+                            store.uploadType === "shp/dbf" ? uploadShpInput : uploadGeojsonInput
+                        }
+                    </Box>
+                </Grid>
+                <Grid container item sx={buttonBox}>
+                    <Button id="modal-button" onClick={handleSubmit} data-cy='upload-confirm'>Confirm</Button>
+                    <Button id="modal-button" onClick={handleCancel} data-cy='upload-cancel'>Cancel</Button>
+                </Grid>
             </Grid>
         </Modal>
     );

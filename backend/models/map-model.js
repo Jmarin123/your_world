@@ -23,4 +23,4 @@ const mapSchema = new Schema(
     { timestamps: true },
 )
 
-module.exports = mongoose.model('map', mapSchema)
+module.exports = mongoose.model('Map', mapSchema)
