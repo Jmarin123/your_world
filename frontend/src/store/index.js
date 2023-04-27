@@ -35,6 +35,7 @@ export const GlobalStoreActionType = {
     DUPLICATE_MAP: "DUPLICATE_MAP",
     EDIT_MAP_VERTEX: "EDIT_MAP_VERTEX",
     NAVIGATE_PUBLIC: "NAVIGATE_PUBLIC",
+    UPDATE_THUMBNAIL: "UPDATE_THUMBNAIL",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -90,6 +91,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -106,6 +108,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -122,6 +125,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -138,6 +142,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -154,6 +159,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -170,6 +176,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -186,6 +193,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -202,6 +210,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -219,6 +228,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -236,6 +246,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -252,6 +263,7 @@ function GlobalStoreContextProvider(props) {
                     search: store.search,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -267,6 +279,7 @@ function GlobalStoreContextProvider(props) {
                     search: payload,
                     filterSearch: store.filterSearch,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -282,6 +295,7 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: payload,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -297,6 +311,7 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: "",
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -312,6 +327,7 @@ function GlobalStoreContextProvider(props) {
                     search: "",
                     filterSearch: "",
                     subregion: null,
+                    thumbnail: null,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -326,6 +342,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: null,
+                    thumbnail: null,
 
                 });
             }
@@ -341,6 +358,7 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: payload.feature,
+                    thumbnail: null,
 
                 });
             }
@@ -356,6 +374,23 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForExport: null,
                     search: store.search,
                     subregion: null,
+                    thumbnail: null,
+
+                });
+            }
+            case GlobalStoreActionType.UPDATE_THUMBNAIL: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    subregion: null,
+                    thumbnail: payload.thumbnail,
 
                 });
             }
@@ -630,8 +665,17 @@ function GlobalStoreContextProvider(props) {
             });
 
         }
-
     }
+
+    store.updateThumbnail = async function () {
+        storeReducer({
+            type: GlobalStoreActionType.UPDATE_THUMBNAIL,
+            payload: {
+                thumbnail: true
+            }
+        });
+    }
+
     store.updateLikesDislikes = async function (idPair) {
         const response = await api.updateMapById(idPair._id, { likes: idPair.likes, dislikes: idPair.dislikes });
         if (response.data.success) {
