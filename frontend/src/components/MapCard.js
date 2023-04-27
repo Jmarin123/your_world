@@ -32,7 +32,6 @@ export default function MapCard(props) {
     // const [editActive, setEditActive] = useState(false);
     // const [text, setText] = useState("");
     const { idNamePair } = props;
-    let map = idNamePair.map;
     let userName = "";
     if (auth.user) {
         userName = auth.user.firstName + " " + auth.user.lastName;
@@ -44,18 +43,18 @@ export default function MapCard(props) {
     }
 
     // console.log(idNamePair);
-    const handleDeleteMap = (id) => {
-        store.markMapForDeletion(id);
+    const handleDeleteMap = () => {
+        store.markMapForDeletion(idNamePair._id);
     };
 
     const handleEditMapName = (id) => {
         // store.renameMap(id);
         // console.log("show rename modal")
-        store.showRenameModal(idNamePair.map);
+        store.showRenameModal(idNamePair._id);
     };
 
     const handleDuplicateMap = () => {
-        store.duplicateMap(idNamePair.map);
+        store.duplicateMap(idNamePair._id);
     }
 
     const handleExport = (event) => {
@@ -63,50 +62,49 @@ export default function MapCard(props) {
         store.markMapForExport("Atlantis");
     }
 
-    function handleOpenCard(id) {
-        store.setCurrentMap(idNamePair.map)
+    async function handleOpenCard(id) {
+        await store.setCurrentMap(id)
         navigate("/map/" + id);
     }
 
-    function handleOpenPublicCard(id) {
-        store.setCurrentMap(idNamePair.map)
+    async function handleOpenPublicCard(id) {
+        store.setCurrentMap(id)
         navigate("/mapview/" + id);
     }
 
-    let image = idNamePair.map.image === "temp" ? MapCardSample : idNamePair.map.image
+    let image = idNamePair.image === "temp" ? MapCardSample : idNamePair.image
 
     /* handleLikeDislike will handle updating the liked and disliked button, as well as the 
     like and/or dislike count of this list */
     function handleLikeDislike(param) {
         if (auth.type !== "guest") {
             if (param === "like") {
-                if (map.likes.includes(userName)) {
+                if (idNamePair.likes.includes(userName)) {
                     //If the user clicks like after already clicking it once, remove their like
-                    map.likes = map.likes.filter(username => username !== userName);
+                    idNamePair.likes = idNamePair.likes.filter(username => username !== userName);
                 }
-                else if (map.dislikes.includes(userName)) {
-                    map.dislikes = map.dislikes.filter(username => username !== userName);
-                    map.likes.push(userName);
+                else if (idNamePair.dislikes.includes(userName)) {
+                    idNamePair.dislikes = idNamePair.dislikes.filter(username => username !== userName);
+                    idNamePair.likes.push(userName);
                 }
                 else {
-                    map.likes.push(userName);
-                    console.log(map.likes);
+                    idNamePair.likes.push(userName);
+                    console.log(idNamePair.likes);
                 }
             }
             else {
-                if (map.likes.includes(userName)) {
-                    map.likes = map.likes.filter(username => username !== userName);
-                    map.dislikes.push(userName);
+                if (idNamePair.likes.includes(userName)) {
+                    idNamePair.likes = idNamePair.likes.filter(username => username !== userName);
+                    idNamePair.dislikes.push(userName);
                 }
-                else if (map.dislikes.includes(userName)) {
-                    map.dislikes = map.dislikes.filter(username => username !== userName);
+                else if (idNamePair.dislikes.includes(userName)) {
+                    idNamePair.dislikes = idNamePair.dislikes.filter(username => username !== userName);
                 }
                 else {
-                    map.dislikes.push(userName);
+                    idNamePair.dislikes.push(userName);
                 }
             }
-            store.currentMap = map;
-            store.updateCurrentMap();
+            store.updateLikesDislikes(idNamePair);
         }
     }
 
@@ -126,7 +124,7 @@ export default function MapCard(props) {
         color="inherit"
         aria-label="open drawer"
         onClick={(event) => {
-            handleDuplicateMap(event)
+            handleDuplicateMap()
         }}
         sx={{
             position: 'absolute', bottom: '0',
@@ -172,7 +170,7 @@ export default function MapCard(props) {
 
 
                 <Typography id='map-card-author'>
-                    By: {idNamePair.map.owner}
+                    By: {idNamePair.owner}
                 </Typography>
             </Box>
 
@@ -209,7 +207,7 @@ export default function MapCard(props) {
                     onClick={() => handleLikeDislike("dislike")} />
 
                 <strong style={{ color: 'black' }}>
-                    {map.dislikes.length}
+                    {idNamePair.dislikes.length}
                 </strong>
             </StyledIconButton>
 
@@ -227,7 +225,7 @@ export default function MapCard(props) {
                     onClick={() => handleLikeDislike("like")} />
 
                 <strong style={{ color: 'black' }}>
-                    {map.likes.length}
+                    {idNamePair.likes.length}
                 </strong>
             </StyledIconButton>
 
@@ -253,7 +251,7 @@ export default function MapCard(props) {
                 </Box>
 
                 <Typography id='map-card-author'>
-                    By: {idNamePair.map.owner}
+                    By: {idNamePair.owner}
                 </Typography>
             </Box>
 
@@ -327,125 +325,12 @@ export default function MapCard(props) {
     </ListItem>
 
     let mapCards;
-    if (map.publish.isPublished) {
+    if (idNamePair.publish && idNamePair.publish.isPublished) {
         mapCards = [publishedMapCard]
     }
     else {
         mapCards = [unpublishedMapCard]
     }
-    //if from /public only display published map cards that have 2 button icon's
-    //if from /home display published and unpublished map cards, 
-    //HOWEVER edit the published mapcards so it as an extra icon to delete published maps from the registered user
-    // if (location.pathname === "/public" || location.pathname === "/search") {
-    //     mapCards = [publishedMapCard]
-    // } else {
-    //     publishedMapCard = <ListItem id='published-listItemMapCard'>
-    //         <div
-    //             key={1}
-    //             id="mapCard1"
-    //             onDoubleClick={handlePubCardClick}
-    //         >
-    //             <Box sx={{ p: 0.5 }}>
-    //                 <Box id='cardTitle'>
-    //                     {title}
-    //                 </Box>
-
-    //                 <Box id='map-card-line'>
-    //                     {/* <div id='map-card-line'></div> */}
-    //                 </Box>
-
-
-    //                 <Typography id='map-card-author'>
-    //                     By: Author
-    //                     {/* <br id='map-card-author'>By: Author</br> */}
-    //                 </Typography>
-    //             </Box>
-
-    //             <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
-    //             <Box sx={{ marginTop: '6%', marginLeft: '4%', height: '100%' }}>
-    //                 <StyledIconButton
-    //                     edge="start"
-    //                     color="inherit"
-    //                     aria-label="open drawer"
-    //                     onClick={(event) => {
-    //                         handleExport(event)
-    //                     }}
-    //                     sx={{
-    //                         position: 'absolute', bottom: '0',
-    //                         left: '5px',
-    //                         fontSize: '1em'
-    //                     }}
-    //                 >
-    //                     <DownloadIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-    //                 </StyledIconButton>
-
-    //                 <StyledIconButton
-    //                     edge="start"
-    //                     color="inherit"
-    //                     aria-label="open drawer"
-    //                     onClick={(event) => {
-    //                         handleDuplicateMap(event)
-    //                     }}
-    //                     sx={{
-    //                         position: 'absolute', bottom: '0',
-    //                         left: '49px',
-    //                         fontSize: '1em'
-    //                     }}
-    //                 >
-    //                     <FileCopyIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-    //                 </StyledIconButton>
-
-    //                 <StyledIconButton
-    //                     edge="start"
-    //                     color="inherit"
-    //                     aria-label="open drawer"
-    //                     onClick={(event) => {
-    //                         handleDeleteMap(event)
-    //                     }}
-    //                     sx={{
-    //                         position: 'absolute', bottom: '0',
-    //                         left: '93px',
-    //                         fontSize: '1em'
-    //                     }}
-    //                 >
-    //                     <DeleteOutlineIcon style={{ fontSize: "35px", float: "left", positon: "absolute" }} />
-    //                 </StyledIconButton>
-
-
-    //                 <StyledIconButton
-    //                     edge="start"
-    //                     color="inherit"
-    //                     aria-label="open drawer"
-    //                     sx={{
-    //                         position: 'absolute', bottom: '0',
-    //                         right: '2px',
-    //                         fontSize: '1em'
-    //                     }}
-    //                 >
-    //                     <ThumbDownOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 3
-    //                 </StyledIconButton>
-
-    //                 <StyledIconButton
-    //                     edge="start"
-    //                     color="inherit"
-    //                     aria-label="open drawer"
-    //                     sx={{
-    //                         position: 'absolute', bottom: '0',
-    //                         right: '50px',
-    //                         fontSize: '1em'
-    //                     }}
-    //                 >
-    //                     <ThumbUpOffAltIcon style={{ fontSize: "35px", float: "right", positon: "absolute" }} /> 9
-    //                 </StyledIconButton>
-    //             </Box>
-    //         </div>
-    //     </ListItem>
-    //     // mapCards = [publishedMapCard, unpublishedMapCard]
-    //     mapCards = [unpublishedMapCard]
-    // }
-
-
 
     return (
         [mapCards]
