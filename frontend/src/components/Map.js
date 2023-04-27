@@ -11,25 +11,25 @@ import {
 } from '@mui/icons-material/';
 
 import Statusbar from './Statusbar';
+import Recenter from './Recenter'
+import Screenshot from './Screenshot'
 
 import "leaflet/dist/leaflet.css";
 import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
-import html2canvas from 'html2canvas';
 
-// import { featureCollection, bbox, point } from '@turf/turf';
 let MapLayOutFLAG = 0;
 let mergeFLAG = 0;
+let colorFill = "#ffff00";
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [color, setColor] = useState("#ffff00");
+  //const [COLOR, setColor] = useState("#ffff00");
+  //const state = { color: "#ffff00" };
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
-  const featureGroupRef = React.useRef();
-  const [center] = useState([20, 100]);
-  //for new map editing
+  const [center, setCenter] = useState({lat: 20, lng: 100});
   const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
 
   const [oldName, setOldName] = useState("");
@@ -39,12 +39,15 @@ export default function Map() {
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
+    let newCenter = (turf.center(store.currentMap.dataFromMap)).geometry.coordinates
+    let newCenterObject = {lat: newCenter[1], lng: newCenter[0]}
+    setCenter(newCenterObject)
   }, [store.currentMap]);
 
   useEffect(() => {
     store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
     setNewName("")
-  }, [store.subregion]);
+  }, [store.subregion]);;
 
   const style = {
     position: 'absolute',
@@ -80,21 +83,6 @@ export default function Map() {
     alignItems: 'center',
     justifyContent: 'center',
   }
-
-  // Find the center, s.t. when opened the map is centered on the uploaded geometry
-  // function findCenter() { 
-  //   console.log('Component mounted');
-  //   console.log(store.currentMap)
-  //   // handleSaveMap();
-  //   let centerPoint = [20,100]
-  //   if(store.currentMap){
-  //     const [minX, minY, maxX, maxY] = bbox(store.currentMap.dataFromMap);
-  //     centerPoint = [(minX + maxX) / 2, (minY + maxY) / 2];
-  //     console.log(centerPoint);
-  //   }
-  //   setCenter(centerPoint)
-  //   return centerPoint
-  // }
 
   const handleChange = (event) => {
     setFont(event.target.value);
@@ -170,7 +158,7 @@ export default function Map() {
 
     if (MapLayOutFLAG === 1) {
       MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+      setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
             return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
@@ -198,7 +186,7 @@ export default function Map() {
 
     if (MapLayOutFLAG === 1) {
       MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+      setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
             return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
@@ -222,38 +210,7 @@ export default function Map() {
   }
 
   async function handleSaveMap() {
-    // const element = featureGroupRef.current;
-    // const canvas = await html2canvas(element);
-
-    // const data = canvas.toDataURL('image/jpg');
-    // const link = document.createElement('a');
-
-    // if (typeof link.download === 'string') {
-    //   link.href = data;
-    //   link.download = 'image.jpg';
-
-    //   document.body.appendChild(link);
-    //   link.click();
-    //   document.body.removeChild(link);
-    // } else {
-    //   window.open(data);
-    // }
-    /////////////////////
-    let mapContainer = document.getElementById("mapContainer");
-    // let renderingArea = document.getElementById("renderingArea");
-    html2canvas(mapContainer, {
-      useCORS: true,
-      width: mapContainer.offsetWidth,
-      height: mapContainer.offsetHeight,
-    }).then(function (canvas) {
-      //console.log(canvas)
-      const imageData = canvas.toDataURL()
-      store.currentMap.image = imageData;
-      store.updateCurrentMap();
-
-      // renderingArea.appendChild(canvas);
-    });
-
+    store.updateThumbnail()
   }
 
   function clickFeature(event) {
@@ -311,9 +268,10 @@ export default function Map() {
 
     }
     else{ // Merge inactive
+      console.log(colorFill);
       event.target.setStyle({
       color: "#000000",
-      fillColor: "#64ec4c",
+      fillColor: colorFill,
       fillOpacity: 1,
     });
     }
@@ -337,7 +295,10 @@ export default function Map() {
   };
 
   function colorChange(event) {
-    setColor(event.target.value);
+    //setColor(event.target.value);
+    colorFill = event.target.value
+    //console.log("Change is made");
+    //console.log(colorFill)
   };
 
   newMap.features.forEach((feature, index) => {
@@ -356,7 +317,7 @@ export default function Map() {
   const handleNavigate = (e) => {
     if (MapLayOutFLAG !== 1) {
       MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+      setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
             return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
@@ -387,7 +348,7 @@ export default function Map() {
       else{
         mergeFLAG = 1
       }
-      setMaplayout(newMap ? renderedMap : <div></div>)
+      //setMaplayout(newMap ? renderedMap : <div></div>)
     } else {
       // setMaplayout()
     }
@@ -620,21 +581,20 @@ export default function Map() {
 
       <Box id="mapBoxEdit" component="form" noValidate >
         <div id="mapContainer">
-          <MapContainer style={{ height: "80vh" }} zoom={2} center={center}>
+          <MapContainer id="uniqueId" style={{ height: "80vh" }} zoom={3} center={center} doubleClickZoom={false}>
+            <Recenter lat={center.lat} lng={center.lng} />
+            <Screenshot />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {maplayout}
           </MapContainer>
         </div>
         <input
           type="color"
-          value={color}
+          value={colorFill}
           onChange={colorChange}
         />
       </Box>
-      {/* <div id="renderingArea"></div> */}
       {modal}
     </Box>
   );
 }
-
-// export default Map;

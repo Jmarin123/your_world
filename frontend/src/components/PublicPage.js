@@ -39,7 +39,7 @@ export default function PublicPage() {
     // if (store.search !== "" && store.idNamePairs) {
     //     mapCard = store.filterBySearch();
     // }
-    mapCard = store.filterBySearch();
+    // mapCard = store.filterBySearch();
     // let publicScreen = "Public Map Listing";
     // let resultScreen = "Result";
     return (
