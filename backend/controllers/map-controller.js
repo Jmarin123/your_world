@@ -86,11 +86,11 @@ getMapById = async (req, res) => {
 getAllMaps = async (req, res) => {
     try {
         let maps = await Map.find({});
-        if (!maps.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `maps not found` });
-        }
+        // if (!maps.length) {
+        //     return res
+        //         .status(404)
+        //         .json({ success: false, error: `maps not found` });
+        // }
 
         const pairs = maps.map((map) => {
             return {
