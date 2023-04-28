@@ -1,23 +1,11 @@
-// import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth/index'
 
-// import React, { useContext, useState, useRef } from 'react';
-import React, { useContext } from 'react';
-// import { Typography, TextField, Button, ListItemText } from '@mui/material';
-import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import { List, ListItem, ListItemText } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-
-// import Grid from '@mui/material/Grid';
-
-import CardContent from '@mui/material/CardContent';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import IconButton from '@mui/material/IconButton';
-
+import { TextField, Box, List, ListItem, ListItemText, Card, CardActions, CardContent, IconButton } from '@mui/material';
+import { CloseOutlined } from '@mui/icons-material/';
 
 function Comment(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -104,10 +92,7 @@ function Comment(props) {
                     // disabled={disabled}
                     onClick={() => handleCloseComment()}
                 >
-                    <CloseOutlinedIcon
-                        style={{ fontSize: "25px", float: "right" }}
-
-                    ></CloseOutlinedIcon>
+                    <CloseOutlined style={{ fontSize: "25px", float: "right" }} />
                 </StyledIconButton>
 
                 {/* <Grid container spacing={1} style={{

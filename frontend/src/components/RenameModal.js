@@ -1,12 +1,6 @@
-import { useContext, useState, useEffect } from 'react'
-import GlobalStoreContext from '../store';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import { useContext, useState, useEffect } from 'react';
+import { GlobalStoreContext } from '../store'
+import { Box, Modal, Button, Typography, Grid, TextField } from '@mui/material';
 
 const style = {
     position: 'absolute',

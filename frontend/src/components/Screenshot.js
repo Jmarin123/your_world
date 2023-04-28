@@ -1,11 +1,11 @@
-import { useMap } from 'react-leaflet';
 import { useEffect, useContext } from 'react';
+
+import { GlobalStoreContext } from '../store'
 
 // eslint-disable-next-line
 import * as L from 'leaflet'
+import { useMap } from 'react-leaflet';
 import { SimpleMapScreenshoter } from 'leaflet-simple-map-screenshoter'
-
-import { GlobalStoreContext } from '../store'
 
 const pluginOptions = {
     hideElementsWithSelectors: [

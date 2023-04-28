@@ -1,15 +1,8 @@
 const Map = require('../models/map-model')
 const User = require('../models/user-model');
-/*
-    This is our back-end API. It provides all the data services
-    our database needs. Note that this file contains the controller
-    functions for each endpoint.
-    
-    @author McKilla Gorilla
-*/
+
 createMap = (req, res) => {
     const body = req.body;
-    // console.log("createMap body: " + JSON.stringify(body));
 
     if (!body) {
         return res.status(400).json({
@@ -19,14 +12,11 @@ createMap = (req, res) => {
     }
 
     const map = new Map(body);
-    // console.log("map: " + map.toString());
     if (!map) {
         return res.status(400).json({ success: false, error: err })
     }
 
     User.find({ _id: req.userId }).then(function (user, err) {
-        // console.log("user found: " + JSON.stringify(user));
-        console.log("user[0]: ", user[0]);
         user[0].maps.push(map._id)
 
         user[0].save().then(() => {
@@ -102,11 +92,6 @@ getAllMaps = async (req, res) => {
                 .json({ success: false, error: `maps not found` });
         }
 
-        // for(let i = 0; i < maps.length; i++){
-        //     maps[i].dataFromMap = {}
-        // }
-
-        // PUT ALL THE LISTS INTO ID, NAME PAIRS
         const pairs = maps.map((map) => {
             return {
                 _id: map._id,
@@ -126,8 +111,6 @@ getAllMaps = async (req, res) => {
         return res.status(400).json({ success: false, error: err });
     }
 };
-
-
 
 updateMapNameById = async (req, res) => {
     const { name } = req.body;

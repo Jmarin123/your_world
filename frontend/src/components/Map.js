@@ -25,8 +25,6 @@ let colorFill = "#ffff00";
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  //const [COLOR, setColor] = useState("#ffff00");
-  //const state = { color: "#ffff00" };
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
   const [center, setCenter] = useState({lat: 20, lng: 100});
@@ -580,14 +578,12 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
-        <div id="mapContainer">
-          <MapContainer id="uniqueId" style={{ height: "80vh" }} zoom={3} center={center} doubleClickZoom={false}>
-            <Recenter lat={center.lat} lng={center.lng} />
-            <Screenshot />
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {maplayout}
-          </MapContainer>
-        </div>
+        <MapContainer style={{ height: "80vh" }} zoom={3} center={center} doubleClickZoom={false}>
+          <Recenter lat={center.lat} lng={center.lng} />
+          <Screenshot />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {maplayout}
+        </MapContainer>
         <input
           type="color"
           value={colorFill}
