@@ -85,6 +85,7 @@ describe('Traverse around while logged in', () => {
     cy.get('[data-cy="upload-geojson-btn"]').should('be.visible').click();
     cy.get('[data-cy="upload-geojson"]').selectFile('cypress/fixtures/custom.geo_4.json');
     cy.get('[data-cy="upload-confirm"]').click();
+    cy.wait(2000);
     cy.url().should('include', '/map/');
   })
 
@@ -94,6 +95,7 @@ describe('Traverse around while logged in', () => {
     cy.get('[data-cy="upload-shp"]').selectFile('cypress/fixtures/ARG_adm0.shp');
     cy.get('[data-cy="upload-dbf"]').selectFile('cypress/fixtures/ARG_adm0.dbf');
     cy.get('[data-cy="upload-confirm"]').click();
+    cy.wait(2000);
     cy.url().should('include', 'map/');
   })
 
