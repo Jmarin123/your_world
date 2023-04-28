@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_API_URL: http://localhost:3001/
+      JWT_KEY: test-jwt
     steps:
       - uses: actions/checkout@v3
 
