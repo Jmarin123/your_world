@@ -47,6 +47,11 @@ jobs:
         run: |
           cd frontend
           npx cypress run
+      - name: Upload video
+        uses: actions/upload-artifact@v3
+        with:
+          path: /home/runner/work/your_world/your_world/frontend/cypress/videos
+          name: spec.cy.js.mp4
   deploy:
     runs-on: ubuntu-latest
     needs: all_tests
