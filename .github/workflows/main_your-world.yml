@@ -12,7 +12,7 @@ jobs:
     env:
       REACT_APP_API_URL: http://localhost:3001/
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js version
         uses: actions/setup-node@v1
@@ -43,15 +43,18 @@ jobs:
           node server.js &
       - name: Wait on server to start
         run: npx wait-on http://localhost:3001
-      - name: Run front-end tests
-        run: |
-          cd frontend
-          npx cypress run
-      - name: Upload video
-        uses: actions/upload-artifact@v3
+      # - name: Run front-end tests
+      #   run: |
+      #     cd frontend
+      #     npx cypress run
+      - uses: cypress-io/github-action@v5
         with:
-          path: /home/runner/work/your_world/your_world/frontend/cypress/videos
-          name: spec.cy.js.mp4
+          project: ./frontend
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-videos
+          path: cypress/videos
   deploy:
     runs-on: ubuntu-latest
     needs: all_tests
