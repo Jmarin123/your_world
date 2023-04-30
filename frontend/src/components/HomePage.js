@@ -8,11 +8,11 @@ import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/mater
 import MapCard from './MapCard.js';
 
 export default function HomePage() {
-    const [sort, setSort] = useState("Map Title");
+    const [sortValue, setSortvalue] = useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const handleChange = (event) => {
-        setSort(event.target.value);
+        setSortvalue(event.target.value);
     };
 
     useEffect(() => {
@@ -26,6 +26,14 @@ export default function HomePage() {
         if (auth && auth.user && auth.user.email === store.idNamePairs[i].ownerEmail) {
             mapCard.push(store.idNamePairs[i]);
         }
+    }
+
+    function handleMenuItemClick(sortParam) {
+        store.setSort(sortParam);
+    }
+
+    if (mapCard.length > 0 && store && store.sort !== "") {
+        mapCard = store.sortList(mapCard);
     }
     // if (store.search !== "" && store.idNamePairs) {
     //     listCard = store.filterBySearch("home");
@@ -58,15 +66,15 @@ export default function HomePage() {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={sort}
+                        value={sortValue}
 
                         label="Sort By"
-                        defaultValue={sort}
+                        defaultValue={sortValue}
                         onChange={handleChange}
                     >
-                        <MenuItem value={"Map Title"}>Map Title</MenuItem>
-                        <MenuItem value={"Likes"}>Likes</MenuItem>
-                        <MenuItem value={"Dislikes"}>Dislikes</MenuItem>
+                        <MenuItem value={"Map Title"} onClick={() => handleMenuItemClick("maptitle")}> Map Title </MenuItem>
+                        <MenuItem value={"Likes"} onClick={() => handleMenuItemClick("likes")}>Likes</MenuItem>
+                        <MenuItem value={"Dislikes"} onClick={() => handleMenuItemClick("dislikes")}>Dislikes</MenuItem>
                     </Select>
                 </FormControl>
 
