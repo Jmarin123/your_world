@@ -47,7 +47,7 @@ export default function MapCard(props) {
 
     const handleExport = (event) => {
         event.preventDefault();
-        store.markMapForExport("Atlantis");
+        store.markMapForExport(idNamePair._id, idNamePair.name);
     }
 
     async function handleOpenCard(id) {
