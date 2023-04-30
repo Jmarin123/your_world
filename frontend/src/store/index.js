@@ -64,6 +64,7 @@ function GlobalStoreContextProvider(props) {
         mapMarkedForDeletion: null,
         mapMarkedForExport: null,
         search: "",
+        sort: "",
         filterSearch: "",
         subregion: null,
 
@@ -93,6 +94,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -110,6 +112,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -127,6 +130,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -144,6 +148,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -161,6 +166,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -178,6 +184,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -195,6 +202,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -212,6 +220,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -230,6 +239,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -248,6 +258,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -265,6 +276,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -281,6 +293,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -297,6 +310,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: payload,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -313,6 +327,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: "",
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -329,6 +344,7 @@ function GlobalStoreContextProvider(props) {
                     filterSearch: "",
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -342,8 +358,10 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -358,8 +376,10 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: payload.feature,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -374,8 +394,10 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: null,
+                    sort: store.sort,
 
                 });
             }
@@ -390,9 +412,28 @@ function GlobalStoreContextProvider(props) {
                     mapMarkedForDeletion: null,
                     mapMarkedForExport: null,
                     search: store.search,
+                    filterSearch: store.filterSearch,
                     subregion: null,
                     thumbnail: payload.thumbnail,
+                    sort: store.sort,
 
+                });
+            }
+            case GlobalStoreActionType.SET_SORT: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: null,
+                    sort: payload,
                 });
             }
             default:
@@ -652,6 +693,37 @@ function GlobalStoreContextProvider(props) {
         }
         return screenList;
     };
+
+    /* set which sort operation to perform in the given screen */
+    store.setSort = function (sort) {
+        storeReducer({
+            type: GlobalStoreActionType.SET_SORT,
+            payload: sort
+        });
+    }
+
+    store.sortList = function (screenList) {
+        console.log(screenList);
+        // const publishedLists = screenList.filter((pair) => pair.publish.isPublished);
+        // const maps = screenList.filter((pair) => !pair.publish.isPublished);
+        if (store.sort === "likes") {
+            console.log("likes");
+            screenList.sort((a, b) => b.likes.length - a.likes.length);
+        }
+        else if (store.sort === "dislikes") {
+            console.log("dislikes");
+            screenList.sort((a, b) => b.dislikes.length - a.dislikes.length);
+        }
+        else if (store.sort.includes("maptitle")) {
+            console.log("maptitle");
+            screenList.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        }
+        else if (store.sort.includes("author")) {
+            console.log("author");
+            screenList.sort((a, b) => a.owner.toLowerCase().localeCompare(b.owner.toLowerCase()));
+        }
+        return screenList;
+    }
 
     store.updateCurrentMap = async function () {
         const response = await api.updateMapById(store.currentMap._id, store.currentMap);
