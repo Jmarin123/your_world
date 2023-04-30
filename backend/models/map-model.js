@@ -6,9 +6,8 @@ const mapSchema = new Schema(
         name: { type: String, required: true },
         ownerEmail: { type: String, required: true },
         owner: { type: String, required: true },
-        dataFromMap: {
-            type: {}, required: true
-        },
+        dataFromMap:
+            { type: Schema.Types.ObjectId, ref: 'MapInfo' },
         comments: { type: [[String]], required: true },
         likes: { type: [String], required: true },
         dislikes: { type: [String], required: true },

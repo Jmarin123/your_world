@@ -1,7 +1,8 @@
 const Map = require('../models/map-model')
 const User = require('../models/user-model');
+const MapInfo = require('../models/map-info-model');
 
-createMap = (req, res) => {
+createMap = async (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -10,30 +11,26 @@ createMap = (req, res) => {
             error: 'You must provide a Map',
         })
     }
-
-    const map = new Map(body);
-    if (!map) {
+    const { dataFromMap, ...rest } = body;
+    const mapBody = new Map(rest);
+    const mapInfo = new MapInfo({ dataFromMap: dataFromMap });
+    mapBody.dataFromMap = mapInfo;
+    if (!mapBody) {
         return res.status(400).json({ success: false, error: err })
     }
-
-    User.find({ _id: req.userId }).then(function (user, err) {
-        user[0].maps.push(map._id)
-
-        user[0].save().then(() => {
-            map
-                .save()
-                .then(() => {
-                    return res.status(201).json({
-                        map: map
-                    })
-                })
-                .catch(error => {
-                    return res.status(400).json({
-                        errorMessage: error
-                    })
-                })
-        });
-    })
+    try {
+        await mapInfo.save(); // Save the MapInfo instance first
+        await mapBody.save(); // Save the Map instance
+        const foundUser = await User.findOne({ _id: req.userId })
+        foundUser.maps.push(mapBody._id);
+        await foundUser.save();
+        const mapToReturn = await Map.findById(mapBody._id).populate('dataFromMap').lean();
+        mapToReturn.dataFromMap = mapToReturn.dataFromMap.dataFromMap;
+        res.status(201).json({ map: mapToReturn });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({ success: false, error: err })
+    }
 }
 
 
@@ -55,6 +52,8 @@ deleteMap = async (req, res) => {
 
         if (user._id.toString() === req.userId) {
             console.log("correct user!");
+            const generalInfo = await Map.findById({ _id: req.params.id })
+            await MapInfo.findByIdAndRemove({ _id: generalInfo.dataFromMap._id });
             await Map.findOneAndDelete({ _id: req.params.id });
             return res.status(200).json({});
         } else {
@@ -71,11 +70,12 @@ getMapById = async (req, res) => {
     console.log("Find map with id: " + JSON.stringify(req.params.id));
 
     try {
-        const map = await Map.findById(req.params.id);
+        const map = await Map.findById(req.params.id).populate('dataFromMap').lean();
         if (!map) {
             return res.status(404).json({ success: false, error: 'Map not found' });
         }
         // console.log("Found map: " + JSON.stringify(map));
+        map.dataFromMap = map.dataFromMap.dataFromMap;
         return res.status(200).json({ success: true, map: map });
     } catch (err) {
         console.log(err);
@@ -166,13 +166,14 @@ updateMap = async (req, res) => {
         map.name = body.map.name || map.name;
         map.ownerEmail = body.map.ownerEmail || map.ownerEmail;
         map.owner = body.map.owner || map.owner;
-        map.dataFromMap = body.map.dataFromMap || map.dataFromMap;
         map.comments = body.map.comments || map.comments;
         map.likes = body.map.likes || map.likes;
         map.dislikes = body.map.dislikes || map.dislikes;
         map.publish = body.map.publish || map.publish;
         map.image = body.map.image || map.image;
-
+        if (body.map.dataFromMap) {
+            await MapInfo.findByIdAndUpdate(map.dataFromMap._id, body.map.dataFromMap)
+        }
         await map.save();
         return res.status(200).json({
             success: true,
@@ -180,6 +181,7 @@ updateMap = async (req, res) => {
             message: 'Map updated!',
         })
     } catch (error) {
+        console.log(error);
         return res.status(404).json({
             error,
             message: 'Map not updated!',

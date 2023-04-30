@@ -6,3 +6,5 @@ const mapInfoSchema = new Schema({
         type: {}, required: true
     },
 })
+
+module.exports = mongoose.model('MapInfo', mapInfoSchema)
