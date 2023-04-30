@@ -1,29 +1,36 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { GlobalStoreContext } from '../store';
 import { Box, List, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import MapCard from './MapCard.js';
 
 export default function PublicPage() {
-    const [sort, setSort] = React.useState("Map Title");
+    const [sortValue, setSortvalue] = useState("Map Title");
     const { store } = useContext(GlobalStoreContext);
+
     useEffect(() => {
         store.loadAllMaps();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function handleMenuItemClick(sortParam) {
+        store.setSort(sortParam);
+    }
     const handleChange = (event) => {
-        setSort(event.target.value);
+        setSortvalue(event.target.value);
     };
+
     let mapCard = [];
 
     mapCard = store.filterBySearch();
-    // let publicScreen = "Public Map Listing";
-    // let resultScreen = "Result";
+
+    if (mapCard.length > 0 && store && store.sort !== "") {
+        mapCard = store.sortList(mapCard);
+    }
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
             <Box id="publicBox" component="form" noValidate >
-                    {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
+                {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
                 <section id="public">Public Maps</section>
                 <FormControl variant="standard" sx={{
                     m: 1,
@@ -44,16 +51,16 @@ export default function PublicPage() {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={sort}
+                        value={sortValue}
 
                         label="Sort By"
-                        defaultValue={sort}
+                        defaultValue={sortValue}
                         onChange={handleChange}
                     >
-                        <MenuItem value={"Map Title"}>Map Title</MenuItem>
-                        <MenuItem value={"Author"}>Author</MenuItem>
-                        <MenuItem value={"Likes"}>Likes</MenuItem>
-                        <MenuItem value={"Dislikes"}>Dislikes</MenuItem>
+                        <MenuItem value={"Map Title"} onClick={() => handleMenuItemClick("maptitle")}> Map Title </MenuItem>
+                        <MenuItem value={"Author"} onClick={() => handleMenuItemClick("author")}> Author </MenuItem>
+                        <MenuItem value={"Likes"} onClick={() => handleMenuItemClick("likes")}>Likes</MenuItem>
+                        <MenuItem value={"Dislikes"} onClick={() => handleMenuItemClick("dislikes")}>Dislikes</MenuItem>
                     </Select>
                 </FormControl>
 

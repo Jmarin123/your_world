@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { GlobalStoreContext } from '../store'
 import { Box, Modal, Button, Typography, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
@@ -39,15 +39,47 @@ const buttonBox = {
 
 export default function ExportModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [name] = useState("Atlantis");
-    const [format, setFormat] = useState("Format");
+    const [ name, setName ] = useState("");
+    const [ format, setFormat ] = useState("Format");
 
-    // if (store.listMarkedForDeletion) {
-//         name = store.listMarkedForDeletion.name;
-//     }
+    useEffect(() => {
+        if(store.mapMarkedForExport){
+            setName(store.mapMarkedForExport.map_name)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.mapMarkedForExport]);
+
+    useEffect(() => {
+        console.log("State variable changed in ExportModal")
+        if(store.exportMapData){
+            let fileData = store.exportMapData
+
+            if(format === "GeoJSON"){
+                fileData = JSON.stringify(fileData)
+                const blob = new Blob([fileData], { type: 'text/plain' });
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.geojson';
+                downloadLink.click();
+            }
+            else if(format === "SHP/DBF Zip"){
+                console.log("shp/dbf zip")
+            }
+            else if(format === "Image"){
+                console.log("image")
+            }
+            else{
+                console.log("export map else")
+            }
+        }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.exportMapData]);
+
     function handleConfirmExport(event) {
-        store.hideModals();
+        store.exportMarkedMap();
     }
+
     function handleCloseModal(event) {
         store.hideModals();
     }
