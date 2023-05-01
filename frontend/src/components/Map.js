@@ -318,10 +318,10 @@ export default function Map() {
     setMaplayout(<FeatureGroup>
       {newMap && newMap.features.map((feature, index) => {
         if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>;
         } else if (feature.geometry.type === 'MultiPolygon') {
           const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
           ));
           return polygons;
         }
@@ -330,6 +330,7 @@ export default function Map() {
       <EditControl
         position='topright'
         onEdited={handleEditable}
+        onDeleted={_onDelete}
       />
     </FeatureGroup>)
     setMapLayOutFLAG(1)
@@ -344,10 +345,10 @@ export default function Map() {
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
           } else if (feature.geometry.type === 'MultiPolygon') {
             const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
             ));
             return polygons;
           }
@@ -356,6 +357,7 @@ export default function Map() {
         <EditControl
           position='topright'
           onEdited={handleEditable}
+          onDeleted={_onDelete}
         />
       </FeatureGroup>)
     } else {
@@ -374,10 +376,10 @@ export default function Map() {
     setMaplayout(<FeatureGroup >
       {newMap && newMap.features.map((feature, index) => {
         if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
         } else if (feature.geometry.type === 'MultiPolygon') {
           const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
           ));
           return polygons;
         }
@@ -386,6 +388,7 @@ export default function Map() {
       <EditControl
         position='topright'
         onEdited={handleEditable}
+        onDeleted={_onDelete}
       />
     </FeatureGroup>)
     setMapLayOutFLAG(1)
@@ -461,6 +464,65 @@ export default function Map() {
       })
     }
   }, [selectedFeature]);
+
+  function _onDelete(e) {
+    const layers = e.layers;
+    layers.eachLayer(layer => {
+      const editedKey = layer.options.myCustomKeyProp;
+      let newFeature = layer.toGeoJSON();
+      const editedName = layer.options.polyName
+      
+      if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+        //const parts = editedKey.split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+        //let index = parseInt(parts[0]);
+        //let index2 = parseInt(parts[1]);
+        //if((index < lengthOfMap)){
+        for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+          if(editedName === store.currentMap.dataFromMap.features[i].properties.admin){
+            let featureFound = store.currentMap.dataFromMap.features[i]
+            for(let j = 0; j < featureFound.geometry.coordinates.length; j++){
+            
+              let oldFeature = JSON.parse(JSON.stringify(featureFound));
+              
+              let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+              let polygon2 = turf.polygon(oldFeature.geometry.coordinates[j]);
+              const polygonRounded = turf.truncate(polygon1, {precision: 3});
+              const polygonRounded2 = turf.truncate(polygon2, {precision: 3});
+              
+              if(turf.booleanEqual(polygonRounded, polygonRounded2)){
+                //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+                console.log("we deleted the multipolygon feature!")
+                store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
+                store.deleteSubregion();
+                break;
+              }
+            }
+          }
+        }
+      } else { //if NO '-' than this means its a Polygon
+        //if((editedKey < lengthOfMap)){
+          for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+            if(editedName === store.currentMap.dataFromMap.features[i].properties.admin){
+
+              let featureFound = store.currentMap.dataFromMap.features[i]
+              let oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
+
+              let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+              let polygon2 = turf.polygon(oldFeature.geometry.coordinates);
+
+              if(turf.booleanEqual(polygon1, polygon2)){
+                console.log("we deleted the feature!")
+                //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+                store.currentMap.dataFromMap.features.splice(i, 1);
+                store.deleteSubregion();
+                break;
+              }
+            }
+          }
+        //}
+      }
+    });
+  }
 
   const handleEditable = (e) => {
     

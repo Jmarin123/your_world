@@ -1080,6 +1080,13 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.deleteSubregion = function () {
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+
 
 
     store.markSubregion = function (feature) {
