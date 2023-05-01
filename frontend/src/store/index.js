@@ -919,13 +919,13 @@ function GlobalStoreContextProvider(props) {
     store.markMapForExport = function (map_id, map_name) {
         storeReducer({
             type: GlobalStoreActionType.MARK_MAP_FOR_EXPORT,
-            payload: { map: {map_id: map_id, map_name: map_name} }
+            payload: { map: { map_id: map_id, map_name: map_name } }
         });
     }
-    
+
     store.exportMap = async function (id) {
         const response = await api.getMapById(store.mapMarkedForExport.map_id)
-        if(response.data.success){
+        if (response.data.success) {
             storeReducer({
                 type: GlobalStoreActionType.MAP_EXPORT,
                 payload: { mapData: response.data.map.dataFromMap }
@@ -933,8 +933,12 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.exportMarkedMap = function () {
-        store.exportMap(store.mapMarkedForExport);
+    store.exportMarkedMap = async function () {
+        //store.exportMap(store.mapMarkedForExport);
+        const response = await api.getMapById(store.mapMarkedForExport.map_id);
+        if (response.data.success) {
+            return response.data.map.dataFromMap;
+        }
     }
 
     //this function will be called from Map.js

@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { GlobalStoreContext } from '../store'
+import * as shpwrite from 'shp-write';
 import { Box, Modal, Button, Typography, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const style = {
@@ -39,45 +40,48 @@ const buttonBox = {
 
 export default function ExportModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [ name, setName ] = useState("");
-    const [ format, setFormat ] = useState("Format");
+    const [name, setName] = useState("");
+    const [format, setFormat] = useState("Format");
 
     useEffect(() => {
-        if(store.mapMarkedForExport){
+        if (store.mapMarkedForExport) {
             setName(store.mapMarkedForExport.map_name)
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store.mapMarkedForExport]);
 
-    useEffect(() => {
-        console.log("State variable changed in ExportModal")
-        if(store.exportMapData){
-            let fileData = store.exportMapData
+    // useEffect(() => {
+    //     console.log("State variable changed in ExportModal")
 
-            if(format === "GeoJSON"){
-                fileData = JSON.stringify(fileData)
-                const blob = new Blob([fileData], { type: 'text/plain' });
-                const downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(blob);
-                downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.geojson';
-                downloadLink.click();
-            }
-            else if(format === "SHP/DBF Zip"){
-                console.log("shp/dbf zip")
-            }
-            else if(format === "Image"){
-                console.log("image")
-            }
-            else{
-                console.log("export map else")
-            }
+
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [store.exportMapData]);
+
+    async function handleConfirmExport(event) {
+        let fileData = await store.exportMarkedMap()
+
+        if (format === "GeoJSON") {
+            fileData = JSON.stringify(fileData)
+            const blob = new Blob([fileData], { type: 'application/json' });
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.geojson';
+            downloadLink.click();
         }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [store.exportMapData]);
-
-    function handleConfirmExport(event) {
-        store.exportMarkedMap();
+        else if (format === "SHP/DBF Zip") {
+            console.log(fileData);
+            // const shpBlob = shpwrite.zip(fileData);
+            // const downloadLink = document.createElement('a');
+            // downloadLink.href = URL.createObjectURL(shpBlob);
+            // downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.zip';
+            // downloadLink.click();
+        }
+        else if (format === "Image") {
+            console.log("image")
+        }
+        else {
+            console.log("export map else")
+        }
     }
 
     function handleCloseModal(event) {
@@ -93,39 +97,39 @@ export default function ExportModal() {
             open={store.mapMarkedForExport !== null}
         >
             <Grid container sx={style}>
-            <Grid container item >
-                <Box sx={top}>
-                    <Typography id="modal-heading">Export Map</Typography>
-                </Box>
-            </Grid>
-            <Grid container item>
-                <Box sx={{ mt: 4 }}>
-                <Box>
-                <Typography id="modal-text" xs={4}>Please select in which format you would like to export <b>{name}</b>:</Typography>
-                </Box>
-                <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth >
-                <InputLabel id="demo-simple-select-label">Format</InputLabel>
-                <Select
-                    labelId="export-file-format"
-                    id="export-file-format"
-                    value={format}
-                    label="Format"
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'SHP/DBF Zip'}>SHP/DBF Zip</MenuItem>
-                    <MenuItem value={'GeoJSON'}>GeoJSON</MenuItem>
-                    <MenuItem value={'Image'}>Image (PNG)</MenuItem>
-                </Select>
-                </FormControl>
-                </Box>
-                </Box>
-            </Grid>
-            <Grid container item sx={buttonBox}>
-                <Button id="modal-button" onClick={handleConfirmExport}>Confirm</Button> 
-                <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
+                <Grid container item >
+                    <Box sx={top}>
+                        <Typography id="modal-heading">Export Map</Typography>
+                    </Box>
+                </Grid>
+                <Grid container item>
+                    <Box sx={{ mt: 4 }}>
+                        <Box>
+                            <Typography id="modal-text" xs={4}>Please select in which format you would like to export <b>{name}</b>:</Typography>
+                        </Box>
+                        <Box sx={{ mt: 2 }}>
+                            <FormControl fullWidth >
+                                <InputLabel id="demo-simple-select-label">Format</InputLabel>
+                                <Select
+                                    labelId="export-file-format"
+                                    id="export-file-format"
+                                    value={format}
+                                    label="Format"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value={'SHP/DBF Zip'}>SHP/DBF Zip</MenuItem>
+                                    <MenuItem value={'GeoJSON'}>GeoJSON</MenuItem>
+                                    <MenuItem value={'Image'}>Image (PNG)</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                </Grid>
+                <Grid container item sx={buttonBox}>
+                    <Button id="modal-button" onClick={handleConfirmExport}>Confirm</Button>
+                    <Button id="modal-button" onClick={handleCloseModal}>Cancel</Button>
 
-            </Grid>
+                </Grid>
             </Grid>
         </Modal>
     );

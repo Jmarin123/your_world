@@ -172,7 +172,7 @@ updateMap = async (req, res) => {
         map.publish = body.map.publish || map.publish;
         map.image = body.map.image || map.image;
         if (body.map.dataFromMap) {
-            await MapInfo.findByIdAndUpdate(map.dataFromMap._id, body.map.dataFromMap)
+            await MapInfo.findByIdAndUpdate(map.dataFromMap._id, { dataFromMap: body.map.dataFromMap })
         }
         await map.save();
         return res.status(200).json({
