@@ -38,6 +38,8 @@ export const GlobalStoreActionType = {
     NAVIGATE_PUBLIC: "NAVIGATE_PUBLIC",
     UPDATE_THUMBNAIL: "UPDATE_THUMBNAIL",
     MAP_EXPORT: "MAP_EXPORT",
+    MARK_MAP_FOR_COMPRESSION: "MARK_MAP_FOR_COMPRESSION",
+    MAP_COMPRESS: "MAP_COMPRESS"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -49,7 +51,8 @@ export const CurrentModal = {
     EDIT_MAP: "EDIT_MAP",
     RENAME_SUBREGION: "RENAME_SUBREGION",
     UPLOAD_FILE: "UPLOAD_FILE",
-    EXPORT_MAP: "EXPORT_MAP"
+    EXPORT_MAP: "EXPORT_MAP",
+    COMPRESS_MAP: "COMPRESS_MAP"
 }
 
 function GlobalStoreContextProvider(props) {
@@ -71,6 +74,7 @@ function GlobalStoreContextProvider(props) {
         thumbnail: false,
         exportMapData: null,
         isFirstUpload: false,
+        compressStatus: false
     });
     // const history = useHistory();
 
@@ -283,7 +287,6 @@ function GlobalStoreContextProvider(props) {
 
                 });
             }
-
             case GlobalStoreActionType.EDIT_MAP: {
                 // console.log("EDIT_MAP");
                 return setStore({
@@ -498,9 +501,60 @@ function GlobalStoreContextProvider(props) {
                     isFirstUpload: false,
                 });
             }
+            case GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION: {
+                return setStore({
+                    currentModal: CurrentModal.COMPRESS_MAP,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false
+                });
+            }
+            case GlobalStoreActionType.MAP_COMPRESS: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    compressStatus: true
+                });
+            }
             default:
                 return store;
         }
+    }
+
+    store.compressMap = function () {
+        storeReducer({
+            type: GlobalStoreActionType.MAP_COMPRESS
+        });
+    }
+
+    store.markCompression = function () {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION
+        });
     }
 
     store.showRenameModal = async (id) => {

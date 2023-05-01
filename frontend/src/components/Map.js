@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 
 import { styled } from '@mui/material/styles';
+import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
@@ -27,11 +28,13 @@ export default function Map() {
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
   const [center, setCenter] = useState({ lat: 20, lng: 100 });
-  const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
+  let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
   const [undoFlag, setUndoFlag] = useState(true);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
+  const [compressionStatus, setCompressionStatus] = useState('normal');
+  const [compressValue, setCompressValue] = useState(0)
 
   const [mergeFeature, setMergeFeature] = useState(null);
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
@@ -56,6 +59,19 @@ export default function Map() {
     transform: 'translate(-50%, -50%)',
     width: 423,
     height: 311,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
+    p: 4,
+  };
+
+  const styleCompress = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 423,
+    height: 400,
     bgcolor: '#ECF2FF',
     borderRadius: 1,
     boxShadow: 16,
@@ -88,6 +104,7 @@ export default function Map() {
     setFont(event.target.value);
   };
 
+  //RENAME SUBREGION MODAL AND FUNCTIONS ---------------------------------->START
   function handleConfirmRename() {
     store.changeSubregionName(newName);
     setMaplayout(newMap ? renderedMap : <div></div>)
@@ -99,7 +116,6 @@ export default function Map() {
   function handleUpdateName(event) {
     setNewName(event.target.value)
   }
-
   let modal = <Modal
     open={store.currentModal === "RENAME_SUBREGION"}
   >
@@ -122,6 +138,74 @@ export default function Map() {
       </Grid>
     </Grid>
   </Modal>
+  //RENAME SUBREGION MODAL AND FUNCTIONS------------------------------------------------------>END
+
+  //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS------------------>START
+  const handleRadioChange = (event) => {
+    setCompressionStatus(event.target.value);
+  };
+  let compressModal = <Modal
+  open={store.currentModal === "COMPRESS_MAP"}
+  >
+    <Grid container sx={styleCompress}>
+      <Grid container item >
+        <Box sx={top}>
+          <Typography id="modal-heading">Compress Map</Typography>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box>
+          <Typography id="modal-text" xs={4} sx={{ textAlign: `center` }}>Are you sure you want to permanently compress your Map?</Typography>
+          <Typography id="modal-text" xs={4}>*Once you confirm your changes, you cannot undo it, changes are permanet!</Typography>
+          <RadioGroup row value={compressionStatus} onChange={handleRadioChange} sx={{justifyContent: 'center', alignItems: 'center'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap',  justifyContent: 'center', alignItems: 'center'}}>
+            <FormControlLabel value="normal" control={<Radio />} label="Normal" labelPlacement="bottom" />
+            <FormControlLabel
+              value="medium_compressed"
+              control={<Radio />}
+              label="medium"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="fully_compressed"
+              control={<Radio />}
+              label="fully"
+              labelPlacement="bottom"
+            />
+            </Box>
+          </RadioGroup>
+        </Box>
+      </Grid>
+      <Grid container item sx={buttonBox}>
+        <Button id="modal-button" onClick={handleConfirmCompress}>Confirm</Button>
+        <Button id="modal-button" onClick={handleCloseCompressModal}>Cancel</Button>
+      </Grid>
+    </Grid>
+  </Modal>
+  function handleCloseCompressModal() {
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+  function handleConfirmCompress() {
+    if(compressionStatus === "normal") {
+      setCompressValue(0)
+    } else if(compressionStatus === "medium_compressed"){
+      setCompressValue(0.5)
+    } else {
+      setCompressValue(1)
+    }
+    store.hideModals();
+    //setMaplayout(newMap ? renderedMap : <div></div>)
+    //compressFlag = true
+    store.compressMap();
+  }
+  function markCompression() { 
+    if(!store.compressStatus){
+      setMaplayout(<div></div>)
+      store.markCompression()
+    }
+  }
+  //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS----------------------------------------->END
 
   let StyledIconButton = styled(IconButton)({
     color: "black",
@@ -222,7 +306,6 @@ export default function Map() {
   let renderedMap = <GeoJSON
     style={countryStyle}
     data={store.currentMap ? store.currentMap.dataFromMap.features : null}
-    //data={newMap ? newMap.features : null}
     onEachFeature={onEachCountry}
   />
 
@@ -234,10 +317,10 @@ export default function Map() {
     setMaplayout(<FeatureGroup>
       {newMap && newMap.features.map((feature, index) => {
         if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
         } else if (feature.geometry.type === 'MultiPolygon') {
           const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
           ));
           return polygons;
         }
@@ -280,29 +363,34 @@ export default function Map() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [MapLayOutFLAG]);
 
-  //THIS IS FOR MAP COMPRESSION, doesnt work at the moment
-  // useEffect(() => {
-  //   console.log("Maplayout changed")
-  //   setMaplayout(<FeatureGroup ref={featureGroupRef}  >
-  //     {newMap && newMap.features.map((feature, index) => {
-  //       if (feature.geometry.type === 'Polygon') {
-  //         return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-  //       } else if (feature.geometry.type === 'MultiPolygon') {
-  //         const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-  //           <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-  //         ));
-  //         return polygons;
-  //       }
-  //       return null;
-  //     })}
-  //     <EditControl
-  //       position='topright'
-  //       onEdited={handleEditable}
-  //     />
-  //   </FeatureGroup>)
-  //   setMapLayOutFLAG(1)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [compressValue]);
+  //THIS IS FOR MAP COMPRESSION
+  useEffect(() => {
+    let options = {tolerance: compressValue, highQuality: false};
+    // eslint-disable-next-line
+    newMap = turf.simplify(newMap, options);
+    //setNewMap(turf.simplify(newMap, options));
+    store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
+    setMaplayout(<FeatureGroup >
+      {newMap && newMap.features.map((feature, index) => {
+        if (feature.geometry.type === 'Polygon') {
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+          ));
+          return polygons;
+        }
+        return null;
+      })}
+      <EditControl
+        position='topright'
+        onEdited={handleEditable}
+      />
+    </FeatureGroup>)
+    setMapLayOutFLAG(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compressValue]);
+
 
   const handleNavigate = (e) => {
     if (MapLayOutFLAG !== 1) {
@@ -480,7 +568,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" />
+            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" onClick={markCompression}/>
           </StyledIconButton>
 
           <StyledIconButton
@@ -611,6 +699,7 @@ export default function Map() {
         />
       </Box>
       {modal}
+      {compressModal}
     </Box>
   );
 }
