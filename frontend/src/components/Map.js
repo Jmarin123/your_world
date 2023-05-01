@@ -331,6 +331,13 @@ export default function Map() {
         position='topright'
         onEdited={handleEditable}
         onDeleted={_onDelete}
+        draw={{
+          polyline: false,
+          circle: false,
+          rectangle: false,
+          marker: true,
+          circlemarker: false
+        }}
       />
     </FeatureGroup>)
     setMapLayOutFLAG(1)
@@ -358,6 +365,13 @@ export default function Map() {
           position='topright'
           onEdited={handleEditable}
           onDeleted={_onDelete}
+          draw={{
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: true,
+            circlemarker: false
+          }}
         />
       </FeatureGroup>)
     } else {
@@ -389,6 +403,13 @@ export default function Map() {
         position='topright'
         onEdited={handleEditable}
         onDeleted={_onDelete}
+        draw={{
+          polyline: false,
+          circle: false,
+          rectangle: false,
+          marker: true,
+          circlemarker: false
+        }}
       />
     </FeatureGroup>)
     setMapLayOutFLAG(1)
