@@ -92,7 +92,7 @@ export default function ExportModal() {
         else {
             console.log("export map else")
         }
-        store.loadIdNamePairs();
+        store.hideModals();
     }
 
     function handleCloseModal(event) {
