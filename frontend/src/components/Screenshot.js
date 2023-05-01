@@ -31,7 +31,6 @@ const Screenshot = () => {
             }
             
             screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
-                console.log("In Screenshot.js, pressed save?")
                 store.currentMap.image = image;
                 store.updateCurrentMap();
                 }).catch(e => {
@@ -42,8 +41,6 @@ const Screenshot = () => {
     }, [store.thumbnail]);
 
     useEffect(() => {
-        console.log("isFirstUpload useeffect")
-        console.log(store.isFirstUpload)
         if(store.currentMap && store.isFirstUpload){
             let format = 'image' // 'image' - return base64, 'canvas' - return canvas
             let overridedPluginOptions = {
@@ -51,7 +48,6 @@ const Screenshot = () => {
             }
             
             screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
-                console.log("In Screenshot.js, first upload?")
                 store.currentMap.image = image;
                 store.updateCurrentMap();
                 }).catch(e => {

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { GlobalStoreContext } from '../store'
@@ -21,7 +21,8 @@ import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 
 let mergeFLAG = 0;
-let colorFill = "#ffff00";
+let colorFill = "#4CBB17";
+let mergeFeatureFlag = null
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
@@ -38,7 +39,10 @@ export default function Map() {
 
   const [mergeFeature, setMergeFeature] = useState(null);
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
-  let mergeFeatureFlag = null
+  const [mergedFlag, setMergedFlag] = useState(false);
+
+  const geoJsonLayer = useRef(null);
+  const [selectedFeature, setSelectedFeature] = useState(null)
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -259,7 +263,7 @@ export default function Map() {
         fillOpacity: 1,
       });
 
-      if (!mergeFeatureFlag) {
+      if (mergeFeatureFlag === null) {
         setMergeFeature(event.target)
         mergeFeatureFlag = event.target
       }
@@ -269,11 +273,7 @@ export default function Map() {
 
     }
     else { // Merge inactive
-      event.target.setStyle({
-        color: "#000000",
-        fillColor: colorFill,
-        fillOpacity: 1,
-      });
+      setSelectedFeature(event.target)
     }
   };
 
@@ -304,6 +304,7 @@ export default function Map() {
   });
 
   let renderedMap = <GeoJSON
+    ref={geoJsonLayer}
     style={countryStyle}
     data={store.currentMap ? store.currentMap.dataFromMap.features : null}
     onEachFeature={onEachCountry}
@@ -400,23 +401,12 @@ export default function Map() {
     }
   };
 
-  const [mergeFlag, setMergeFlag] = useState(true);
   function handleMerge(event) {
     if (MapLayOutFLAG !== 1) {
       if (mergeFLAG > 0 && mergeFeature && mergeFeature_1) {
+        setMergedFlag(true)
 
-        mergeFeature.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-        mergeFeature_1.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-
-        var union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
+        let union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
 
         store.currentMap.dataFromMap.features.forEach((feature, index) => {
           if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin) {
@@ -424,28 +414,27 @@ export default function Map() {
             store.currentMap.dataFromMap.features[index] = union
             console.log("Index is: " + index)
           }
-          else if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin){
+        });
+
+        store.currentMap.dataFromMap.features.forEach((feature, index) => {
+          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin) {
             (store.currentMap.dataFromMap.features).splice(index, 1)
           }
         });
-        
+
         setMergeFeature(null)
         setMergeFeature_1(null)
-
         mergeFeatureFlag = null
         mergeFLAG = 0
-        setMergeFlag(!mergeFlag)
-        
-        // handleUndo();
-        // handleRedo();
-        
       }
       else if(mergeFLAG){
         setMergeFeature(null)
         setMergeFeature_1(null)
+        mergeFeatureFlag = null
         mergeFLAG = 0
       }
       else {
+        setSelectedFeature(null)
         mergeFLAG = 1
       }
     } else {
@@ -455,29 +444,23 @@ export default function Map() {
 
   // man.
   useEffect(() => {
-    console.log("Maplayout changed")
-    console.log(newMap)
-    // setMaplayout(<FeatureGroup>
-    //   {newMap && newMap.features.map((feature, index) => {
-    //     if (feature.geometry.type === 'Polygon') {
-    //       return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-    //     } else if (feature.geometry.type === 'MultiPolygon') {
-    //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-    //         <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-    //       ));
-    //       return polygons;
-    //     }
-    //     return null;
-    //   })}
-    //   <EditControl
-    //     position='topright'
-    //     onEdited={handleEditable}
-    //   />
-    // </FeatureGroup>)
-    setMaplayout(newMap ? renderedMap : <div></div>)
-    setMapLayOutFLAG(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mergeFlag]);
+    if (geoJsonLayer.current && mergedFlag) {
+      setMergedFlag(false)
+      geoJsonLayer.current.clearLayers().addData(store.currentMap.dataFromMap.features);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newMap]);
+
+  useEffect(() => {
+    if(geoJsonLayer.current){
+      geoJsonLayer.current.resetStyle()
+    }
+    if(selectedFeature){
+      selectedFeature.setStyle({
+        fillColor : colorFill
+      })
+    }
+  }, [selectedFeature]);
 
   const handleEditable = (e) => {
     
