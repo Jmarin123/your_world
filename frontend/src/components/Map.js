@@ -1,9 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { GlobalStoreContext } from '../store'
 
 import { styled } from '@mui/material/styles';
+import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
@@ -20,22 +21,28 @@ import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 
 let mergeFLAG = 0;
-let colorFill = "#ffff00";
+let colorFill = "#4CBB17";
+let mergeFeatureFlag = null
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
   const [center, setCenter] = useState({ lat: 20, lng: 100 });
-  const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
+  let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
   const [undoFlag, setUndoFlag] = useState(true);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
+  const [compressionStatus, setCompressionStatus] = useState('normal');
+  const [compressValue, setCompressValue] = useState(0)
 
   const [mergeFeature, setMergeFeature] = useState(null);
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
-  let mergeFeatureFlag = null
+  const [mergedFlag, setMergedFlag] = useState(false);
+
+  const geoJsonLayer = useRef(null);
+  const [selectedFeature, setSelectedFeature] = useState(null)
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -56,6 +63,19 @@ export default function Map() {
     transform: 'translate(-50%, -50%)',
     width: 423,
     height: 311,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
+    p: 4,
+  };
+
+  const styleCompress = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 423,
+    height: 400,
     bgcolor: '#ECF2FF',
     borderRadius: 1,
     boxShadow: 16,
@@ -88,6 +108,7 @@ export default function Map() {
     setFont(event.target.value);
   };
 
+  //RENAME SUBREGION MODAL AND FUNCTIONS ---------------------------------->START
   function handleConfirmRename() {
     store.changeSubregionName(newName);
     setMaplayout(newMap ? renderedMap : <div></div>)
@@ -99,7 +120,6 @@ export default function Map() {
   function handleUpdateName(event) {
     setNewName(event.target.value)
   }
-
   let modal = <Modal
     open={store.currentModal === "RENAME_SUBREGION"}
   >
@@ -122,6 +142,74 @@ export default function Map() {
       </Grid>
     </Grid>
   </Modal>
+  //RENAME SUBREGION MODAL AND FUNCTIONS------------------------------------------------------>END
+
+  //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS------------------>START
+  const handleRadioChange = (event) => {
+    setCompressionStatus(event.target.value);
+  };
+  let compressModal = <Modal
+  open={store.currentModal === "COMPRESS_MAP"}
+  >
+    <Grid container sx={styleCompress}>
+      <Grid container item >
+        <Box sx={top}>
+          <Typography id="modal-heading">Compress Map</Typography>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box>
+          <Typography id="modal-text" xs={4} sx={{ textAlign: `center` }}>Are you sure you want to permanently compress your Map?</Typography>
+          <Typography id="modal-text" xs={4}>*Once you confirm your changes, you cannot undo it, changes are permanet!</Typography>
+          <RadioGroup row value={compressionStatus} onChange={handleRadioChange} sx={{justifyContent: 'center', alignItems: 'center'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap',  justifyContent: 'center', alignItems: 'center'}}>
+            <FormControlLabel value="normal" control={<Radio />} label="Normal" labelPlacement="bottom" />
+            <FormControlLabel
+              value="medium_compressed"
+              control={<Radio />}
+              label="medium"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              value="fully_compressed"
+              control={<Radio />}
+              label="fully"
+              labelPlacement="bottom"
+            />
+            </Box>
+          </RadioGroup>
+        </Box>
+      </Grid>
+      <Grid container item sx={buttonBox}>
+        <Button id="modal-button" onClick={handleConfirmCompress}>Confirm</Button>
+        <Button id="modal-button" onClick={handleCloseCompressModal}>Cancel</Button>
+      </Grid>
+    </Grid>
+  </Modal>
+  function handleCloseCompressModal() {
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+  function handleConfirmCompress() {
+    if(compressionStatus === "normal") {
+      setCompressValue(0)
+    } else if(compressionStatus === "medium_compressed"){
+      setCompressValue(0.5)
+    } else {
+      setCompressValue(1)
+    }
+    store.hideModals();
+    //setMaplayout(newMap ? renderedMap : <div></div>)
+    //compressFlag = true
+    store.compressMap();
+  }
+  function markCompression() { 
+    if(!store.compressStatus){
+      setMaplayout(<div></div>)
+      store.markCompression()
+    }
+  }
+  //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS----------------------------------------->END
 
   let StyledIconButton = styled(IconButton)({
     color: "black",
@@ -175,7 +263,7 @@ export default function Map() {
         fillOpacity: 1,
       });
 
-      if (!mergeFeatureFlag) {
+      if (mergeFeatureFlag === null) {
         setMergeFeature(event.target)
         mergeFeatureFlag = event.target
       }
@@ -185,11 +273,7 @@ export default function Map() {
 
     }
     else { // Merge inactive
-      event.target.setStyle({
-        color: "#000000",
-        fillColor: colorFill,
-        fillOpacity: 1,
-      });
+      setSelectedFeature(event.target)
     }
   };
 
@@ -220,9 +304,9 @@ export default function Map() {
   });
 
   let renderedMap = <GeoJSON
+    ref={geoJsonLayer}
     style={countryStyle}
     data={store.currentMap ? store.currentMap.dataFromMap.features : null}
-    //data={newMap ? newMap.features : null}
     onEachFeature={onEachCountry}
   />
 
@@ -234,10 +318,10 @@ export default function Map() {
     setMaplayout(<FeatureGroup>
       {newMap && newMap.features.map((feature, index) => {
         if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>;
         } else if (feature.geometry.type === 'MultiPolygon') {
           const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
           ));
           return polygons;
         }
@@ -246,6 +330,7 @@ export default function Map() {
       <EditControl
         position='topright'
         onEdited={handleEditable}
+        onDeleted={_onDelete}
       />
     </FeatureGroup>)
     setMapLayOutFLAG(1)
@@ -260,10 +345,10 @@ export default function Map() {
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
           } else if (feature.geometry.type === 'MultiPolygon') {
             const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
             ));
             return polygons;
           }
@@ -272,6 +357,7 @@ export default function Map() {
         <EditControl
           position='topright'
           onEdited={handleEditable}
+          onDeleted={_onDelete}
         />
       </FeatureGroup>)
     } else {
@@ -280,29 +366,35 @@ export default function Map() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [MapLayOutFLAG]);
 
-  //THIS IS FOR MAP COMPRESSION, doesnt work at the moment
-  // useEffect(() => {
-  //   console.log("Maplayout changed")
-  //   setMaplayout(<FeatureGroup ref={featureGroupRef}  >
-  //     {newMap && newMap.features.map((feature, index) => {
-  //       if (feature.geometry.type === 'Polygon') {
-  //         return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-  //       } else if (feature.geometry.type === 'MultiPolygon') {
-  //         const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-  //           <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-  //         ));
-  //         return polygons;
-  //       }
-  //       return null;
-  //     })}
-  //     <EditControl
-  //       position='topright'
-  //       onEdited={handleEditable}
-  //     />
-  //   </FeatureGroup>)
-  //   setMapLayOutFLAG(1)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [compressValue]);
+  //THIS IS FOR MAP COMPRESSION
+  useEffect(() => {
+    let options = {tolerance: compressValue, highQuality: false};
+    // eslint-disable-next-line
+    newMap = turf.simplify(newMap, options);
+    //setNewMap(turf.simplify(newMap, options));
+    store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
+    setMaplayout(<FeatureGroup >
+      {newMap && newMap.features.map((feature, index) => {
+        if (feature.geometry.type === 'Polygon') {
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+          ));
+          return polygons;
+        }
+        return null;
+      })}
+      <EditControl
+        position='topright'
+        onEdited={handleEditable}
+        onDeleted={_onDelete}
+      />
+    </FeatureGroup>)
+    setMapLayOutFLAG(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compressValue]);
+
 
   const handleNavigate = (e) => {
     if (MapLayOutFLAG !== 1) {
@@ -312,23 +404,12 @@ export default function Map() {
     }
   };
 
-  const [mergeFlag, setMergeFlag] = useState(true);
   function handleMerge(event) {
     if (MapLayOutFLAG !== 1) {
       if (mergeFLAG > 0 && mergeFeature && mergeFeature_1) {
+        setMergedFlag(true)
 
-        mergeFeature.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-        mergeFeature_1.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-
-        var union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
+        let union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
 
         store.currentMap.dataFromMap.features.forEach((feature, index) => {
           if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin) {
@@ -336,28 +417,27 @@ export default function Map() {
             store.currentMap.dataFromMap.features[index] = union
             console.log("Index is: " + index)
           }
-          else if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin){
+        });
+
+        store.currentMap.dataFromMap.features.forEach((feature, index) => {
+          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin) {
             (store.currentMap.dataFromMap.features).splice(index, 1)
           }
         });
-        
+
         setMergeFeature(null)
         setMergeFeature_1(null)
-
         mergeFeatureFlag = null
         mergeFLAG = 0
-        setMergeFlag(!mergeFlag)
-        
-        // handleUndo();
-        // handleRedo();
-        
       }
       else if(mergeFLAG){
         setMergeFeature(null)
         setMergeFeature_1(null)
+        mergeFeatureFlag = null
         mergeFLAG = 0
       }
       else {
+        setSelectedFeature(null)
         mergeFLAG = 1
       }
     } else {
@@ -367,29 +447,82 @@ export default function Map() {
 
   // man.
   useEffect(() => {
-    console.log("Maplayout changed")
-    console.log(newMap)
-    // setMaplayout(<FeatureGroup>
-    //   {newMap && newMap.features.map((feature, index) => {
-    //     if (feature.geometry.type === 'Polygon') {
-    //       return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-    //     } else if (feature.geometry.type === 'MultiPolygon') {
-    //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-    //         <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-    //       ));
-    //       return polygons;
-    //     }
-    //     return null;
-    //   })}
-    //   <EditControl
-    //     position='topright'
-    //     onEdited={handleEditable}
-    //   />
-    // </FeatureGroup>)
-    setMaplayout(newMap ? renderedMap : <div></div>)
-    setMapLayOutFLAG(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mergeFlag]);
+    if (geoJsonLayer.current && mergedFlag) {
+      setMergedFlag(false)
+      geoJsonLayer.current.clearLayers().addData(store.currentMap.dataFromMap.features);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newMap]);
+
+  useEffect(() => {
+    if(geoJsonLayer.current){
+      geoJsonLayer.current.resetStyle()
+    }
+    if(selectedFeature){
+      selectedFeature.setStyle({
+        fillColor : colorFill
+      })
+    }
+  }, [selectedFeature]);
+
+  function _onDelete(e) {
+    const layers = e.layers;
+    layers.eachLayer(layer => {
+      const editedKey = layer.options.myCustomKeyProp;
+      let newFeature = layer.toGeoJSON();
+      const editedName = layer.options.polyName
+      
+      if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
+        //const parts = editedKey.split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+        //let index = parseInt(parts[0]);
+        //let index2 = parseInt(parts[1]);
+        //if((index < lengthOfMap)){
+        for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+          if(editedName === store.currentMap.dataFromMap.features[i].properties.admin){
+            let featureFound = store.currentMap.dataFromMap.features[i]
+            for(let j = 0; j < featureFound.geometry.coordinates.length; j++){
+            
+              let oldFeature = JSON.parse(JSON.stringify(featureFound));
+              
+              let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+              let polygon2 = turf.polygon(oldFeature.geometry.coordinates[j]);
+              const polygonRounded = turf.truncate(polygon1, {precision: 3});
+              const polygonRounded2 = turf.truncate(polygon2, {precision: 3});
+              
+              if(turf.booleanEqual(polygonRounded, polygonRounded2)){
+                //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+                console.log("we deleted the multipolygon feature!")
+                store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
+                store.deleteSubregion();
+                break;
+              }
+            }
+          }
+        }
+      } else { //if NO '-' than this means its a Polygon
+        //if((editedKey < lengthOfMap)){
+          for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+            if(editedName === store.currentMap.dataFromMap.features[i].properties.admin){
+
+              let featureFound = store.currentMap.dataFromMap.features[i]
+              let oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
+
+              let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+              let polygon2 = turf.polygon(oldFeature.geometry.coordinates);
+
+              if(turf.booleanEqual(polygon1, polygon2)){
+                console.log("we deleted the feature!")
+                //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+                store.currentMap.dataFromMap.features.splice(i, 1);
+                store.deleteSubregion();
+                break;
+              }
+            }
+          }
+        //}
+      }
+    });
+  }
 
   const handleEditable = (e) => {
     
@@ -480,7 +613,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" />
+            <Compress style={{ fontSize: "45px" }} titleAccess="Compress" onClick={markCompression}/>
           </StyledIconButton>
 
           <StyledIconButton
@@ -611,6 +744,7 @@ export default function Map() {
         />
       </Box>
       {modal}
+      {compressModal}
     </Box>
   );
 }

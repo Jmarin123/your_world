@@ -11,10 +11,8 @@ function Register() {
   const { auth } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
-    console.log("in handleSubmit")
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get('firstName'))
     auth.registerUser(
       formData.get('firstName'),
       formData.get('lastName'),

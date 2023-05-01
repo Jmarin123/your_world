@@ -42,9 +42,7 @@ export default function RenameMapModal() {
     const [name, setName] = useState("");
 
     function handleConfirmRename() {
-        console.log("new name: ", name);
         store.changeMapName(name);
-        console.log("Confirm rename modal")
     }
     function handleCloseModal(event) {
         store.hideModals();
