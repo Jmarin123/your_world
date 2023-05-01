@@ -955,23 +955,21 @@ function GlobalStoreContextProvider(props) {
 
     //this function will be called by the editvertex_transaction file to finally preform the functionality
     store.editVertex = function (key, editedFeature) {
-
-        if (key.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-            const parts = key.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+        console.log("The edited feature is:")
+        console.log(editedFeature)
+        if (key.includes('-')) { //if '-' is included, this means its a multipolygon
+            const parts = key.split("-"); //parts = ["index location of feature", "index location of multipolygon"]
             const index = parseInt(parts[0]);
             const index2 = parseInt(parts[1]);
 
-            //store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] == editedFeature.geometry.coordinates[i];
-
-            if (editedFeature.geometry.coordinates.length > 1) {
-                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates[index2];
+            if (editedFeature.length > 1) {
+                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature[index2];
             } else {
-                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature.geometry.coordinates;
+                store.currentMap.dataFromMap.features[index].geometry.coordinates[index2] = editedFeature;
             }
-
-        } else { //if NO '-' than this means its a Polygon: key="CountryName"
+        } else { //if NO '-' than this means its a Polygon: key="index location of feature"
             const index = parseInt(key);
-            store.currentMap.dataFromMap.features[index].geometry.coordinates = editedFeature.geometry.coordinates;
+            store.currentMap.dataFromMap.features[index].geometry.coordinates = editedFeature;
         }
 
 

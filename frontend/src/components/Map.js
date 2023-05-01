@@ -19,7 +19,6 @@ import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon } from 'react-l
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 
-let MapLayOutFLAG = 0;
 let mergeFLAG = 0;
 let colorFill = "#ffff00";
 
@@ -32,6 +31,8 @@ export default function Map() {
   console.log(newMap);
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
+  const [undoFlag, setUndoFlag] = useState(true);
+  const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
 
   let mergeFeature = null;
 
@@ -153,58 +154,12 @@ export default function Map() {
 
   function handleUndo() {
     store.undo();
-
-    if (MapLayOutFLAG === 1) {
-      MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-        />
-      </FeatureGroup>)
-    } else {
-      MapLayOutFLAG = 0
-      setMaplayout(newMap ? renderedMap : <div></div>)
-    }
+    setUndoFlag(!undoFlag)
   }
 
   function handleRedo() {
     store.redo();
-
-    if (MapLayOutFLAG === 1) {
-      MapLayOutFLAG = 1
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-        />
-      </FeatureGroup>)
-    } else {
-      MapLayOutFLAG = 0
-      setMaplayout(newMap ? renderedMap : <div></div>)
-    }
+    setUndoFlag(!undoFlag)
   }
 
   async function handleSaveMap() {
@@ -312,9 +267,35 @@ export default function Map() {
 
   const [maplayout, setMaplayout] = useState(newMap ? renderedMap : <div></div>);
 
-  const handleNavigate = (e) => {
-    if (MapLayOutFLAG !== 1) {
-      MapLayOutFLAG = 1
+  //THIS IS FOR UNDO/REDO UPDATING
+  useEffect(() => {
+    console.log("Maplayout changed")
+    setMaplayout(<FeatureGroup>
+      {newMap && newMap.features.map((feature, index) => {
+        if (feature.geometry.type === 'Polygon') {
+          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+          ));
+          return polygons;
+        }
+        return null;
+      })}
+      <EditControl
+        position='topright'
+        onEdited={handleEditable}
+      />
+    </FeatureGroup>)
+    setMapLayOutFLAG(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [undoFlag]);
+
+  //THIS IS FOR MAP MODE SWITCHING AKA NAVIGATION
+  useEffect(() => {
+    if(MapLayOutFLAG === 1) {
+      //var options = {tolerance: compressValue, highQuality: false};
+      //var simplifiedMap = turf.simplify(newMap, options);
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
@@ -333,8 +314,40 @@ export default function Map() {
         />
       </FeatureGroup>)
     } else {
-      MapLayOutFLAG = 0
       setMaplayout(newMap ? renderedMap : <div></div>)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [MapLayOutFLAG]);
+
+  //THIS IS FOR MAP COMPRESSION, doesnt work at the moment
+  // useEffect(() => {
+  //   console.log("Maplayout changed")
+  //   setMaplayout(<FeatureGroup ref={featureGroupRef}  >
+  //     {newMap && newMap.features.map((feature, index) => {
+  //       if (feature.geometry.type === 'Polygon') {
+  //         return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+  //       } else if (feature.geometry.type === 'MultiPolygon') {
+  //         const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+  //           <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+  //         ));
+  //         return polygons;
+  //       }
+  //       return null;
+  //     })}
+  //     <EditControl
+  //       position='topright'
+  //       onEdited={handleEditable}
+  //     />
+  //   </FeatureGroup>)
+  //   setMapLayOutFLAG(1)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [compressValue]);
+
+  const handleNavigate = (e) => {
+    if (MapLayOutFLAG !== 1) {
+      setMapLayOutFLAG(1)
+    } else {
+      setMapLayOutFLAG(0)
     }
   };
 
@@ -353,59 +366,41 @@ export default function Map() {
   }
 
   const handleEditable = (e) => {
-    //const layers = e.layers;
-    //layers.eachLayer(layer => { //ignore dis 4 now .3.
-
-    let editedLayer = e.layers.getLayers()[0];
-    //console.log(editedLayer);
-    const editedKey = editedLayer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
+    
+    const layers = e.layers;
+    layers.eachLayer(layer => { //ignore dis 4 now .3.
+    
+    //let editedLayer = e.layers.getLayers()[0];
+    //const editedKey = layer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
     //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
 
-    let layer = editedLayer.toGeoJSON();
-    // store.currentMap.dataFromMap.features.forEach((feature) => { //loop through the features of the store.currentMap to find the feature that is edited
-    //   if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-    //     const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-    //     if (feature.properties.admin === parts[0]) { //if the country name matches the custom key, this is the feature we are editing
-    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
-    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    //     }
-    //   } else { //if NO '-' than this means its a Polygon
-    //     if (feature.properties.admin === editedKey) { //if the country name matches the custom key, this is the feature we are editing
-    //       let copiedFeature = JSON.parse(JSON.stringify(feature));
-    //       store.editCurrentMapVertex(editedKey, layer, copiedFeature);
-    //     }
-    //   }
+
+    const editedKey = layer.options.myCustomKeyProp;
+    let newFeature = layer.toGeoJSON();
 
     if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
-      const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
+      const parts = editedKey.split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
       let featureFound = store.currentMap.dataFromMap.features[parts[0]]
-      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+      let oldFeature = JSON.parse(JSON.stringify(featureFound));
+
+      let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+      let polygon2 = turf.polygon(oldFeature.geometry.coordinates[parts[1]]);
+      
+      if(!turf.booleanEqual(polygon1, polygon2)){
+        store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+      }
     } else { //if NO '-' than this means its a Polygon
       let featureFound = store.currentMap.dataFromMap.features[editedKey]
-      let copiedFeature = JSON.parse(JSON.stringify(featureFound));
-      store.editCurrentMapVertex(editedKey, layer, copiedFeature);
+      let oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
+
+      let polygon1 = turf.polygon(newFeature.geometry.coordinates);
+      let polygon2 = turf.polygon(oldFeature.geometry.coordinates);
+
+      if(!turf.booleanEqual(polygon1, polygon2)){
+        store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
+      }
     }
-
-    //ignore this is before undo/redo:
-    // if(editedKey.includes('-')){ //if a '-' is included, this means its a multipolygon -3- 
-    //   const parts = editedKey.split("-"); //parts = ["CountryName", "index_location_of_multipolygon"]
-    //   if(feature.properties.admin === parts[0]){ //if the country name matches the custom key, this is the feature we are editing
-    //     for(let i = 0; i < feature.geometry.coordinates.length; i++) { //loop thru the feature's coordinates until we find the correct polygon in the array of the multipolygon's coordinates
-    //       if(i === parseInt(parts[1])){ //see if the index of the feature is equal to "index_location_of_multipolygon"
-    //         feature.geometry.coordinates[i] = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the specific polygon in the MultiPolygon
-    //       }
-    //     }        
-    //   }
-    // } else { //if NO '-' than this means its a Polygon
-    //   if(feature.properties.admin === editedKey){ //if the country name matches the custom key, this is the feature we are editing
-    //     feature.geometry.coordinates = layer.geometry.coordinates //set the entire array of new coordinates to the original feature's coordinates so now its fully updated for the one Polygon       
-    //   }
-    // }
-    //});
-
-    //store.editMapVertex(store.currentMap); //Finally, once the map is updated, we set it to the store so that its rerendered
-    //});
+    });
   };
 
 
