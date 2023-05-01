@@ -66,7 +66,7 @@ export default function ExportModal() {
             downloadLink.click();
         }
         else if (format === "SHZ") {
-            const response = await fetch('http://ogre.adc4gis.com/convertJson', {
+            const response = await fetch('https://ogre.adc4gis.com/convertJson', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
