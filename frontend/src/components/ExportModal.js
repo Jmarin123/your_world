@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { GlobalStoreContext } from '../store'
-import * as shpwrite from 'shp-write';
+//import * as shpwrite from 'shp-write';
 import { Box, Modal, Button, Typography, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const style = {
