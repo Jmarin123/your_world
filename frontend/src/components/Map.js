@@ -32,10 +32,10 @@ export default function Map() {
   let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
-  const [undoFlag, setUndoFlag] = useState(true);
+  const [undoFlag, setUndoFlag] = useState(-1);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
   const [compressionStatus, setCompressionStatus] = useState('normal');
-  const [compressValue, setCompressValue] = useState(0)
+  const [compressValue, setCompressValue] = useState(-1)
 
   const [mergeFeature, setMergeFeature] = useState(null);
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
@@ -243,12 +243,20 @@ export default function Map() {
 
   function handleUndo() {
     store.undo();
-    setUndoFlag(!undoFlag)
+    if(undoFlag === -1) {
+      setUndoFlag(true)
+    } else {
+      setUndoFlag(!undoFlag)
+    }
   }
 
   function handleRedo() {
     store.redo();
-    setUndoFlag(!undoFlag)
+    if(undoFlag === -1) {
+      setUndoFlag(true)
+    } else {
+      setUndoFlag(!undoFlag)
+    }
   }
 
   async function handleSaveMap() {
@@ -315,32 +323,35 @@ export default function Map() {
   //THIS IS FOR UNDO/REDO UPDATING
   useEffect(() => {
     console.log("Maplayout changed")
-    setMaplayout(<FeatureGroup>
-      {newMap && newMap.features.map((feature, index) => {
-        if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>;
-        } else if (feature.geometry.type === 'MultiPolygon') {
-          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-          ));
-          return polygons;
-        }
-        return null;
-      })}
-      <EditControl
-        position='topright'
-        onEdited={handleEditable}
-        onDeleted={_onDelete}
-        draw={{
-          polyline: false,
-          circle: false,
-          rectangle: false,
-          marker: true,
-          circlemarker: false
-        }}
-      />
-    </FeatureGroup>)
-    setMapLayOutFLAG(1)
+    if(undoFlag !== -1){
+      setMaplayout(<FeatureGroup>
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+              <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+            ));
+            return polygons;
+          }
+          return null;
+        })}
+        <EditControl
+          position='topright'
+          onEdited={handleEditable}
+          onDeleted={_onDelete}
+          onCreated={_onCreated}
+          draw={{
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: true,
+            circlemarker: false
+          }}
+        />
+      </FeatureGroup>)
+      setMapLayOutFLAG(1)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [undoFlag]);
 
@@ -352,10 +363,10 @@ export default function Map() {
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
           } else if (feature.geometry.type === 'MultiPolygon') {
             const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+              <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
             ));
             return polygons;
           }
@@ -365,6 +376,7 @@ export default function Map() {
           position='topright'
           onEdited={handleEditable}
           onDeleted={_onDelete}
+          onCreated={_onCreated}
           draw={{
             polyline: false,
             circle: false,
@@ -382,37 +394,40 @@ export default function Map() {
 
   //THIS IS FOR MAP COMPRESSION
   useEffect(() => {
-    let options = {tolerance: compressValue, highQuality: false};
-    // eslint-disable-next-line
-    newMap = turf.simplify(newMap, options);
-    //setNewMap(turf.simplify(newMap, options));
-    store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
-    setMaplayout(<FeatureGroup >
-      {newMap && newMap.features.map((feature, index) => {
-        if (feature.geometry.type === 'Polygon') {
-          return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-        } else if (feature.geometry.type === 'MultiPolygon') {
-          const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-            <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-          ));
-          return polygons;
-        }
-        return null;
-      })}
-      <EditControl
-        position='topright'
-        onEdited={handleEditable}
-        onDeleted={_onDelete}
-        draw={{
-          polyline: false,
-          circle: false,
-          rectangle: false,
-          marker: true,
-          circlemarker: false
-        }}
-      />
-    </FeatureGroup>)
-    setMapLayOutFLAG(1)
+    if(compressValue !== -1) {
+      let options = {tolerance: compressValue, highQuality: false};
+      // eslint-disable-next-line
+      newMap = turf.simplify(newMap, options);
+      //setNewMap(turf.simplify(newMap, options));
+      store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
+      setMaplayout(<FeatureGroup >
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+              <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+            ));
+            return polygons;
+          }
+          return null;
+        })}
+        <EditControl
+          position='topright'
+          onEdited={handleEditable}
+          onDeleted={_onDelete}
+          onCreated={_onCreated}
+          draw={{
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: true,
+            circlemarker: false
+          }}
+        />
+      </FeatureGroup>)
+      setMapLayOutFLAG(1)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compressValue]);
 
@@ -543,6 +558,16 @@ export default function Map() {
         //}
       }
     });
+  }
+
+  function _onCreated(e) {
+    let newFeature = e.layer.toGeoJSON()
+    let index = store.currentMap.dataFromMap.features.length
+    let name = "NewRegion-" + index
+    newFeature.properties.admin = name
+    newFeature.properties.sovereignt = name
+    store.currentMap.dataFromMap.features.push(newFeature)
+    store.addSubregion();
   }
 
   const handleEditable = (e) => {

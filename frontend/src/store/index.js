@@ -1086,7 +1086,12 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-
+    store.addSubregion = function () {
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
 
     store.markSubregion = function (feature) {
         storeReducer({
