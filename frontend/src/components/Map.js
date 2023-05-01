@@ -28,13 +28,14 @@ export default function Map() {
   const navigate = useNavigate();
   const [center, setCenter] = useState({ lat: 20, lng: 100 });
   const newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
-  console.log(newMap);
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
   const [undoFlag, setUndoFlag] = useState(true);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
 
-  let mergeFeature = null;
+  const [mergeFeature, setMergeFeature] = useState(null);
+  const [mergeFeature_1, setMergeFeature_1] = useState(null);
+  let mergeFeatureFlag = null
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -168,60 +169,22 @@ export default function Map() {
 
   function clickFeature(event) {
     if (mergeFLAG) { // Merge active. Mark region if first, and merge if second. 
-
       event.target.setStyle({
         color: "#000000",
         fillColor: "#FDE66B",
         fillOpacity: 1,
       });
 
-      if (!mergeFeature) {
-        mergeFeature = event.target
+      if (!mergeFeatureFlag) {
+        setMergeFeature(event.target)
+        mergeFeatureFlag = event.target
       }
       else {
-        mergeFeature.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-        event.target.setStyle({
-          color: "black",
-          fillColor: "red",
-          fillOpacity: 1,
-        });
-
-        let poly_arr_1 = []
-        for (let i = 0; i < mergeFeature.feature.geometry.coordinates.length; i++) {
-          poly_arr_1.push(mergeFeature.feature.geometry.coordinates[i][0])
-        }
-        let poly_arr_2 = []
-        for (let i = 0; i < event.target.feature.geometry.coordinates.length; i++) {
-          poly_arr_2.push(event.target.feature.geometry.coordinates[i][0])
-        }
-
-        // var poly1 = turf.polygon(poly_arr_1)
-        // var poly2 = turf.polygon(poly_arr_2)
-        var union = turf.union(mergeFeature.feature, event.target.feature);
-
-        store.currentMap.dataFromMap.features.forEach((feature, index) => {
-          console.log(store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin)
-          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin) {
-            console.log(store.currentMap.dataFromMap.features[index])
-            let newProperties = JSON.parse(JSON.stringify(store.currentMap.dataFromMap.features[index].properties));
-            union.properties = newProperties
-            store.currentMap.dataFromMap.features[index] = union
-            setMaplayout(newMap ? renderedMap : <div></div>)
-          }
-        });
-
-
-
-        mergeFeature = null
+        setMergeFeature_1(event.target)
       }
 
     }
     else { // Merge inactive
-      console.log(colorFill);
       event.target.setStyle({
         color: "#000000",
         fillColor: colorFill,
@@ -250,8 +213,6 @@ export default function Map() {
   function colorChange(event) {
     //setColor(event.target.value);
     colorFill = event.target.value
-    //console.log("Change is made");
-    //console.log(colorFill)
   };
 
   newMap.features.forEach((feature, index) => {
@@ -351,19 +312,84 @@ export default function Map() {
     }
   };
 
+  const [mergeFlag, setMergeFlag] = useState(true);
   function handleMerge(event) {
     if (MapLayOutFLAG !== 1) {
-      if (mergeFLAG) {
+      if (mergeFLAG > 0 && mergeFeature && mergeFeature_1) {
+
+        mergeFeature.setStyle({
+          color: "black",
+          fillColor: "red",
+          fillOpacity: 1,
+        });
+        mergeFeature_1.setStyle({
+          color: "black",
+          fillColor: "red",
+          fillOpacity: 1,
+        });
+
+        var union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
+
+        store.currentMap.dataFromMap.features.forEach((feature, index) => {
+          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin) {
+            union.properties = JSON.parse(JSON.stringify(store.currentMap.dataFromMap.features[index].properties));
+            store.currentMap.dataFromMap.features[index] = union
+            console.log("Index is: " + index)
+          }
+          else if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin){
+            (store.currentMap.dataFromMap.features).splice(index, 1)
+          }
+        });
+        
+        setMergeFeature(null)
+        setMergeFeature_1(null)
+
+        mergeFeatureFlag = null
+        mergeFLAG = 0
+        setMergeFlag(!mergeFlag)
+        
+        // handleUndo();
+        // handleRedo();
+        
+      }
+      else if(mergeFLAG){
+        setMergeFeature(null)
+        setMergeFeature_1(null)
         mergeFLAG = 0
       }
       else {
         mergeFLAG = 1
       }
-      //setMaplayout(newMap ? renderedMap : <div></div>)
     } else {
       // setMaplayout()
     }
   }
+
+  // man.
+  useEffect(() => {
+    console.log("Maplayout changed")
+    console.log(newMap)
+    // setMaplayout(<FeatureGroup>
+    //   {newMap && newMap.features.map((feature, index) => {
+    //     if (feature.geometry.type === 'Polygon') {
+    //       return <Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={feature.properties.admin} />;
+    //     } else if (feature.geometry.type === 'MultiPolygon') {
+    //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+    //         <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={feature.properties.admin + "-" + polygonIndex} />
+    //       ));
+    //       return polygons;
+    //     }
+    //     return null;
+    //   })}
+    //   <EditControl
+    //     position='topright'
+    //     onEdited={handleEditable}
+    //   />
+    // </FeatureGroup>)
+    setMaplayout(newMap ? renderedMap : <div></div>)
+    setMapLayOutFLAG(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mergeFlag]);
 
   const handleEditable = (e) => {
     
@@ -471,9 +497,8 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
-            onClick={() => handleMerge()}
           >
-            <Merge style={{ fontSize: "45px" }} titleAccess="Merge" />
+            <Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />
           </StyledIconButton>
 
           <StyledIconButton
@@ -573,7 +598,7 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
-        <MapContainer style={{ height: "80vh" }} zoom={3} center={center} doubleClickZoom={false}>
+        <MapContainer style={{ height: "80vh" }} zoom={2} center={center} doubleClickZoom={false}>
           <Recenter lat={center.lat} lng={center.lng} />
           <Screenshot />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

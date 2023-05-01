@@ -24,7 +24,7 @@ const Screenshot = () => {
     screenshotter.addTo(map)
 
     useEffect(() => {
-        if(store.currentMap){
+        if(store.currentMap && store.thumbnail){
             let format = 'image' // 'image' - return base64, 'canvas' - return canvas
             let overridedPluginOptions = {
             mimeType: 'image/jpeg'
@@ -40,6 +40,26 @@ const Screenshot = () => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store.thumbnail]);
+
+    useEffect(() => {
+        console.log("isFirstUpload useeffect")
+        console.log(store.isFirstUpload)
+        if(store.currentMap && store.isFirstUpload){
+            let format = 'image' // 'image' - return base64, 'canvas' - return canvas
+            let overridedPluginOptions = {
+            mimeType: 'image/jpeg'
+            }
+            
+            screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
+                console.log("In Screenshot.js, first upload?")
+                store.currentMap.image = image;
+                store.updateCurrentMap();
+                }).catch(e => {
+                console.error(e)
+                })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.isFirstUpload]);
 
     return null;
 }

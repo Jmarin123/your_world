@@ -155,7 +155,6 @@ export default function MapCard(props) {
                 </Box>
 
                 <Box id='map-card-line'>
-                    {/* <div id='map-card-line'></div> */}
                 </Box>
 
 
@@ -164,8 +163,7 @@ export default function MapCard(props) {
                 </Typography>
             </Box>
 
-            <img id="map-card-image" src={MapCardSample} alt="mapcardsample" />
-
+            <img id="map-card-image" src={image} alt="mapcardsample" />
 
             <StyledIconButton
                 edge="start"
