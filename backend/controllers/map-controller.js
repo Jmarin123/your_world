@@ -1,6 +1,9 @@
 const Map = require('../models/map-model')
 const User = require('../models/user-model');
 const MapInfo = require('../models/map-info-model');
+const shpwrite = require('shp-write');
+const path = require('path');
+const { convert } = require('geojson2shp')
 
 createMap = async (req, res) => {
     const body = req.body;
@@ -189,11 +192,33 @@ updateMap = async (req, res) => {
     }
 }
 
+downloadSHP = async (req, res) => {
+    if (!req.params.id) {
+        return res.status(404).json({
+            error,
+            message: 'Unable to downloadSHP',
+        })
+    }
+    const map = await Map.findById(req.params.id).populate('dataFromMap').lean();
+    return res.status(200).json({ map: map });
+    //const filePath = path.join(__dirname, 'test.zip');
+    // await convert(map.dataFromMap.dataFromMap, filePath, options)
+    // res.download(filePath);
+    // const shpBuffer = shpwrite.zip(map.dataFromMap.dataFromMap);
+
+    // let str = Buffer.from(shpBuffer).toString();
+    // console.log(str);
+    // const fileName = `${map.name}`;
+    // res.attachment(fileName + '.zip');
+    // res.send(shpBuffer);
+
+}
 module.exports = {
     createMap,
     deleteMap,
     getMapById,
     getAllMaps,
+    downloadSHP,
     updateMap,
     updateMapNameById,
 }

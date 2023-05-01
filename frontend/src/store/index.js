@@ -955,8 +955,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.exportMarkedMap = async function () {
-        //store.exportMap(store.mapMarkedForExport);
-        const response = await api.getMapById(store.mapMarkedForExport.map_id);
+        const response = await api.getMapById(store.mapMarkedForExport.map_id)
         if (response.data.success) {
             return response.data.map.dataFromMap;
         }

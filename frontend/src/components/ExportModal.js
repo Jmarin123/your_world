@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
 import { GlobalStoreContext } from '../store'
-//import * as shpwrite from 'shp-write';
 import { Box, Modal, Button, Typography, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const style = {
@@ -58,23 +57,34 @@ export default function ExportModal() {
     // }, [store.exportMapData]);
 
     async function handleConfirmExport(event) {
-        let fileData = await store.exportMarkedMap()
-
+        let fileData = JSON.stringify(await store.exportMarkedMap());
         if (format === "GeoJSON") {
-            fileData = JSON.stringify(fileData)
             const blob = new Blob([fileData], { type: 'application/json' });
             const downloadLink = document.createElement('a');
             downloadLink.href = URL.createObjectURL(blob);
             downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.geojson';
             downloadLink.click();
         }
-        else if (format === "SHP/DBF Zip") {
-            console.log(fileData);
-            // const shpBlob = shpwrite.zip(fileData);
-            // const downloadLink = document.createElement('a');
-            // downloadLink.href = URL.createObjectURL(shpBlob);
-            // downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.zip';
-            // downloadLink.click();
+        else if (format === "SHZ") {
+            const response = await fetch('http://ogre.adc4gis.com/convertJson', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'json': fileData
+                })
+            });
+            const blob = await response.blob();
+            const urlObject = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = urlObject;
+            link.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.shz';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(urlObject);
+
         }
         else if (format === "Image") {
             console.log("image")
@@ -82,6 +92,7 @@ export default function ExportModal() {
         else {
             console.log("export map else")
         }
+        store.loadIdNamePairs();
     }
 
     function handleCloseModal(event) {
@@ -117,9 +128,8 @@ export default function ExportModal() {
                                     label="Format"
                                     onChange={handleChange}
                                 >
-                                    <MenuItem value={'SHP/DBF Zip'}>SHP/DBF Zip</MenuItem>
+                                    <MenuItem value={'SHZ'}>SHZ</MenuItem>
                                     <MenuItem value={'GeoJSON'}>GeoJSON</MenuItem>
-                                    <MenuItem value={'Image'}>Image (PNG)</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
