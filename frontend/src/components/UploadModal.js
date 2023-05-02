@@ -1,3 +1,4 @@
+import * as turf from '@turf/turf';
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import { Box, Modal, Button, Typography, Grid } from '@mui/material'
@@ -68,19 +69,19 @@ export default function UploadModal() {
     const assignName = (dataForMap) => {
         for (let i = 0; i < dataForMap.features.length; i++) {
             if (typeof dataForMap.features[i].properties.NAME_4 !== 'undefined') {
-                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_4;
+                dataForMap.features[i].properties.admin = dataForMap.features[i].properties.NAME_4;
             }
             else if (typeof dataForMap.features[i].properties.NAME_3 !== 'undefined') {
-                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_3;
+                dataForMap.features[i].properties.admin = dataForMap.features[i].properties.NAME_3;
             }
             else if (typeof dataForMap.features[i].properties.NAME_2 !== 'undefined') {
-                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_2;
+                dataForMap.features[i].properties.admin = dataForMap.features[i].properties.NAME_2;
             }
             else if (typeof dataForMap.features[i].properties.NAME_1 !== 'undefined') {
-                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_1;
+                dataForMap.features[i].properties.admin = dataForMap.features[i].properties.NAME_1;
             }
             else if (typeof dataForMap.features[i].properties.NAME_0 !== 'undefined') {
-                dataForMap.features[i].properties.sovereignt = dataForMap.features[i].properties.NAME_0;
+                dataForMap.features[i].properties.admin = dataForMap.features[i].properties.NAME_0;
             }
             else {
                 dataForMap.features[i].properties.name = '';
@@ -98,7 +99,11 @@ export default function UploadModal() {
             let object = await shapefile.read(shpArray, dbfArray)
             assignName(object)
 
-            store.createNewMap(object)
+            let options = { tolerance: 0.015, highQuality: false };
+            // eslint-disable-next-line
+            let newMap = turf.simplify(object, options);
+
+            store.createNewMap(newMap)
         }
         else {
             const object = await parseJsonFile(file1)

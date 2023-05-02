@@ -52,7 +52,7 @@ export default function Map() {
   }, [store.currentMap]);
 
   useEffect(() => {
-    store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
+    store.subregion ? setOldName(store.subregion.properties.admin) : setOldName("")
     setNewName("")
   }, [store.subregion]);;
 
@@ -296,7 +296,7 @@ export default function Map() {
       click: clickFeature,
       dblclick: markSubregion,
     });
-    let popupContent = `${country.properties.sovereignt}`;
+    let popupContent = `${country.properties.admin}`;
     if (country.properties && country.properties.popupContent) {
       popupContent += country.properties.popupContent;
     }

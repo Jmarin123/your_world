@@ -25,7 +25,7 @@ export default function Mapview() {
         //     click: this.changeCountryColor,
         // });
 
-        let popupContent = `${country.properties.sovereignt}`;
+        let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
           popupContent += country.properties.popupContent;
         }

@@ -43,7 +43,7 @@ export default function RenameModal() {
     const [newName, setNewName] = useState("");
 
     useEffect(() => {
-        store.subregion ? setOldName(store.subregion.properties.sovereignt) : setOldName("")
+        store.subregion ? setOldName(store.subregion.properties.admin) : setOldName("")
         setNewName("")
       }, [store.subregion]);
 

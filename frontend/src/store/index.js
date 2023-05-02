@@ -916,9 +916,10 @@ function GlobalStoreContextProvider(props) {
 
 
     store.changeSubregionName = function (newName) {
+        console.log(store.currentMap.dataFromMap.features)
         for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
-            if (store.currentMap.dataFromMap.features[i].properties.sovereignt === store.subregion.properties.sovereignt) {
-                store.currentMap.dataFromMap.features[i].properties.sovereignt = newName
+            if (store.currentMap.dataFromMap.features[i].properties.admin === store.subregion.properties.admin) {
+                store.currentMap.dataFromMap.features[i].properties.admin = newName
                 // console.log("Found corresponding subregion name")
                 break
             }
