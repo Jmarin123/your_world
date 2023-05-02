@@ -792,7 +792,6 @@ export default function Map() {
 
       {modal}
       {compressModal}
-      <textarea id="textarea" cols="30" rows="10" placeholder="write here..."></textarea>
     </Box>
   );
 }
