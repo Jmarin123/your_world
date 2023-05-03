@@ -16,13 +16,14 @@ import Recenter from './Recenter'
 import Screenshot from './Screenshot'
 
 import "leaflet/dist/leaflet.css";
-import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
+import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon, Circle } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 
 let mergeFLAG = 0;
 let colorFill = "#4CBB17";
 let mergeFeatureFlag = null
+let splitArray = [];
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
@@ -36,6 +37,7 @@ export default function Map() {
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
   const [compressionStatus, setCompressionStatus] = useState('normal');
   const [compressValue, setCompressValue] = useState(-1)
+  const [splitFlag, setSplitFlag] = useState(-1);
 
   const [mergeFeature, setMergeFeature] = useState(null);
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
@@ -204,6 +206,7 @@ export default function Map() {
     store.compressMap();
   }
   function markCompression() {
+    setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
     if (!store.compressStatus) {
       setMaplayout(<div></div>)
       store.markCompression()
@@ -242,6 +245,7 @@ export default function Map() {
   }
 
   function handleUndo() {
+    setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
     store.undo();
     if (undoFlag === -1) {
       setUndoFlag(true)
@@ -251,6 +255,7 @@ export default function Map() {
   }
 
   function handleRedo() {
+    setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
     store.redo();
     if (undoFlag === -1) {
       setUndoFlag(true)
@@ -324,6 +329,7 @@ export default function Map() {
   useEffect(() => {
     console.log("Maplayout changed")
     if (undoFlag !== -1) {
+      splitArray.length = 0
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
@@ -358,8 +364,7 @@ export default function Map() {
   //THIS IS FOR MAP MODE SWITCHING AKA NAVIGATION
   useEffect(() => {
     if (MapLayOutFLAG === 1) {
-      //var options = {tolerance: compressValue, highQuality: false};
-      //var simplifiedMap = turf.simplify(newMap, options);
+      splitArray.length = 0
       setMaplayout(<FeatureGroup>
         {newMap && newMap.features.map((feature, index) => {
           if (feature.geometry.type === 'Polygon') {
@@ -387,6 +392,7 @@ export default function Map() {
         />
       </FeatureGroup>)
     } else {
+      splitArray.length = 0
       setMaplayout(newMap ? renderedMap : <div></div>)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -395,6 +401,7 @@ export default function Map() {
   //THIS IS FOR MAP COMPRESSION
   useEffect(() => {
     if (compressValue !== -1) {
+      splitArray.length = 0
       let options = { tolerance: compressValue, highQuality: false };
       // eslint-disable-next-line
       newMap = turf.simplify(newMap, options);
@@ -431,8 +438,87 @@ export default function Map() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compressValue]);
 
+  //THIS IS FOR POLYGON/SUBREGION SPLITTING
+  useEffect(() => {
+    if(splitFlag > -1){
+      setMaplayout(<FeatureGroup>
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            let circles = []
+            circles.push(<Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>)
+            for(let i = 0; i < feature.geometry.coordinates[0].length; i++){
+              circles.push(<Circle
+                key={Math.random()}
+                center={feature.geometry.coordinates[0][i]}
+                pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
+                radius={10000}
+                eventHandlers={{ click: eventHandlers }}
+                ifMultiPolygon={false}
+                circleCustomProp={index}
+                circleCustomCoordProp={i}>
+              </Circle>)
+            }
+            return circles;
+            //return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            let circles = []
+            feature.geometry.coordinates.map((polygonCoords, polygonIndex) => {
+              circles.push(<Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin}/>)
+              let multiArray = polygonCoords[0]
+              for(let i = 0; i < multiArray.length; i++){
+                circles.push(<Circle
+                  key={Math.random()}
+                  center={multiArray[i]}
+                  pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
+                  radius={10000}
+                  eventHandlers={{ click: eventHandlers }}
+                  ifMultiPolygon={true}
+                  circleCustomProp={index + "-" + polygonIndex}
+                  circleCustomCoordProp={i}>
+                </Circle>)
+              }
+              return polygonCoords;
+            });
+            return circles;
+          }
+          return null;
+        })}
+      </FeatureGroup>)
+    } else if(splitFlag === -2) {
+      splitArray.length = 0
+      setMaplayout(<FeatureGroup>
+        {newMap && newMap.features.map((feature, index) => {
+          if (feature.geometry.type === 'Polygon') {
+            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+            ));
+            return polygons;
+          }
+          return null;
+        })}
+        <EditControl
+          position='topright'
+          onEdited={handleEditable}
+          onDeleted={_onDelete}
+          onCreated={_onCreated}
+          draw={{
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: true
+          }}
+        />
+      </FeatureGroup>
+      
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [splitFlag]);
 
   const handleNavigate = (e) => {
+    setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
     if (MapLayOutFLAG !== 1) {
       setMapLayOutFLAG(1)
     } else {
@@ -501,6 +587,7 @@ export default function Map() {
     }
   }, [selectedFeature]);
 
+  //FUNCTION FOR REMOVING A SUBREGION
   function _onDelete(e) {
     const layers = e.layers;
     layers.eachLayer(layer => {
@@ -560,6 +647,7 @@ export default function Map() {
     });
   }
 
+  //FUNCTION FOR ADDING A NEW SUBREGION
   function _onCreated(e) {
     let newFeature = e.layer.toGeoJSON()
     let index = store.currentMap.dataFromMap.features.length
@@ -570,6 +658,7 @@ export default function Map() {
     store.addSubregion();
   }
 
+  //FUNCTION FOR EDITING VERTICES
   const handleEditable = (e) => {
 
     const layers = e.layers;
@@ -607,6 +696,167 @@ export default function Map() {
       }
     });
   };
+
+  //FUNCTIONS FOR SPLITTING REGIONS
+  const handleSplit = () => {
+    if(splitArray.length === 2 && splitArray[0][3] === splitArray[1][3] && splitArray[0][0] === splitArray[1][0]) { //check if array is full, then if both vertices are the same type(Poly or Multi) then check both vertices belong to the same Polygon
+      let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
+      let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
+
+      if(!ver1[3]) { //splitting a regular polygon
+        let i1 = ver1[1]
+        let i2 = ver2[1]
+        if(i1 > i2){
+          i2 = ver1[1]
+          i1 = ver2[1]
+        }
+        let featureFound = store.currentMap.dataFromMap.features[ver1[0]]
+        let vertex1 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver1[1]]
+        let vertex2 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver2[1]]
+
+        let line = turf.lineString([vertex1, vertex2]);
+        let intersects = turf.lineIntersect(line, featureFound);
+        let noOfIntersects = intersects.features.length
+
+        if(noOfIntersects <= 2) {
+          const slicedFeatureArray = featureFound.geometry.coordinates[0].slice(i1,(i2+1)); // [3, 4, 5]
+          store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0].splice(i1 + 1, i2 - i1 - 1)
+
+          let repeatCoord = slicedFeatureArray[0]
+          slicedFeatureArray.push(repeatCoord)
+          console.log(slicedFeatureArray)
+          if(slicedFeatureArray.length > 3){
+            let slicedFeature = turf.polygon([slicedFeatureArray]);
+            let index = store.currentMap.dataFromMap.features.length
+            let name = "NewRegion-" + index
+            slicedFeature.properties.admin = name
+            slicedFeature.properties.sovereignt = name
+            store.currentMap.dataFromMap.features.push(slicedFeature)
+            splitArray.length = 0
+            store.addSubregion();
+            setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
+            if (MapLayOutFLAG !== 1) {
+              setMapLayOutFLAG(1)
+            } else {
+              setMapLayOutFLAG(0)
+            }
+          }
+        } else {
+          splitArray.length = 0
+          setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
+          setSplitFlag(Math.random())
+        }
+      } else { //splitting a poly from a multipolygon, //[8-3, 2, {x,y}, T/F]
+        console.log("MULTI POLY ENTERED HERE")
+        let i1 = ver1[1]
+        let parts1 = ver1[0].split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+        let indexPoly1 = parseInt(parts1[0]);
+        let indexCoordPoly1 = parseInt(parts1[1]);
+        let i2 = ver2[1]
+        // let parts2 = ver2[0].split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+        // let indexPoly2 = parseInt(parts2[0]);
+        // let indexCoordPoly2 = parseInt(parts2[1]);
+        if(i1 > i2){
+          i2 = ver1[1]
+          i1 = ver2[1]
+        }
+        let featureFound = store.currentMap.dataFromMap.features[indexPoly1]
+
+        let vertex1 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver1[1]]
+        let vertex2 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver2[1]]
+
+        let line = turf.lineString([vertex1, vertex2]);
+        let intersects = turf.lineIntersect(line, featureFound);
+        let noOfIntersects = intersects.features.length
+
+        if(noOfIntersects <= 2) {
+        
+        const slicedFeatureArray = featureFound.geometry.coordinates[indexCoordPoly1][0].slice(i1,(i2+1)); // [3, 4, 5]
+        store.currentMap.dataFromMap.features[indexPoly1].geometry.coordinates[indexCoordPoly1][0].splice(i1 + 1, i2 - i1 - 1)
+        console.log(slicedFeatureArray)
+        let repeatCoord = slicedFeatureArray[0]
+        console.log(repeatCoord)
+        slicedFeatureArray.push(repeatCoord)
+        console.log(slicedFeatureArray)
+        
+        if(slicedFeatureArray.length > 3){
+          let slicedFeature = turf.polygon([slicedFeatureArray]);
+          let index = store.currentMap.dataFromMap.features.length
+          let name = "NewRegion-" + index
+          slicedFeature.properties.admin = name
+          slicedFeature.properties.sovereignt = name
+          store.currentMap.dataFromMap.features.push(slicedFeature)
+          splitArray.length = 0
+          store.addSubregion();
+          setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
+          if (MapLayOutFLAG !== 1) {
+            setMapLayOutFLAG(1)
+          } else {
+            setMapLayOutFLAG(0)
+          }
+        }
+        } else {
+          splitArray.length = 0
+          setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
+          setSplitFlag(Math.random())
+        }
+      }
+    } else {
+      splitArray.length = 0
+      setSplitButton(<GridView style={{ fontSize: "45px"}} titleAccess="Split" onClick={handleSplit} />)
+      setSplitFlag(Math.random())
+    }
+  }
+
+  const eventHandlers = (e) => {
+    if(splitArray.length < 2){ //we select the vertices to be merged
+      let removed = false
+      let featureIndex = e.target.options.circleCustomProp
+      let coordIndex = e.target.options.circleCustomCoordProp
+      let multiFlag = e.target.options.ifMultiPolygon
+      if(splitArray.length === 1) {
+        let ver1 = splitArray[0] //[14, 2, {x,y}]
+          if(ver1[0] === featureIndex && ver1[1] === coordIndex){
+          splitArray.splice(0,1)
+          e.target.setStyle({ color: 'black', fillColor: 'black' });
+          removed = true
+        } 
+      }
+      if(!removed) {
+        let coord = e.target.getLatLng()
+        let vertex = [featureIndex, coordIndex, coord, multiFlag] //0-1-2-3
+        splitArray.push(vertex)
+        e.target.setStyle({ color: 'red', fillColor: 'red' });
+      }
+    } else if (splitArray.length === 2){
+      //get key and index to check if the same circle was clicked so we remove it from the array
+      let ver1 = splitArray[0] //[14, 2, {x,y}]
+      let ver2 = splitArray[1] //[14, 4, {x,y}]
+      let featureIndex = e.target.options.circleCustomProp
+      let coordIndex = e.target.options.circleCustomCoordProp
+      
+      if(ver1[0] === featureIndex && ver1[1] === coordIndex){ //REMOVE THE 1ST SELECTED RED VERTEX
+        splitArray.splice(0,1)
+        e.target.setStyle({ color: 'black', fillColor: 'black' });        
+      } 
+      if(splitArray.length === 2) { //REMOVE THE 2ND SELECTED RED VERTEX
+        if (ver2[0] === featureIndex && ver2[1] === coordIndex){
+          splitArray.splice(1,1)
+          e.target.setStyle({ color: 'black', fillColor: 'black' });  
+        } 
+      }
+    }
+
+    //IF ARRAY IS FULL THAN WE CHANGE THE SPLIT BUTTON COLOR TO YELLOW TO INDICATE TO THE USER TO CLICK AGAIN TO SPLIT
+    if(splitArray.length === 2) {
+      setSplitButton(<GridView style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Split" onClick={handleSplit} />)
+    } else {
+      setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+    }
+  };
+
+  const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+
 
 
   return (
@@ -668,7 +918,8 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <GridView style={{ fontSize: "45px" }} titleAccess="Split" />
+            {splitButton}
+            {/* <GridView style={{ fontSize: "45px" }} titleAccess="Split" /> */}
           </StyledIconButton>
 
           <StyledIconButton
