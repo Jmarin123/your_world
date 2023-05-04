@@ -9,7 +9,6 @@ export default class EditVertex_Transaction extends jsTPS_Transaction {
         this.oldFeature = initOldFeature; //from store
     }
 
-    //NEED: store.currentMap, key(countryName), layer(newCoordinates), feature(fromStore/oldCoordinates)
     doTransaction() {
         this.store.editVertex(this.key, this.newFeature);
     }

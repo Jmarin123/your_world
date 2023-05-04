@@ -8,7 +8,6 @@ export default class SplitRegion_Transaction extends jsTPS_Transaction {
         this.oldFeature = initOldFeature; //from store
     }
 
-    //NEED: store.currentMap, key(countryName), layer(newCoordinates), feature(fromStore/oldCoordinates)
     doTransaction() {
         const oldFeatureCopy = JSON.parse(JSON.stringify(this.oldFeature));
         this.store.splitRegion(this.splitArray, oldFeatureCopy);

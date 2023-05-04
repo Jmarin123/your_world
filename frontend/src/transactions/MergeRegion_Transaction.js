@@ -10,14 +10,11 @@ export default class MergeRegion_Transaction extends jsTPS_Transaction {
         this.feature2 = initFeature2;
     }
 
-    //NEED: store.currentMap, key(countryName), layer(newCoordinates), feature(fromStore/oldCoordinates)
     doTransaction() {
-        //const oldFeatureCopy = JSON.parse(JSON.stringify(this.oldFeature));
         this.store.mergeRegion(this.keys, this.mergedFeature, this.feature1, this.feature2);
     }
     
     undoTransaction() {
-        //const oldFeatureCopy = JSON.parse(JSON.stringify(this.oldFeature));
         this.store.unmergeRegion(this.keys, this.feature1, this.feature2);
     }
 }

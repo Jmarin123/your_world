@@ -246,7 +246,15 @@ export default function Map() {
 
   function handleUndo() {
     store.undo();
-    if (undoFlag === -1) {
+    if(store.addedRegion) {
+      store.revertAddedRegion();
+      if(MapLayOutFLAG === 0){
+        setMapLayOutFLAG(1)
+      } else {
+        setMapLayOutFLAG(0)
+      }
+    }
+    else if (undoFlag === -1) {
       setUndoFlag(true)
     } else {
       setUndoFlag(!undoFlag)
@@ -662,8 +670,9 @@ export default function Map() {
     let name = "NewRegion-" + index
     newFeature.properties.admin = name
     newFeature.properties.sovereignt = name
-    store.currentMap.dataFromMap.features.push(newFeature)
-    store.addSubregion();
+
+    let copiedRegion = JSON.parse(JSON.stringify(newFeature));
+    store.addCurrentRegion(copiedRegion);
   }
 
   //FUNCTION FOR EDITING VERTICES

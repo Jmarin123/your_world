@@ -11,6 +11,7 @@ import jsTPS from '../common/jsTPS'
 import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 import SplitRegion_Transaction from '../transactions/SplitRegion_Transaction'
 import MergeRegion_Transaction from '../transactions/MergeRegion_Transaction'
+import AddRegion_Transaction from '../transactions/AddRegion_Transaction'
 
 import * as turf from '@turf/turf';
 
@@ -43,7 +44,9 @@ export const GlobalStoreActionType = {
     UPDATE_THUMBNAIL: "UPDATE_THUMBNAIL",
     MAP_EXPORT: "MAP_EXPORT",
     MARK_MAP_FOR_COMPRESSION: "MARK_MAP_FOR_COMPRESSION",
-    MAP_COMPRESS: "MAP_COMPRESS"
+    MAP_COMPRESS: "MAP_COMPRESS",
+    ADDED_REGION: "ADDED_REGION",
+    REVERTED_REGION: "REVERTED_REGION"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -78,7 +81,8 @@ function GlobalStoreContextProvider(props) {
         thumbnail: false,
         exportMapData: null,
         isFirstUpload: false,
-        compressStatus: false
+        compressStatus: false,
+        addedRegion: false
     });
     // const history = useHistory();
 
@@ -424,6 +428,46 @@ function GlobalStoreContextProvider(props) {
                     exportMapData: null,
                     isFirstUpload: false,
 
+                });
+            }
+            case GlobalStoreActionType.ADDED_REGION: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    addedRegion: true
+                });
+            }
+            case GlobalStoreActionType.REVERTED_REGION: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    addedRegion: false
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -1174,7 +1218,7 @@ function GlobalStoreContextProvider(props) {
     }
     //----------------------------------------------------------------------------------------------------->DONE\
 
-    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF EDITING VERTEX
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF MERGING 2 SUBREGIONS
     store.mergeCurrentRegions = function (keys, mergedFeature, feature1, feature2) {
         this.addMergeRegionTransaction(keys, mergedFeature, feature1, feature2);
     }
@@ -1205,7 +1249,6 @@ function GlobalStoreContextProvider(props) {
         });
     }
     store.unmergeRegion = function(keys, feature1, feature2) {
-        
         let index1 = keys[0]
         let index2 = keys[1]
         store.currentMap.dataFromMap.features.splice(index1, 1)
@@ -1213,16 +1256,41 @@ function GlobalStoreContextProvider(props) {
         let deepCopiedFeature2 = JSON.parse(JSON.stringify(feature2));
         store.currentMap.dataFromMap.features.splice(index1, 0, deepCopiedFeature1)
         store.currentMap.dataFromMap.features.splice(index2, 0, deepCopiedFeature2)
-        
-        // store.currentMap.dataFromMap.features.forEach((feature, index) => {
-        //   if (feature.properties.admin === feature1.properties.admin) {
-        //     store.currentMap.dataFromMap.features.splice(index, 1)
-        //     mergedFeature.properties = JSON.parse(JSON.stringify(feature.properties));
-        //     let deepCopiedMerge = JSON.parse(JSON.stringify(mergedFeature));
-        //     store.currentMap.dataFromMap.features.splice(index, 0, deepCopiedMerge)
-        //   }
-        // });
 
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    //----------------------------------------------------------------------------------------------------->DONE\
+
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF MERGING 2 SUBREGIONS
+    store.addCurrentRegion = function (newRegion) {
+        this.addAddRegionTransaction(newRegion);
+    }
+    store.addAddRegionTransaction = (newRegion) => {
+        let transaction = new AddRegion_Transaction(store, newRegion);
+        tps.addTransaction(transaction);
+    }
+    store.addSubregion = function(newRegion) {
+
+        let copiedRegion = JSON.parse(JSON.stringify(newRegion));
+        store.currentMap.dataFromMap.features.push(copiedRegion);
+        //in the end we re-render by using storeReducer
+        
+        storeReducer({
+            type: GlobalStoreActionType.ADDED_REGION
+        });
+    }
+    store.revertAddedRegion = function () {
+        storeReducer({
+            type: GlobalStoreActionType.REVERTED_REGION
+        });
+    }
+    store.removeSubregion = function() {
+        let lastIndex = store.currentMap.dataFromMap.features.length-1;
+        store.currentMap.dataFromMap.features.splice(lastIndex, 1);
         //in the end we re-render by using storeReducer
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
@@ -1233,13 +1301,6 @@ function GlobalStoreContextProvider(props) {
     //----------------------------------------------------------------------------------------------------->DONE\
 
     store.deleteSubregion = function () {
-        storeReducer({
-            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
-            payload: { currentMap: store.currentMap }
-        });
-    }
-
-    store.addSubregion = function () {
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
             payload: { currentMap: store.currentMap }
