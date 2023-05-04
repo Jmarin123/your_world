@@ -531,21 +531,29 @@ export default function Map() {
       if (mergeFLAG > 0 && mergeFeature && mergeFeature_1) {
         setMergedFlag(true)
 
-        let union = turf.union(mergeFeature.feature, mergeFeature_1.feature);
 
-        store.currentMap.dataFromMap.features.forEach((feature, index) => {
-          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature.feature.properties.admin) {
-            union.properties = JSON.parse(JSON.stringify(store.currentMap.dataFromMap.features[index].properties));
-            store.currentMap.dataFromMap.features[index] = union
-            console.log("Index is: " + index)
-          }
-        });
+        const bufferDistance = 0.001; // adjust this value as needed
+        const bufferedPolygon1 = turf.buffer(mergeFeature.feature, bufferDistance);
+        const bufferedPolygon2 = turf.buffer(mergeFeature_1.feature, bufferDistance);
 
-        store.currentMap.dataFromMap.features.forEach((feature, index) => {
-          if (store.currentMap.dataFromMap.features[index].properties.admin === mergeFeature_1.feature.properties.admin) {
-            (store.currentMap.dataFromMap.features).splice(index, 1)
+        let union = turf.union(bufferedPolygon1, bufferedPolygon2);
+        let index1;
+        let index2;
+        for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++){
+          let currentFeature = store.currentMap.dataFromMap.features[i]
+          if(currentFeature.properties.admin === mergeFeature.feature.properties.admin){
+            index1 = i;
           }
-        });
+          if(currentFeature.properties.admin === mergeFeature_1.feature.properties.admin){
+            index2 = i;
+          }
+        }
+
+        let keys = [index1, index2]
+        let copiedUnion = JSON.parse(JSON.stringify(union));
+        let copiedFeature1 = JSON.parse(JSON.stringify(mergeFeature.feature));
+        let copiedFeature2 = JSON.parse(JSON.stringify(mergeFeature_1.feature));
+        store.mergeCurrentRegions(keys, copiedUnion, copiedFeature1, copiedFeature2)
 
         setMergeFeature(null)
         setMergeFeature_1(null)

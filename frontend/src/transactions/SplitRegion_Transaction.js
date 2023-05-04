@@ -10,13 +10,11 @@ export default class SplitRegion_Transaction extends jsTPS_Transaction {
 
     //NEED: store.currentMap, key(countryName), layer(newCoordinates), feature(fromStore/oldCoordinates)
     doTransaction() {
-        console.log("REDO ENTERED")
         const oldFeatureCopy = JSON.parse(JSON.stringify(this.oldFeature));
         this.store.splitRegion(this.splitArray, oldFeatureCopy);
     }
     
     undoTransaction() {
-        console.log("UNDO ENTERED")
         const oldFeatureCopy = JSON.parse(JSON.stringify(this.oldFeature));
         this.store.mergeSplitRegion(this.splitArray, oldFeatureCopy);
     }

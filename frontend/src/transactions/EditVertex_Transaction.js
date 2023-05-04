@@ -11,12 +11,10 @@ export default class EditVertex_Transaction extends jsTPS_Transaction {
 
     //NEED: store.currentMap, key(countryName), layer(newCoordinates), feature(fromStore/oldCoordinates)
     doTransaction() {
-        console.log("REDO ENTERED")
         this.store.editVertex(this.key, this.newFeature);
     }
     
     undoTransaction() {
-        console.log("UNDO ENTERED")
         this.store.editVertex(this.key, this.oldFeature);
     }
 }

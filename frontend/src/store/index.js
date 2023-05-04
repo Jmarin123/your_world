@@ -10,6 +10,7 @@ import jsTPS from '../common/jsTPS'
 
 import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 import SplitRegion_Transaction from '../transactions/SplitRegion_Transaction'
+import MergeRegion_Transaction from '../transactions/MergeRegion_Transaction'
 
 import * as turf from '@turf/turf';
 
@@ -1171,6 +1172,64 @@ function GlobalStoreContextProvider(props) {
             payload: { currentMap: store.currentMap }
         });
     }
+    //----------------------------------------------------------------------------------------------------->DONE\
+
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF EDITING VERTEX
+    store.mergeCurrentRegions = function (keys, mergedFeature, feature1, feature2) {
+        this.addMergeRegionTransaction(keys, mergedFeature, feature1, feature2);
+    }
+    store.addMergeRegionTransaction = (keys, mergedFeature, feature1, feature2) => {
+        let transaction = new MergeRegion_Transaction(store, keys, mergedFeature, feature1, feature2);
+        tps.addTransaction(transaction);
+    }
+    store.mergeRegion = function(keys, mergedFeature, feature1, feature2) {
+
+        let index2 = keys[1]
+        store.currentMap.dataFromMap.features.splice(index2, 1)
+
+        store.currentMap.dataFromMap.features.forEach((feature, index) => {
+          if (feature.properties.admin === feature1.properties.admin) {
+            store.currentMap.dataFromMap.features.splice(index, 1)
+            mergedFeature.properties = JSON.parse(JSON.stringify(feature.properties));
+            let deepCopiedMerge = JSON.parse(JSON.stringify(mergedFeature));
+            store.currentMap.dataFromMap.features.splice(index, 0, deepCopiedMerge)
+            keys[0] = index
+          }
+        });
+
+    
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    store.unmergeRegion = function(keys, feature1, feature2) {
+        
+        let index1 = keys[0]
+        let index2 = keys[1]
+        store.currentMap.dataFromMap.features.splice(index1, 1)
+        let deepCopiedFeature1 = JSON.parse(JSON.stringify(feature1));
+        let deepCopiedFeature2 = JSON.parse(JSON.stringify(feature2));
+        store.currentMap.dataFromMap.features.splice(index1, 0, deepCopiedFeature1)
+        store.currentMap.dataFromMap.features.splice(index2, 0, deepCopiedFeature2)
+        
+        // store.currentMap.dataFromMap.features.forEach((feature, index) => {
+        //   if (feature.properties.admin === feature1.properties.admin) {
+        //     store.currentMap.dataFromMap.features.splice(index, 1)
+        //     mergedFeature.properties = JSON.parse(JSON.stringify(feature.properties));
+        //     let deepCopiedMerge = JSON.parse(JSON.stringify(mergedFeature));
+        //     store.currentMap.dataFromMap.features.splice(index, 0, deepCopiedMerge)
+        //   }
+        // });
+
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+
     //----------------------------------------------------------------------------------------------------->DONE\
 
     store.deleteSubregion = function () {
