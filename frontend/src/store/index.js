@@ -9,6 +9,9 @@ import api from './store-request-api'
 import jsTPS from '../common/jsTPS'
 
 import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
+import SplitRegion_Transaction from '../transactions/SplitRegion_Transaction'
+
+import * as turf from '@turf/turf';
 
 export const GlobalStoreContext = createContext({});
 
@@ -913,8 +916,6 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-
-
     store.changeSubregionName = function (newName) {
         console.log(store.currentMap.dataFromMap.features)
         for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
@@ -1016,18 +1017,16 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF EDITING VERTEX
     //this function will be called from Map.js
     store.editCurrentMapVertex = function (key, newFeature, oldFeature) {
         this.addEditVertexTransaction(key, newFeature, oldFeature);
     }
-
-
     //this function will be called to add the edit into the transaction stack
     store.addEditVertexTransaction = (key, newFeature, oldFeature) => {
         let transaction = new EditVertex_Transaction(store, key, newFeature, oldFeature);
         tps.addTransaction(transaction);
     }
-
     //this function will be called by the editvertex_transaction file to finally preform the functionality
     store.editVertex = function (key, editedFeature) {
         console.log("The edited feature is:")
@@ -1079,6 +1078,100 @@ function GlobalStoreContextProvider(props) {
             payload: { currentMap: store.currentMap }
         });
     }
+    //------------------------------------------------------------------------------------------------------->DONE\
+
+    //-------------------------------------------------------> FUNCTION FOR UNDO/REDO OF SPLITTING
+    store.splitCurrentRegion = function (splitArray, oldFeature) {
+        this.addSplitRegionTransaction(splitArray, oldFeature);
+    }
+    store.addSplitRegionTransaction = (splitArray, oldFeature) => {
+        let transaction = new SplitRegion_Transaction(store, splitArray, oldFeature);
+        tps.addTransaction(transaction);
+    }
+    store.splitRegion = function(splitArray, oldFeature) {
+        let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
+        let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
+
+        if(!ver1[3]) { //if its a Polygon
+            let index1 = ver1[1]
+            let index2 = ver2[1]
+            if(index1 > index2){
+            index2 = ver1[1]
+            index1 = ver2[1]
+            }
+
+            //reconstruct the coordinates array
+            const slicedFeatureArray = oldFeature.geometry.coordinates[0].slice(index1,(index2+1)); // [3, 4, 5]
+            let repeatCoord = slicedFeatureArray[0]
+            slicedFeatureArray.push(repeatCoord)
+
+            //create the new split polygon
+            let slicedFeature = turf.polygon([slicedFeatureArray]);
+            let index = store.currentMap.dataFromMap.features.length
+            let name = "NewRegion-" + index
+            slicedFeature.properties.admin = name
+            slicedFeature.properties.sovereignt = name
+
+            //splice the coordinates of the polygon and then push the sliced poly into the store
+            store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0].splice(index1 + 1, index2 - index1 - 1)
+            store.currentMap.dataFromMap.features.push(slicedFeature)
+        } else { //if its a MultiPolygon
+            let i1 = ver1[1]
+            let parts1 = ver1[0].split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+            let indexPoly1 = parseInt(parts1[0]);
+            let indexCoordPoly1 = parseInt(parts1[1]);
+            let i2 = ver2[1]
+
+            if(i1 > i2){
+                i2 = ver1[1]
+                i1 = ver2[1]
+            }
+
+            const slicedFeatureArray = oldFeature.geometry.coordinates[indexCoordPoly1][0].slice(i1,(i2+1)); // [3, 4, 5]
+            let repeatCoord = slicedFeatureArray[0]
+            slicedFeatureArray.push(repeatCoord)
+
+            let slicedFeature = turf.polygon([slicedFeatureArray]);
+            let index = store.currentMap.dataFromMap.features.length
+            let name = "NewRegion-" + index
+            slicedFeature.properties.admin = name
+            slicedFeature.properties.sovereignt = name
+            store.currentMap.dataFromMap.features[indexPoly1].geometry.coordinates[indexCoordPoly1][0].splice(i1 + 1, i2 - i1 - 1)
+            store.currentMap.dataFromMap.features.push(slicedFeature)
+        }
+    
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    store.mergeSplitRegion = function(splitArray, oldFeature) {
+        for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
+            let currentFeature = store.currentMap.dataFromMap.features[i]
+            
+            if (oldFeature.properties.admin === currentFeature.properties.admin){
+                if(oldFeature.geometry.type === "Polygon") {
+                    let lastIndex = store.currentMap.dataFromMap.features.length-1
+                    store.currentMap.dataFromMap.features[i] = oldFeature;
+                    (store.currentMap.dataFromMap.features).splice(lastIndex, 1)
+                    break;
+                } else {
+                    let lastIndex = store.currentMap.dataFromMap.features.length-1
+                    store.currentMap.dataFromMap.features[i] = oldFeature;
+                    (store.currentMap.dataFromMap.features).splice(lastIndex, 1)
+                    break;
+                }   
+            }
+        }
+
+        //in the end we re-render by using storeReducer
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    //----------------------------------------------------------------------------------------------------->DONE\
 
     store.deleteSubregion = function () {
         storeReducer({
