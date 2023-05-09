@@ -5,6 +5,38 @@ const shpwrite = require('shp-write');
 const path = require('path');
 const { convert } = require('geojson2shp')
 
+// createMap = async (req, res) => {
+//     const body = req.body;
+//     console.log(body);
+//     console.log("create a new map");
+
+//     if (!body) {
+//         return res.status(400).json({
+//             success: false,
+//             error: 'You must provide a Map',
+//         })
+//     }
+//     const { dataFromMap, ...rest } = body;
+//     const mapBody = new Map(rest);
+//     const mapInfo = new MapInfo({ dataFromMap: dataFromMap });
+//     mapBody.dataFromMap = mapInfo;
+//     if (!mapBody) {
+//         return res.status(400).json({ success: false, error: err })
+//     }
+//     try {
+//         await mapInfo.save(); // Save the MapInfo instance first
+//         await mapBody.save(); // Save the Map instance
+//         const foundUser = await User.findOne({ _id: req.userId })
+//         foundUser.maps.push(mapBody._id);
+//         await foundUser.save();
+//         const mapToReturn = await Map.findById(mapBody._id).populate('dataFromMap').lean();
+//         mapToReturn.dataFromMap = mapToReturn.dataFromMap.dataFromMap;
+//         res.status(201).json({ map: mapToReturn });
+//     } catch (err) {
+//         console.log(err);
+//         return res.status(400).json({ success: false, error: err })
+//     }
+// }
 createMap = async (req, res) => {
     const body = req.body;
 
@@ -12,29 +44,46 @@ createMap = async (req, res) => {
         return res.status(400).json({
             success: false,
             error: 'You must provide a Map',
-        })
+        });
     }
-    const { dataFromMap, ...rest } = body;
+
+    const { markers, dataFromMap, ...rest } = body;
     const mapBody = new Map(rest);
     const mapInfo = new MapInfo({ dataFromMap: dataFromMap });
     mapBody.dataFromMap = mapInfo;
+
     if (!mapBody) {
-        return res.status(400).json({ success: false, error: err })
+        return res.status(400).json({ success: false, error: err });
     }
+
     try {
         await mapInfo.save(); // Save the MapInfo instance first
+
+        // Save the markers as subdocuments within the Map
+        if (markers && Array.isArray(markers)) {
+            mapBody.markers = markers.map((marker) => {
+                return { lat: marker.lat, lng: marker.lng, value: marker.value };
+            });
+        }
+
         await mapBody.save(); // Save the Map instance
-        const foundUser = await User.findOne({ _id: req.userId })
+
+        const foundUser = await User.findOne({ _id: req.userId });
         foundUser.maps.push(mapBody._id);
         await foundUser.save();
-        const mapToReturn = await Map.findById(mapBody._id).populate('dataFromMap').lean();
+
+        const mapToReturn = await Map.findById(mapBody._id)
+            .populate('dataFromMap')
+            .lean();
+
         mapToReturn.dataFromMap = mapToReturn.dataFromMap.dataFromMap;
         res.status(201).json({ map: mapToReturn });
     } catch (err) {
         console.log(err);
-        return res.status(400).json({ success: false, error: err })
+        return res.status(400).json({ success: false, error: err });
     }
-}
+};
+
 
 
 deleteMap = async (req, res) => {
@@ -104,7 +153,8 @@ getAllMaps = async (req, res) => {
                 likes: map.likes,
                 dislikes: map.dislikes,
                 image: map.image,
-                publish: map.publish
+                publish: map.publish,
+                markers: map.markers
             };
         });
 
@@ -174,6 +224,7 @@ updateMap = async (req, res) => {
         map.dislikes = body.map.dislikes || map.dislikes;
         map.publish = body.map.publish || map.publish;
         map.image = body.map.image || map.image;
+        map.markers = body.map.markers || map.markers;
         if (body.map.dataFromMap) {
             await MapInfo.findByIdAndUpdate(map.dataFromMap._id, { dataFromMap: body.map.dataFromMap })
         }

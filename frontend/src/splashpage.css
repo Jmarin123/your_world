@@ -765,3 +765,20 @@ input {
 .uploadInput {
     justify-content: right;
 }
+
+.custom-tooltip {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.transparent-input {
+    background-color: transparent;
+    border: none;
+}
+
+.circle-icon {
+    background-color: #ff0000;
+    /* Customize the color of the circle */
+    border-radius: 50%;
+}

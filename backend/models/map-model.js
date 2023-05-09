@@ -12,7 +12,15 @@ const mapSchema = new Schema(
         likes: { type: [String], required: true },
         dislikes: { type: [String], required: true },
         publish: { type: { isPublished: Boolean, pushlishedDate: Date }, required: true },
-        image: { type: String, required: true }
+        image: { type: String, required: true },
+
+        markers: [
+            {
+                lat: { type: Number, required: true },
+                lng: { type: Number, required: true },
+                value: { type: String, required: true },
+            },
+        ],
     },
     { timestamps: true },
 )
