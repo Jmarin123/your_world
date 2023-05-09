@@ -46,7 +46,8 @@ export const GlobalStoreActionType = {
     MARK_MAP_FOR_COMPRESSION: "MARK_MAP_FOR_COMPRESSION",
     MAP_COMPRESS: "MAP_COMPRESS",
     ADDED_REGION: "ADDED_REGION",
-    REVERTED_REGION: "REVERTED_REGION"
+    REVERTED_REGION: "REVERTED_REGION",
+    SAVE_MARKER: "SAVE_MARKER",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -588,6 +589,26 @@ function GlobalStoreContextProvider(props) {
                     compressStatus: true
                 });
             }
+
+            case GlobalStoreActionType.SAVE_MARKER: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: payload.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                });
+            }
             default:
                 return store;
         }
@@ -728,10 +749,12 @@ function GlobalStoreContextProvider(props) {
             likes: [],
             dislikes: [],
             publish: { isPublished: false, publishedDate: new Date() },
-            image: "temp"
+            image: "temp",
+            markers: [], // Add an empty array for the markers
         };
+        console.log(payload);
         const response = await api.createMap(payload);
-        // console.log("createNewList response: " + response);
+        console.log("createNewList response: " + response.data);
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newMap = response.data.map;
@@ -744,8 +767,6 @@ function GlobalStoreContextProvider(props) {
             }
             );
             navigate("/map/" + newMap._id);
-
-
 
         }
         else {
@@ -988,6 +1009,40 @@ function GlobalStoreContextProvider(props) {
         asyncChangeMapName(id, newMap);
     }
 
+    store.saveMarkers = function (newMarkers) {
+        // Check for duplicate markers and add only the new markers
+        const uniqueMarkers = newMarkers.filter((newMarker) => {
+            const isDuplicate = store.currentMap.markers.some(
+                (existingMarker) =>
+                    existingMarker.lat === newMarker.lat &&
+                    existingMarker.lng === newMarker.lng
+            );
+            return !isDuplicate;
+        });
+
+        // Concatenate the new markers with the existing markers array
+        store.currentMap.markers = store.currentMap.markers.concat(uniqueMarkers);
+
+
+        let id = store.currentMap._id;
+        let newMap = store.currentMap;
+
+        async function asyncSaveMapMarkers(id, newMap) {
+            let response = await api.updateMapById(id, newMap);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SAVE_MARKER,
+                    payload: {
+                        currentMap: store.currentMap,
+                    }
+                });
+            }
+        }
+
+        asyncSaveMapMarkers(id, newMap);
+    }
+
+
     store.deleteMap = async function (id) {
         await api.deleteMapById(id);
         console.log("store.deleteList");
@@ -1013,7 +1068,8 @@ function GlobalStoreContextProvider(props) {
                 likes: [],
                 dislikes: [],
                 publish: { isPublished: false, publishedDate: new Date() },
-                image: map.image
+                image: map.image,
+                markers: map.markers,
             };
             const re = await api.createMap(payload);
             if (re.status === 201) {
@@ -1133,20 +1189,20 @@ function GlobalStoreContextProvider(props) {
         let transaction = new SplitRegion_Transaction(store, splitArray, oldFeature);
         tps.addTransaction(transaction);
     }
-    store.splitRegion = function(splitArray, oldFeature) {
+    store.splitRegion = function (splitArray, oldFeature) {
         let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
         let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
 
-        if(!ver1[3]) { //if its a Polygon
+        if (!ver1[3]) { //if its a Polygon
             let index1 = ver1[1]
             let index2 = ver2[1]
-            if(index1 > index2){
-            index2 = ver1[1]
-            index1 = ver2[1]
+            if (index1 > index2) {
+                index2 = ver1[1]
+                index1 = ver2[1]
             }
 
             //reconstruct the coordinates array
-            const slicedFeatureArray = oldFeature.geometry.coordinates[0].slice(index1,(index2+1)); // [3, 4, 5]
+            const slicedFeatureArray = oldFeature.geometry.coordinates[0].slice(index1, (index2 + 1)); // [3, 4, 5]
             let repeatCoord = slicedFeatureArray[0]
             slicedFeatureArray.push(repeatCoord)
 
@@ -1167,12 +1223,12 @@ function GlobalStoreContextProvider(props) {
             let indexCoordPoly1 = parseInt(parts1[1]);
             let i2 = ver2[1]
 
-            if(i1 > i2){
+            if (i1 > i2) {
                 i2 = ver1[1]
                 i1 = ver2[1]
             }
 
-            const slicedFeatureArray = oldFeature.geometry.coordinates[indexCoordPoly1][0].slice(i1,(i2+1)); // [3, 4, 5]
+            const slicedFeatureArray = oldFeature.geometry.coordinates[indexCoordPoly1][0].slice(i1, (i2 + 1)); // [3, 4, 5]
             let repeatCoord = slicedFeatureArray[0]
             slicedFeatureArray.push(repeatCoord)
 
@@ -1184,29 +1240,29 @@ function GlobalStoreContextProvider(props) {
             store.currentMap.dataFromMap.features[indexPoly1].geometry.coordinates[indexCoordPoly1][0].splice(i1 + 1, i2 - i1 - 1)
             store.currentMap.dataFromMap.features.push(slicedFeature)
         }
-    
+
         //in the end we re-render by using storeReducer
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
             payload: { currentMap: store.currentMap }
         });
     }
-    store.mergeSplitRegion = function(splitArray, oldFeature) {
-        for(let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
+    store.mergeSplitRegion = function (splitArray, oldFeature) {
+        for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
             let currentFeature = store.currentMap.dataFromMap.features[i]
-            
-            if (oldFeature.properties.admin === currentFeature.properties.admin){
-                if(oldFeature.geometry.type === "Polygon") {
-                    let lastIndex = store.currentMap.dataFromMap.features.length-1
+
+            if (oldFeature.properties.admin === currentFeature.properties.admin) {
+                if (oldFeature.geometry.type === "Polygon") {
+                    let lastIndex = store.currentMap.dataFromMap.features.length - 1
                     store.currentMap.dataFromMap.features[i] = oldFeature;
                     (store.currentMap.dataFromMap.features).splice(lastIndex, 1)
                     break;
                 } else {
-                    let lastIndex = store.currentMap.dataFromMap.features.length-1
+                    let lastIndex = store.currentMap.dataFromMap.features.length - 1
                     store.currentMap.dataFromMap.features[i] = oldFeature;
                     (store.currentMap.dataFromMap.features).splice(lastIndex, 1)
                     break;
-                }   
+                }
             }
         }
 
@@ -1226,29 +1282,29 @@ function GlobalStoreContextProvider(props) {
         let transaction = new MergeRegion_Transaction(store, keys, mergedFeature, feature1, feature2);
         tps.addTransaction(transaction);
     }
-    store.mergeRegion = function(keys, mergedFeature, feature1, feature2) {
+    store.mergeRegion = function (keys, mergedFeature, feature1, feature2) {
 
         let index2 = keys[1]
         store.currentMap.dataFromMap.features.splice(index2, 1)
 
         store.currentMap.dataFromMap.features.forEach((feature, index) => {
-          if (feature.properties.admin === feature1.properties.admin) {
-            store.currentMap.dataFromMap.features.splice(index, 1)
-            mergedFeature.properties = JSON.parse(JSON.stringify(feature.properties));
-            let deepCopiedMerge = JSON.parse(JSON.stringify(mergedFeature));
-            store.currentMap.dataFromMap.features.splice(index, 0, deepCopiedMerge)
-            keys[0] = index
-          }
+            if (feature.properties.admin === feature1.properties.admin) {
+                store.currentMap.dataFromMap.features.splice(index, 1)
+                mergedFeature.properties = JSON.parse(JSON.stringify(feature.properties));
+                let deepCopiedMerge = JSON.parse(JSON.stringify(mergedFeature));
+                store.currentMap.dataFromMap.features.splice(index, 0, deepCopiedMerge)
+                keys[0] = index
+            }
         });
 
-    
+
         //in the end we re-render by using storeReducer
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
             payload: { currentMap: store.currentMap }
         });
     }
-    store.unmergeRegion = function(keys, feature1, feature2) {
+    store.unmergeRegion = function (keys, feature1, feature2) {
         let index1 = keys[0]
         let index2 = keys[1]
         store.currentMap.dataFromMap.features.splice(index1, 1)
@@ -1273,12 +1329,12 @@ function GlobalStoreContextProvider(props) {
         let transaction = new AddRegion_Transaction(store, newRegion);
         tps.addTransaction(transaction);
     }
-    store.addSubregion = function(newRegion) {
+    store.addSubregion = function (newRegion) {
 
         let copiedRegion = JSON.parse(JSON.stringify(newRegion));
         store.currentMap.dataFromMap.features.push(copiedRegion);
         //in the end we re-render by using storeReducer
-        
+
         storeReducer({
             type: GlobalStoreActionType.ADDED_REGION
         });
@@ -1288,8 +1344,8 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.REVERTED_REGION
         });
     }
-    store.removeSubregion = function() {
-        let lastIndex = store.currentMap.dataFromMap.features.length-1;
+    store.removeSubregion = function () {
+        let lastIndex = store.currentMap.dataFromMap.features.length - 1;
         store.currentMap.dataFromMap.features.splice(lastIndex, 1);
         //in the end we re-render by using storeReducer
         storeReducer({
