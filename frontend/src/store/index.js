@@ -1010,18 +1010,22 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.saveMarkers = function (newMarkers) {
-        // Check for duplicate markers and add only the new markers
-        const uniqueMarkers = newMarkers.filter((newMarker) => {
-            const isDuplicate = store.currentMap.markers.some(
-                (existingMarker) =>
-                    existingMarker.lat === newMarker.lat &&
-                    existingMarker.lng === newMarker.lng
-            );
-            return !isDuplicate;
-        });
+        newMarkers.forEach((newMarker) => {
+            if (newMarker._id) {
 
-        // Concatenate the new markers with the existing markers array
-        store.currentMap.markers = store.currentMap.markers.concat(uniqueMarkers);
+                const existingMarkerIndex = store.currentMap.markers.findIndex(
+                    (marker) => marker._id === newMarker._id
+                );
+
+                if (existingMarkerIndex !== -1) {
+                    store.currentMap.markers[existingMarkerIndex] = newMarker;
+                } else {
+                    store.currentMap.markers.push(newMarker);
+                }
+            } else {
+                store.currentMap.markers.push(newMarker);
+            }
+        });
 
 
         let id = store.currentMap._id;

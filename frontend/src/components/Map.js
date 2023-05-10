@@ -115,11 +115,10 @@ export default function Map() {
     setFont(event.target.value);
   };
 
-  // Text-------------------------------------------------------------------->START
+  // TEXT MARKER-------------------------------------------------------------------->START
   const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
-    // Access the markers from store.currentMap and update the markers state
     if (store.currentMap && store.currentMap.markers) {
       setMarkers(store.currentMap.markers);
     }
@@ -156,7 +155,35 @@ export default function Map() {
     iconSize: [12, 12],
   });
 
-  // Text-------------------------------------------------------------------->END
+  let textMarker = markers.map((marker, index) => (
+    <Marker
+      key={index}
+      draggable={true}
+      position={[marker.lat, marker.lng]}
+      eventHandlers={{
+        dragend: (event) => handleMarkerDragEnd(index, event),
+      }}
+      icon={circleIcon} // Use the custom circle icon
+    >
+      <Tooltip
+        permanent
+        interactive
+        direction="right"
+        offset={[0, 0]}
+        opacity={1}
+        className="custom-tooltip"
+      >
+        <input
+          type="text"
+          value={marker.value}
+          onChange={(event) => handleInputChange(index, event)}
+          className="transparent-input"
+        />
+      </Tooltip>
+    </Marker>
+  ))
+
+  // TEXT MARKER-------------------------------------------------------------------->END
 
 
   //RENAME SUBREGION MODAL AND FUNCTIONS ---------------------------------->START
@@ -1119,33 +1146,7 @@ export default function Map() {
           <Screenshot />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {maplayout}
-          {markers.map((marker, index) => (
-            <Marker
-              key={index}
-              draggable={true}
-              position={[marker.lat, marker.lng]}
-              eventHandlers={{
-                dragend: (event) => handleMarkerDragEnd(index, event),
-              }}
-              icon={circleIcon} // Use the custom circle icon
-            >
-              <Tooltip
-                permanent
-                interactive
-                direction="right"
-                offset={[0, 0]}
-                opacity={1}
-                className="custom-tooltip"
-              >
-                <input
-                  type="text"
-                  value={marker.value}
-                  onChange={(event) => handleInputChange(index, event)}
-                  className="transparent-input"
-                />
-              </Tooltip>
-            </Marker>
-          ))}
+          {textMarker}
         </MapContainer>
         <input
           type="color"
