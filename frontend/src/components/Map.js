@@ -5,7 +5,7 @@ import { GlobalStoreContext } from '../store'
 
 import { styled } from '@mui/material/styles';
 import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
-import { Box, InputLabel, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
+import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
   ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title
@@ -31,7 +31,7 @@ let splitArray = [];
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
-  const [font, setFont] = React.useState("Arial");
+  // const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
   const [center, setCenter] = useState({ lat: 20, lng: 100 });
   let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
@@ -111,12 +111,24 @@ export default function Map() {
     justifyContent: 'center',
   }
 
-  const handleChange = (event) => {
-    setFont(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setFont(event.target.value);
+  // };
 
   // TEXT MARKER-------------------------------------------------------------------->START
   const [markers, setMarkers] = useState([]);
+  const [selectedFont, setSelectedFont] = useState('Arial, sans-serif');
+
+  const fontOptions = [
+    { label: 'Arial', value: 'Arial, sans-serif' },
+    { label: 'Times New Roman', value: 'Times New Roman, serif' },
+    { label: 'Courier New', value: 'Courier New, monospace' },
+    { label: 'Verdana', value: 'Verdana, sans-serif' },
+    { label: 'Impact', value: 'Impact, sans-serif' },
+    { label: 'Georgia', value: 'Georgia, serif' },
+    { label: 'Helvetica', value: 'Helvetica, sans-serif' },
+    { label: 'Comic Sans MS', value: 'Comic Sans MS, cursive' },
+  ];
 
   useEffect(() => {
     if (store.currentMap && store.currentMap.markers) {
@@ -131,10 +143,15 @@ export default function Map() {
     setMarkers(updatedMarkers);
   };
 
+  const handleChangeFont = (event) => {
+    const { value } = event.target;
+    setSelectedFont(value);
+  };
+
   const handleInputChange = (markerIndex, event) => {
     const { value } = event.target;
     const updatedMarkers = [...markers];
-    updatedMarkers[markerIndex] = { ...updatedMarkers[markerIndex], value };
+    updatedMarkers[markerIndex] = { ...updatedMarkers[markerIndex], value, font: selectedFont };
     setMarkers(updatedMarkers);
   };
 
@@ -146,14 +163,23 @@ export default function Map() {
 
   const handleSaveMarker = () => {
     console.log(markers);
-    store.saveMarkers(markers);
-  };
+    // store.saveMarkers(markers);
 
+    const updatedMarkers = markers.map(marker => ({
+      lat: marker.lat,
+      lng: marker.lng,
+      value: marker.value,
+      font: marker.font
+    }));
+
+    store.saveMarkers(updatedMarkers);
+  };
 
   const circleIcon = L.divIcon({
     className: "circle-icon",
     iconSize: [12, 12],
   });
+
 
   let textMarker = markers.map((marker, index) => (
     <Marker
@@ -177,6 +203,7 @@ export default function Map() {
           type="text"
           value={marker.value}
           onChange={(event) => handleInputChange(index, event)}
+          style={{ fontFamily: marker.font }}
           className="transparent-input"
         />
       </Tooltip>
@@ -1098,31 +1125,38 @@ export default function Map() {
         </Box>
         <div id="edit-line2"></div>
         <br />
-        <FormControl variant="standard" sx={{
-          m: 1,
-          minWidth: 120,
-          '& > :not(style)': { backgroundColor: "#D9D9D9", marginTop: '0.75%' },
-          "& .css-m5hdmq-MuiInputBase-root-MuiInput-root-MuiSelect-root:after": {
-            borderColor: '#FDE66B'
-          },
-          "& label.Mui-focused": {
-            color: '#756060' //purple
-          },
-        }}>
-          <InputLabel id="demo-simple-select-standard-label">Font</InputLabel>
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            minWidth: 120,
+            '& > :not(style)': { backgroundColor: "#D9D9D9", marginTop: '0.75%' },
+            "& .css-m5hdmq-MuiInputBase-root-MuiInput-root-MuiSelect-root:after": {
+              borderColor: '#FDE66B'
+            },
+            "& label.Mui-focused": {
+              color: '#756060' //purple
+            },
+          }}
+        >
+          {/* <InputLabel id="demo-simple-select-standard-label">Font</InputLabel> */}
+          {/* <label htmlFor="demo-simple-select-standard">Font</label> */}
           <Select
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            value={font}
-            onChange={handleChange}
+            value={selectedFont}
+            onChange={handleChangeFont}
             label="Font"
-            defaultValue={font}
+            defaultValue={selectedFont}
           >
-            <MenuItem value={"Arial"}>Arial</MenuItem>
-            <MenuItem value={"New Times Roman"}>New Times Roman</MenuItem>
-            <MenuItem value={"Comic Sans"}>Comic Sans</MenuItem>
+            {fontOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
+
         <div id="edit-line3"></div>
         <br />
         <Button id="publishButton"

@@ -59,10 +59,14 @@ createMap = async (req, res) => {
     try {
         await mapInfo.save(); // Save the MapInfo instance first
 
-        // Save the markers as subdocuments within the Map
         if (markers && Array.isArray(markers)) {
             mapBody.markers = markers.map((marker) => {
-                return { lat: marker.lat, lng: marker.lng, value: marker.value };
+                return {
+                    lat: marker.lat,
+                    lng: marker.lng,
+                    value: marker.value,
+                    font: marker.font,
+                };
             });
         }
 
@@ -225,10 +229,14 @@ updateMap = async (req, res) => {
         map.publish = body.map.publish || map.publish;
         map.image = body.map.image || map.image;
         map.markers = body.map.markers || map.markers;
+
+        console.log("markers array:", body.map.markers);
+
         if (body.map.dataFromMap) {
             await MapInfo.findByIdAndUpdate(map.dataFromMap._id, { dataFromMap: body.map.dataFromMap })
         }
         await map.save();
+        console.log("markers array  2:", body.map.markers);
         return res.status(200).json({
             success: true,
             id: map._id,

@@ -1010,24 +1010,8 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.saveMarkers = function (newMarkers) {
-        newMarkers.forEach((newMarker) => {
-            if (newMarker._id) {
-
-                const existingMarkerIndex = store.currentMap.markers.findIndex(
-                    (marker) => marker._id === newMarker._id
-                );
-
-                if (existingMarkerIndex !== -1) {
-                    store.currentMap.markers[existingMarkerIndex] = newMarker;
-                } else {
-                    store.currentMap.markers.push(newMarker);
-                }
-            } else {
-                store.currentMap.markers.push(newMarker);
-            }
-        });
-
-
+        store.currentMap.markers = newMarkers;
+        console.log(store.currentMap.markers);
         let id = store.currentMap._id;
         let newMap = store.currentMap;
 

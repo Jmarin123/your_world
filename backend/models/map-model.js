@@ -19,6 +19,7 @@ const mapSchema = new Schema(
                 lat: { type: Number, required: true },
                 lng: { type: Number, required: true },
                 value: { type: String, required: true },
+                font: { type: String, required: true },
             },
         ],
     },
