@@ -1010,20 +1010,8 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.saveMarkers = function (newMarkers) {
-        // Check for duplicate markers and add only the new markers
-        const uniqueMarkers = newMarkers.filter((newMarker) => {
-            const isDuplicate = store.currentMap.markers.some(
-                (existingMarker) =>
-                    existingMarker.lat === newMarker.lat &&
-                    existingMarker.lng === newMarker.lng
-            );
-            return !isDuplicate;
-        });
-
-        // Concatenate the new markers with the existing markers array
-        store.currentMap.markers = store.currentMap.markers.concat(uniqueMarkers);
-
-
+        store.currentMap.markers = newMarkers;
+        console.log(store.currentMap.markers);
         let id = store.currentMap._id;
         let newMap = store.currentMap;
 
