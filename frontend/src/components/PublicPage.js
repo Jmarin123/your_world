@@ -26,6 +26,7 @@ export default function PublicPage() {
     if (mapCard.length > 0 && store && store.sort !== "") {
         mapCard = store.sortList(mapCard);
     }
+    console.log(mapCard)
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 

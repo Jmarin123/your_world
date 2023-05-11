@@ -7,7 +7,8 @@ import { Box, Grid } from '@mui/material';
 import Comment from './Comment';
 import Statusbar from './Statusbar';
 
-import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+import { MapContainer, GeoJSON, TileLayer, Marker, Tooltip } from 'react-leaflet';
+import L from 'leaflet';
 
 export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
@@ -20,24 +21,57 @@ export default function Mapview() {
         weight: 2,
     };
 
+    const circleIcon = L.divIcon({
+        className: "circle-icon",
+        iconSize: [12, 12],
+    });
+
     function onEachCountry(country, layer) {
-        // layer.on({
-        //     click: this.changeCountryColor,
-        // });
+
 
         let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
-          popupContent += country.properties.popupContent;
+            popupContent += country.properties.popupContent;
         }
-        
+
         layer.bindPopup(popupContent);
     };
 
-    let renderedMap = <GeoJSON
-        style={countryStyle}
-        data={store.currentMap ? store.currentMap.dataFromMap.features : null}
-        onEachFeature={onEachCountry}
-    />
+    const renderedMap = (
+        <GeoJSON
+            style={countryStyle}
+            data={store.currentMap ? store.currentMap.dataFromMap.features : null}
+            onEachFeature={onEachCountry}
+        >
+            {store.currentMap &&
+                store.currentMap.markers.map((marker, index) => (
+                    <Marker
+                        key={index}
+                        position={[marker.lat, marker.lng]}
+                        icon={circleIcon}
+                    >
+
+                        <Tooltip
+                            permanent
+                            interactive
+                            direction="right"
+                            offset={[0, 0]}
+                            opacity={1}
+                            className="custom-tooltip"
+                        >
+                            <input
+                                type="text"
+                                defaultValue={marker.value}
+                                style={{ fontFamily: marker.font }}
+                                className="transparent-input"
+                            />
+                        </Tooltip>
+                    </Marker>
+                ))}
+        </GeoJSON>
+    );
+
+
 
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
