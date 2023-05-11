@@ -180,7 +180,6 @@ export default function Map() {
     iconSize: [12, 12],
   });
 
-
   let textMarker = markers.map((marker, index) => (
     <Marker
       key={index}
