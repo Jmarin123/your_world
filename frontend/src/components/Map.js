@@ -8,7 +8,7 @@ import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Create, Title
+  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title
 } from '@mui/icons-material/';
 
 import SaveAsOutlined from '@mui/icons-material/SaveAsOutlined';
