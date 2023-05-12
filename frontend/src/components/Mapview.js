@@ -21,10 +21,10 @@ export default function Mapview() {
         weight: 2,
     };
 
-    const circleIcon = L.divIcon({
-        className: "circle-icon",
-        iconSize: [12, 12],
-    });
+    // const circleIcon = L.divIcon({
+    //     className: "circle-icon",
+    //     iconSize: [12, 12],
+    // });
 
     function onEachCountry(country, layer) {
 
@@ -48,7 +48,8 @@ export default function Mapview() {
                     <Marker
                         key={index}
                         position={[marker.lat, marker.lng]}
-                        icon={circleIcon}
+                        // icon={circleIcon}
+                        opacity={0}
                     >
 
                         <Tooltip
@@ -64,6 +65,7 @@ export default function Mapview() {
                                 defaultValue={marker.value}
                                 style={{ fontFamily: marker.font }}
                                 className="transparent-input"
+                                readOnly
                             />
                         </Tooltip>
                     </Marker>
