@@ -91,6 +91,14 @@ export default function UploadModal() {
         return dataForMap;
     }
 
+    const assignColor = (dataForMap) => {
+        for (let i = 0; i < dataForMap.features.length; i++) {
+            dataForMap.features[i].properties.fillColor = "#ff0000";
+            dataForMap.features[i].properties.borderColor = "#000000";
+        }
+        return dataForMap;
+    }
+
     async function handleSubmit(event) {
         if (store.uploadType === "shp/dbf") {
             const shpArray = await parseInputFile(file1)
@@ -98,6 +106,7 @@ export default function UploadModal() {
 
             let object = await shapefile.read(shpArray, dbfArray)
             assignName(object)
+            assignColor(object)
 
             let options = { tolerance: 0.015, highQuality: false };
             // eslint-disable-next-line
@@ -107,7 +116,7 @@ export default function UploadModal() {
         }
         else {
             const object = await parseJsonFile(file1)
-            // assignName(object)
+            assignColor(object)
 
             store.createNewMap(object)
         }

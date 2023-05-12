@@ -19,6 +19,7 @@
     "leaflet": "^1.9.3",
     "leaflet-simple-map-screenshoter": "^0.5.0",
     "mui": "^0.0.1",
+    "mui-color-input": "^1.0.5",
     "ogr2ogr": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

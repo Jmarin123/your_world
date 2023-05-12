@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { GlobalStoreContext } from '../store'
@@ -21,11 +21,13 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon, Circle, Marker, Tooltip } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
+import { MuiColorInput } from 'mui-color-input'
 
 import L from 'leaflet';
 
-let mergeFLAG = 0;
-let colorFill = "#4CBB17";
+let mergeFlag = 0;
+let colorFlag = 0;
+let borderFlag = 0;
 let mergeFeatureFlag = null
 let splitArray = [];
 
@@ -47,6 +49,8 @@ export default function Map() {
   const [mergeFeature_1, setMergeFeature_1] = useState(null);
   const [mergedFlag, setMergedFlag] = useState(false);
 
+  const [colorFill, setColorFill] = useState("#4CBB17");
+
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
 
@@ -55,6 +59,10 @@ export default function Map() {
     let newCenter = (turf.center(store.currentMap.dataFromMap)).geometry.coordinates
     let newCenterObject = { lat: newCenter[1], lng: newCenter[0] }
     setCenter(newCenterObject)
+    mergeFlag = 0;
+    colorFlag = 0;
+    borderFlag = 0;
+    mergeFeatureFlag = null
   }, [store.currentMap]);
 
   useEffect(() => {
@@ -211,6 +219,33 @@ export default function Map() {
 
   // TEXT MARKER-------------------------------------------------------------------->END
 
+  // COLORING SUBREGIONS -------------------------------------------------------------------->START
+
+  function handleColorSubregion() {
+    console.log("in handleColorSubregion")
+    setSelectedFeature(null)
+    setMergeFeature(null)
+    setMergeFeature_1(null)
+    mergeFlag = 0;
+    borderFlag = 0;
+    mergeFeatureFlag = null
+    
+    colorFlag = !colorFlag
+  }
+
+  function handleColorBorder() {
+    console.log("in handleColorBorder")
+    setSelectedFeature(null)
+    setMergeFeature(null)
+    setMergeFeature_1(null)
+    mergeFlag = 0;
+    colorFlag = 0;
+    mergeFeatureFlag = null
+
+    borderFlag = !borderFlag
+  }
+
+  // COLORING SUBREGIONS -------------------------------------------------------------------->END
 
   //RENAME SUBREGION MODAL AND FUNCTIONS ---------------------------------->START
   function handleConfirmRename() {
@@ -326,12 +361,14 @@ export default function Map() {
     }
   });
 
-  const countryStyle = {
-    fillColor: "red",
-    fillOpacity: 1,
-    color: "black",
-    weight: 2,
-  };
+  function styleMap(feature){
+    return {
+      fillColor: feature.properties.fillColor,
+      fillOpacity: 1,
+      color: feature.properties.borderColor,
+      weight: 2,
+    }
+  }
 
   function handlePublishMap() {
     let newMap = store.currentMap;
@@ -378,10 +415,20 @@ export default function Map() {
     store.updateThumbnail()
   }
 
+  function useCbStable(cb) {
+    const cbRef = useRef(cb);
+    cbRef.current = cb;
+    const cbRefStable = useCallback((...args) => {
+      return cbRef.current(...args);
+    }, []);
+    return cbRefStable;
+  }
+  const stableClickFeature = useCbStable(clickFeature);
+
   function clickFeature(event) {
     console.log("HEY IT CLICKED HERE");
     console.log(event.target);
-    if (mergeFLAG) { // Merge active. Mark region if first, and merge if second. 
+    if (mergeFlag) { // Merge active. Mark region if first, and merge if second. 
       event.target.setStyle({
         color: "#000000",
         fillColor: "#FDE66B",
@@ -395,7 +442,18 @@ export default function Map() {
       else {
         setMergeFeature_1(event.target)
       }
-
+    }
+    else if(colorFlag){
+      event.target.setStyle({
+        fillColor: colorFill,
+      });
+      event.target.feature.properties.fillColor = colorFill
+    }
+    else if(borderFlag){
+      event.target.setStyle({
+        color: colorFill,
+      });
+      event.target.feature.properties.borderColor = colorFill
     }
     else { // Merge inactive
       setSelectedFeature(event.target)
@@ -408,7 +466,7 @@ export default function Map() {
   }
   const onEachCountry = (country, layer) => {
     layer.on({
-      click: clickFeature,
+      click: stableClickFeature,
       dblclick: markSubregion,
     });
     let popupContent = `${country.properties.admin}`;
@@ -417,9 +475,9 @@ export default function Map() {
     }
     layer.bindPopup(popupContent);
   };
-  function colorChange(event) {
-    //setColor(event.target.value);
-    colorFill = event.target.value
+
+  const handleColorChange = (newValue) => {
+    setColorFill(newValue)
   };
 
   newMap.features.forEach((feature, index) => {
@@ -428,7 +486,7 @@ export default function Map() {
 
   let renderedMap = <GeoJSON
     ref={geoJsonLayer}
-    style={countryStyle}
+    style={styleMap}
     data={store.currentMap ? store.currentMap.dataFromMap.features : null}
     onEachFeature={onEachCountry}
   />
@@ -639,7 +697,7 @@ export default function Map() {
 
   function handleMerge(event) {
     if (MapLayOutFLAG !== 1) {
-      if (mergeFLAG > 0 && mergeFeature && mergeFeature_1) {
+      if (mergeFlag > 0 && mergeFeature && mergeFeature_1) {
         setMergedFlag(true)
 
 
@@ -669,17 +727,20 @@ export default function Map() {
         setMergeFeature(null)
         setMergeFeature_1(null)
         mergeFeatureFlag = null
-        mergeFLAG = 0
+        mergeFlag = 0
       }
-      else if (mergeFLAG) {
+      else if (mergeFlag) {
         setMergeFeature(null)
         setMergeFeature_1(null)
         mergeFeatureFlag = null
-        mergeFLAG = 0
+        mergeFlag = 0
       }
       else {
         setSelectedFeature(null)
-        mergeFLAG = 1
+        borderFlag = 0;
+        colorFlag = 0;
+
+        mergeFlag = 1
       }
     } else {
       // setMaplayout()
@@ -701,7 +762,7 @@ export default function Map() {
     }
     if (selectedFeature) {
       selectedFeature.setStyle({
-        fillColor: colorFill
+        fillColor: "#4CBB17"
       })
     }
   }, [selectedFeature]);
@@ -1059,6 +1120,7 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={() => handleColorSubregion()}
           >
             <ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
           </StyledIconButton>
@@ -1077,6 +1139,7 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={() => handleColorBorder()}
           >
             <BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />
           </StyledIconButton>
@@ -1172,20 +1235,14 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={center} doubleClickZoom={false}
-
-        >
+        <MapContainer style={{ height: "80vh" }} zoom={2} center={center} doubleClickZoom={false}>
           <Recenter lat={center.lat} lng={center.lng} />
           <Screenshot />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {maplayout}
           {textMarker}
         </MapContainer>
-        <input
-          type="color"
-          value={colorFill}
-          onChange={colorChange}
-        />
+        <MuiColorInput value={colorFill} onChange={handleColorChange} />
       </Box>
 
       {modal}
