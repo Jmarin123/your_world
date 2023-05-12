@@ -8,7 +8,7 @@ import Comment from './Comment';
 import Statusbar from './Statusbar';
 
 import { MapContainer, GeoJSON, TileLayer, Marker, Tooltip } from 'react-leaflet';
-import L from 'leaflet';
+
 
 export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
