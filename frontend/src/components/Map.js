@@ -1095,8 +1095,9 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={handleSaveMarker}
           >
-            <Create style={{ fontSize: "45px" }} titleAccess="Edit Text" />
+            <SaveAsOutlined style={{ fontSize: "45px" }} titleAccess="Save Text" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -1104,21 +1105,10 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ marginBottom: "10px" }}
-            // onClick={handleButtonClick}
             onClick={handleAddMarker}
 
           >
             <Title style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
-          </StyledIconButton>
-
-          <StyledIconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ flex: "1 0 50%", marginBottom: "10px" }}
-            onClick={handleSaveMarker}
-          >
-            <SaveAsOutlined style={{ fontSize: "45px" }} titleAccess="Save Text" />
           </StyledIconButton>
 
         </Box>
