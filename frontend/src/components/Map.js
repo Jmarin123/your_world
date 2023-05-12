@@ -155,8 +155,28 @@ export default function Map() {
     setMarkers(updatedMarkers);
   };
 
+  // const handleAddMarker = () => {
+  //   const newMarker = { lat: 0, lng: 0, value: "" };
+  //   setMarkers([...markers, newMarker]);
+  //   // console.log(markers);
+  // };
   const handleAddMarker = () => {
-    const newMarker = { lat: 0, lng: 0, value: "" };
+    let newCoordinates = [];
+    if (store.currentMap) {
+      if (store.currentMap.dataFromMap.features[0].geometry.type === "MultiPolygon") {
+        newCoordinates = [
+          store.currentMap.dataFromMap.features[0].geometry.coordinates[0][0][0][1] + 1,
+          store.currentMap.dataFromMap.features[0].geometry.coordinates[0][0][0][0] + 1,
+        ];
+      } else if (store.currentMap.dataFromMap.features[0].geometry.type === "Polygon") {
+        newCoordinates = [
+          store.currentMap.dataFromMap.features[0].geometry.coordinates[0][0][1] + 1,
+          store.currentMap.dataFromMap.features[0].geometry.coordinates[0][0][0] + 1,
+        ];
+      }
+
+    }
+    const newMarker = { lat: newCoordinates[0], lng: newCoordinates[1], value: "" };
     setMarkers([...markers, newMarker]);
     // console.log(markers);
   };
