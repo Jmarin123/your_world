@@ -782,3 +782,30 @@ input {
     /* Customize the color of the circle */
     border-radius: 50%;
 }
+
+.legend {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.legend-label {
+    font-size: 14px;
+}

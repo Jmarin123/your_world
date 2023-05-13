@@ -48,6 +48,7 @@ export const GlobalStoreActionType = {
     ADDED_REGION: "ADDED_REGION",
     REVERTED_REGION: "REVERTED_REGION",
     SAVE_MARKER: "SAVE_MARKER",
+    SET_LEGEND_COLOR: "SET_LEGEND_COLOR",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -83,7 +84,8 @@ function GlobalStoreContextProvider(props) {
         exportMapData: null,
         isFirstUpload: false,
         compressStatus: false,
-        addedRegion: false
+        addedRegion: false,
+        legendColor: false,
     });
     // const history = useHistory();
 
@@ -113,6 +115,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -132,7 +136,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -152,7 +156,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -172,7 +176,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: payload.firstUpload,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.OPEN_COMMENT: {
@@ -192,7 +196,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -212,7 +216,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_DELETION: {
@@ -232,7 +236,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_EXPORT: {
@@ -252,7 +256,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MAP_EXPORT: {
@@ -272,7 +276,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: payload.mapData,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             // GET ALL LISTS SO WE CAN PRESENT THEM
@@ -293,7 +297,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP: {
@@ -313,7 +317,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -333,7 +337,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.SET_SEARCH: {
@@ -352,7 +356,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.SET_FILTER_SEARCH: {
@@ -371,7 +375,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.NAVIGATE_HOME: {
@@ -390,7 +394,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.NAVIGATE_PUBLIC: {
@@ -409,6 +413,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -428,7 +433,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.ADDED_REGION: {
@@ -448,7 +453,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: true
+                    addedRegion: true,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.REVERTED_REGION: {
@@ -468,7 +474,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: false
+                    addedRegion: false,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -488,7 +495,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.RENAME_SUBREGION: {
@@ -508,7 +515,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.UPDATE_THUMBNAIL: {
@@ -528,7 +535,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.SET_SORT: {
@@ -548,6 +555,7 @@ function GlobalStoreContextProvider(props) {
                     sort: payload,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION: {
@@ -566,7 +574,8 @@ function GlobalStoreContextProvider(props) {
                     thumbnail: false,
                     sort: store.sort,
                     exportMapData: null,
-                    isFirstUpload: false
+                    isFirstUpload: false,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.MAP_COMPRESS: {
@@ -586,7 +595,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    compressStatus: true
+                    compressStatus: true,
+                    legendColor: false,
                 });
             }
 
@@ -607,12 +617,40 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                });
+            }
+            case GlobalStoreActionType.SET_LEGEND_COLOR: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    legendColor: true,
                 });
             }
             default:
                 return store;
         }
     }
+    store.setLegendColor = function () {
+        console.log("store.setLegendColor");
+        storeReducer({
+            type: GlobalStoreActionType.SET_LEGEND_COLOR
+        });
+    }
+
 
     store.compressMap = function () {
         storeReducer({
