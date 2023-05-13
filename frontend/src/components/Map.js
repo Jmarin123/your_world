@@ -18,7 +18,8 @@ import Recenter from './Recenter'
 import Screenshot from './Screenshot'
 
 import "leaflet/dist/leaflet.css";
-import { MapContainer, GeoJSON, TileLayer, FeatureGroup, Polygon, Circle, Marker, Tooltip } from 'react-leaflet';
+import { MapContainer, GeoJSON, FeatureGroup, Polygon, Circle, Marker, Tooltip } from 'react-leaflet';
+// TileLayer
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 import { MuiColorInput } from 'mui-color-input'
@@ -28,6 +29,7 @@ import L from 'leaflet';
 let mergeFlag = 0;
 let colorFlag = 0;
 let borderFlag = 0;
+// let backgroundFlag = 0;
 let mergeFeatureFlag = null
 let splitArray = [];
 
@@ -50,6 +52,8 @@ export default function Map() {
   const [mergedFlag, setMergedFlag] = useState(false);
 
   const [colorFill, setColorFill] = useState("#4CBB17");
+  const [background, setBackground] = useState(newMap.background);
+  const [containerKey, setContainerKey] = useState(0);
 
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
@@ -62,11 +66,11 @@ export default function Map() {
     mergeFlag = 0;
     colorFlag = 0;
     borderFlag = 0;
+    // backgroundFlag = 0;
     mergeFeatureFlag = null
   }, [store.currentMap]);
 
   useEffect(() => {
-    console.log("subregion", store.subregion);
     store.subregion ? setOldName(store.subregion.properties.admin) : setOldName("")
     setNewName("")
   }, [store.subregion]);;
@@ -239,33 +243,47 @@ export default function Map() {
 
   // TEXT MARKER-------------------------------------------------------------------->END
 
-  // COLORING SUBREGIONS -------------------------------------------------------------------->START
+  // COLORING -------------------------------------------------------------------->START
 
   function handleColorSubregion() {
-    console.log("in handleColorSubregion")
     setSelectedFeature(null)
     setMergeFeature(null)
     setMergeFeature_1(null)
     mergeFlag = 0;
     borderFlag = 0;
+    // backgroundFlag = 0;
     mergeFeatureFlag = null
     
     colorFlag = !colorFlag
   }
 
   function handleColorBorder() {
-    console.log("in handleColorBorder")
+    setSelectedFeature(null)
+    setMergeFeature(null)
+    setMergeFeature_1(null)
+    mergeFlag = 0;
+    colorFlag = 0;
+    // backgroundFlag = 0;
+    mergeFeatureFlag = null
+
+    borderFlag = !borderFlag
+  }
+
+  function handleColorBackground() {
     setSelectedFeature(null)
     setMergeFeature(null)
     setMergeFeature_1(null)
     mergeFlag = 0;
     colorFlag = 0;
     mergeFeatureFlag = null
+    borderFlag = 0;
 
-    borderFlag = !borderFlag
+    store.currentMap.dataFromMap.background = colorFill
+    setBackground(colorFill)
+    setContainerKey(containerKey+1)
   }
 
-  // COLORING SUBREGIONS -------------------------------------------------------------------->END
+  // COLORING -------------------------------------------------------------------->END
 
   //RENAME SUBREGION MODAL AND FUNCTIONS ---------------------------------->START
   function handleConfirmRename() {
@@ -318,21 +336,21 @@ export default function Map() {
       </Grid>
       <Grid container item>
         <Box>
-          <Typography id="modal-text" xs={4} sx={{ textAlign: `center` }}>Are you sure you want to permanently compress your Map?</Typography>
-          <Typography id="modal-text" xs={4}>*Once you confirm your changes, you cannot undo it, changes are permanet!</Typography>
+          <Typography id="modal-text" xs={4} sx={{ textAlign: `center` }}>Are you sure you want to compress your map?</Typography>
+          <Typography id="modal-text" xs={4} sx={{ textAlign: `center` }}>Once you confirm your changes, you cannot undo them. Changes are permanent once saved!</Typography>
           <RadioGroup row value={compressionStatus} onChange={handleRadioChange} sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center' }}>
-              <FormControlLabel value="normal" control={<Radio />} label="Normal" labelPlacement="bottom" />
+              <FormControlLabel value="normal" control={<Radio />} label="Slightly" labelPlacement="bottom" />
               <FormControlLabel
                 value="medium_compressed"
                 control={<Radio />}
-                label="medium"
+                label="Moderately"
                 labelPlacement="bottom"
               />
               <FormControlLabel
                 value="fully_compressed"
                 control={<Radio />}
-                label="fully"
+                label="Fully"
                 labelPlacement="bottom"
               />
             </Box>
@@ -383,9 +401,9 @@ export default function Map() {
 
   function styleMap(feature){
     return {
-      fillColor: feature.properties.fillColor,
+      fillColor: feature.properties.fillColor || "#ff0000",
       fillOpacity: 1,
-      color: feature.properties.borderColor,
+      color: feature.properties.borderColor || "#000000",
       weight: 2,
     }
   }
@@ -759,6 +777,7 @@ export default function Map() {
         setSelectedFeature(null)
         borderFlag = 0;
         colorFlag = 0;
+        // backgroundFlag = 0;
 
         mergeFlag = 1
       }
@@ -1150,6 +1169,7 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={() => handleColorBackground()}
           >
             <FormatColorFill style={{ fontSize: "45px" }} titleAccess="Color Background" />
           </StyledIconButton>
@@ -1245,10 +1265,10 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" component="form" noValidate >
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={center} doubleClickZoom={false}>
+        <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={center} doubleClickZoom={false}>
           <Recenter lat={center.lat} lng={center.lng} />
           <Screenshot />
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
           {maplayout}
           {textMarker}
         </MapContainer>

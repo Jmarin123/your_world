@@ -96,6 +96,7 @@ export default function UploadModal() {
             dataForMap.features[i].properties.fillColor = "#ff0000";
             dataForMap.features[i].properties.borderColor = "#000000";
         }
+        dataForMap.background = "#abd2da"
         return dataForMap;
     }
 
