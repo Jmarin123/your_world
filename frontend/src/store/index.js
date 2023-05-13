@@ -48,6 +48,7 @@ export const GlobalStoreActionType = {
     ADDED_REGION: "ADDED_REGION",
     REVERTED_REGION: "REVERTED_REGION",
     SAVE_MARKER: "SAVE_MARKER",
+    EXPORT_IMAGE: "EXPORT_IMAGE",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -83,7 +84,8 @@ function GlobalStoreContextProvider(props) {
         exportMapData: null,
         isFirstUpload: false,
         compressStatus: false,
-        addedRegion: false
+        addedRegion: false,
+        exportImage: false
     });
     // const history = useHistory();
 
@@ -113,6 +115,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -132,7 +135,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -152,7 +155,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -172,6 +175,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: payload.firstUpload,
+                    exportImage: false,
 
                 });
             }
@@ -192,7 +196,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -212,6 +216,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -232,6 +237,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -252,6 +258,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -272,6 +279,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: payload.mapData,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -293,6 +301,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -313,6 +322,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -333,6 +343,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -352,6 +363,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -371,6 +383,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -390,6 +403,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -409,6 +423,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -428,6 +443,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -448,7 +464,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: true
+                    addedRegion: true,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.REVERTED_REGION: {
@@ -468,7 +485,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: false
+                    addedRegion: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -488,6 +506,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -508,6 +527,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
 
                 });
             }
@@ -528,7 +548,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.SET_SORT: {
@@ -548,6 +568,7 @@ function GlobalStoreContextProvider(props) {
                     sort: payload,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION: {
@@ -566,7 +587,8 @@ function GlobalStoreContextProvider(props) {
                     thumbnail: false,
                     sort: store.sort,
                     exportMapData: null,
-                    isFirstUpload: false
+                    isFirstUpload: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.MAP_COMPRESS: {
@@ -586,10 +608,10 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    compressStatus: true
+                    compressStatus: true,
+                    exportImage: false,
                 });
             }
-
             case GlobalStoreActionType.SAVE_MARKER: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
@@ -607,6 +629,27 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
+                });
+            }
+            case GlobalStoreActionType.EXPORT_IMAGE: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    exportImage: payload.exportImage,
                 });
             }
             default:
@@ -1104,6 +1147,13 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success) {
             return response.data.map.dataFromMap;
         }
+    }
+
+    store.toggleExportImage = function () {
+        storeReducer({
+            type: GlobalStoreActionType.EXPORT_IMAGE,
+            payload: { exportImage: !store.exportImage }
+        });
     }
 
     //-------------------------------------------->FUNCTION FOR UNDO/REDO OF EDITING VERTEX
