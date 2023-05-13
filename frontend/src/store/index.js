@@ -48,6 +48,7 @@ export const GlobalStoreActionType = {
     ADDED_REGION: "ADDED_REGION",
     REVERTED_REGION: "REVERTED_REGION",
     SAVE_MARKER: "SAVE_MARKER",
+    SET_LEGEND_COLOR: "SET_LEGEND_COLOR",
     EXPORT_IMAGE: "EXPORT_IMAGE",
 }
 
@@ -85,6 +86,7 @@ function GlobalStoreContextProvider(props) {
         isFirstUpload: false,
         compressStatus: false,
         addedRegion: false,
+        legendColor: false,
         exportImage: false
     });
     // const history = useHistory();
@@ -115,6 +117,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -135,6 +138,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -155,6 +159,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -175,6 +180,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: payload.firstUpload,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -196,6 +202,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -216,6 +223,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -237,6 +245,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -258,6 +267,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -279,6 +289,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: payload.mapData,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -301,6 +312,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -322,6 +334,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -343,6 +356,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -363,6 +377,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -383,6 +398,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -403,6 +419,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -423,6 +440,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -443,6 +461,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -465,6 +484,7 @@ function GlobalStoreContextProvider(props) {
                     exportMapData: null,
                     isFirstUpload: false,
                     addedRegion: true,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -486,6 +506,7 @@ function GlobalStoreContextProvider(props) {
                     exportMapData: null,
                     isFirstUpload: false,
                     addedRegion: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -506,6 +527,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -527,6 +549,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
 
                 });
@@ -548,6 +571,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -568,6 +592,7 @@ function GlobalStoreContextProvider(props) {
                     sort: payload,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -588,6 +613,7 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -609,6 +635,7 @@ function GlobalStoreContextProvider(props) {
                     exportMapData: null,
                     isFirstUpload: false,
                     compressStatus: true,
+                    legendColor: false,
                     exportImage: false,
                 });
             }
@@ -630,6 +657,7 @@ function GlobalStoreContextProvider(props) {
                     exportMapData: null,
                     isFirstUpload: false,
                     exportImage: false,
+                    legendColor: false,
                 });
             }
             case GlobalStoreActionType.EXPORT_IMAGE: {
@@ -649,13 +677,41 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: true,
                     exportImage: payload.exportImage,
+                });
+            }
+            case GlobalStoreActionType.SET_LEGEND_COLOR: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    legendColor: true,
                 });
             }
             default:
                 return store;
         }
     }
+    store.setLegendColor = function () {
+        console.log("store.setLegendColor");
+        storeReducer({
+            type: GlobalStoreActionType.SET_LEGEND_COLOR
+        });
+    }
+
 
     store.compressMap = function () {
         storeReducer({
