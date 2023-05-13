@@ -526,6 +526,10 @@ export default function Map() {
     navigate("/home");
   }
 
+  function handleExportImage() {
+    store.toggleExportImage();
+  }
+
   function handleUndo() {
     store.undo();
     if (store.addedRegion) {
@@ -1356,6 +1360,7 @@ export default function Map() {
         </FormControl>
 
         <div id="edit-line3"></div>
+        
         <br />
         <Button id="publishButton"
           type="submit"
@@ -1364,6 +1369,17 @@ export default function Map() {
         >
           <p id="text">Publish</p>
         </Button>
+
+        <br />
+
+        <Button id="exportImageButton"
+          type="submit"
+          sx={{ textTransform: `none` }}
+          onClick={() => handleExportImage()}
+        >
+          <p id="export-image-text">Export Image</p>
+        </Button>
+
       </Box>
 
       <Box id="statusBoxEdit">

@@ -500,17 +500,23 @@ input {
 }
 
 #text {
-
     font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 600;
-    /* font-size: 22px; */
     line-height: 26px;
     text-align: center;
     color: #000000;
     font-size: 1.5vw;
+}
 
-
+#export-image-text {
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px;
+    text-align: center;
+    color: #000000;
+    font-size: 1.3vw;
 }
 
 #guestButton {
@@ -682,6 +688,17 @@ input {
     height: 5%;
     left: 10%;
     top: 80%;
+    background: #FDE66B;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+#exportImageButton {
+    position: absolute;
+    width: 75%;
+    height: 5%;
+    left: 10%;
+    top: 87%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;

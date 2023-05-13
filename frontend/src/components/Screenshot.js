@@ -57,6 +57,28 @@ const Screenshot = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store.isFirstUpload]);
 
+    useEffect(() => {
+        if(store.currentMap && store.exportImage){
+            let format = 'image' // 'image' - return base64, 'canvas' - return canvas
+            let overridedPluginOptions = {
+            mimeType: 'image/jpeg'
+            }
+            
+            screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
+                console.log(image)
+                var link = document.createElement('a');
+                link.href = image;
+                link.download = 'mapimage.jpg';
+                link.click();
+                store.toggleExportImage();
+
+                }).catch(e => {
+                console.error(e)
+                })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.exportImage]);
+
     return null;
 }
 
