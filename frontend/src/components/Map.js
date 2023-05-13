@@ -145,6 +145,7 @@ export default function Map() {
 
       setLegendItems(items);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.legendColor]);
 
   useEffect(() => {
@@ -1360,7 +1361,7 @@ export default function Map() {
         </FormControl>
 
         <div id="edit-line3"></div>
-        
+
         <br />
         <Button id="publishButton"
           type="submit"
