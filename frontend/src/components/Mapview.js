@@ -14,24 +14,72 @@ export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
     const [background, setBackground] = useState("#AAD3DF");
     const [containerKey, setContainerKey] = useState(0);
+    const [legendItems, setLegendItems] = useState([]);
 
+    // useEffect(() => {
+    //     console.log('State variable changed:', store.currentMap);
+    //     if(store.currentMap && store.currentMap.dataFromMap.background){
+    //         setBackground(store.currentMap.dataFromMap.background)
+    //         setContainerKey(containerKey+1)
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [store.currentMap]);
     useEffect(() => {
         console.log('State variable changed:', store.currentMap);
-        if(store.currentMap && store.currentMap.dataFromMap.background){
-            setBackground(store.currentMap.dataFromMap.background)
-            setContainerKey(containerKey+1)
+        if (store.currentMap && store.currentMap.dataFromMap.background) {
+            setBackground(store.currentMap.dataFromMap.background);
+            setContainerKey((prevKey) => prevKey + 1);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (store.currentMap && store.currentMap.dataFromMap.features) {
+            const uniqueFillColors = new Set();
+            const items = [];
+
+            store.currentMap.dataFromMap.features.forEach((feature) => {
+                const fillColor = feature.properties.fillColor;
+                if (!uniqueFillColors.has(fillColor)) {
+                    uniqueFillColors.add(fillColor);
+                    items.push({
+                        color: fillColor,
+                        label: feature.properties.label,
+                    });
+                }
+            });
+
+            setLegendItems(items);
+        }
     }, [store.currentMap]);
-    
-    function styleMap(feature){
+
+    let myLegend = (
+        <div className="legend">
+            {legendItems.map((item, index) => (
+                <div key={index} className="legend-item">
+                    <span className="legend-color" style={{ backgroundColor: item.color }}></span>
+                    {item.isEditing ? (
+                        <input
+                            type="text"
+                            value={item.label}
+                            // onChange={(event) => handleLabelChange(event, index)}
+                            // onBlur={() => handleLabelBlur(index)}
+                            autoFocus
+                        />
+                    ) : (
+                        <span className="legend-label">
+                            {item.label}
+                        </span>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+
+    function styleMap(feature) {
         return {
-          fillColor: feature.properties.fillColor || "#ff0000",
-          fillOpacity: 1,
-          color: feature.properties.borderColor || "#000000",
-          weight: 2,
+            fillColor: feature.properties.fillColor || "#ff0000",
+            fillOpacity: 1,
+            color: feature.properties.borderColor || "#000000",
+            weight: 2,
         }
-      }
+    }
 
     function onEachCountry(country, layer) {
         let popupContent = `${country.properties.admin}`;
@@ -90,6 +138,7 @@ export default function Mapview() {
                     {
                         store.currentMap ? renderedMap : <div></div>
                     }
+                    {myLegend}
                 </MapContainer>
             </Box>
 
@@ -119,6 +168,7 @@ export default function Mapview() {
                                     {
                                         store.currentMap ? renderedMap : <div></div>
                                     }
+                                    {myLegend}
                                 </MapContainer>
                             </Box>
 
