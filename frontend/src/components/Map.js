@@ -951,8 +951,9 @@ export default function Map() {
               if (turf.booleanEqual(polygonRounded, polygonRounded2)) {
                 //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
                 console.log("we deleted the multipolygon feature!")
-                store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
-                store.deleteSubregion();
+                let keys = [i, j]
+                // store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
+                store.deleteCurrentRegion(keys, oldFeature);
                 break;
               }
             }
@@ -971,9 +972,9 @@ export default function Map() {
 
             if (turf.booleanEqual(polygon1, polygon2)) {
               console.log("we deleted the feature!")
-              //store.editCurrentMapVertex(editedKey, newFeature.geometry.coordinates, oldFeature.geometry.coordinates);
-              store.currentMap.dataFromMap.features.splice(i, 1);
-              store.deleteSubregion();
+              let keys = [i]
+              //store.currentMap.dataFromMap.features.splice(i, 1);
+              store.deleteCurrentRegion(keys, oldFeature);
               break;
             }
           }

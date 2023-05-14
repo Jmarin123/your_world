@@ -12,6 +12,7 @@ import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 import SplitRegion_Transaction from '../transactions/SplitRegion_Transaction'
 import MergeRegion_Transaction from '../transactions/MergeRegion_Transaction'
 import AddRegion_Transaction from '../transactions/AddRegion_Transaction'
+import DeleteRegion_Transaction from '../transactions/DeleteRegion_Transaction'
 
 import * as turf from '@turf/turf';
 
@@ -1450,12 +1451,55 @@ function GlobalStoreContextProvider(props) {
 
     //----------------------------------------------------------------------------------------------------->DONE\
 
-    store.deleteSubregion = function () {
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF DELETING A REGION
+    store.deleteCurrentRegion = function (keys, deletedRegion) {
+        this.addDeleteRegionTransaction(keys, deletedRegion);
+    }
+    store.addDeleteRegionTransaction = (keys, deletedRegion) => {
+        let transaction = new DeleteRegion_Transaction(store, keys, deletedRegion);
+        tps.addTransaction(transaction);
+    }
+    store.deleteSubregion = function(keys){
+
+        if(keys.length === 2) {
+            let i = keys[0]
+            let j = keys[1]
+            store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
+        } else {
+            let i = keys[0]
+            store.currentMap.dataFromMap.features.splice(i, 1);
+        }
+
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
             payload: { currentMap: store.currentMap }
         });
     }
+    store.addDeletedSubregion = function(keys, deletedRegion){
+        console.log("WTF ARE KEYS")
+        console.log(keys)
+        if(keys.length === 2) {
+            console.log("why isnt this working")
+            let i = keys[0]
+            let j = keys[1]
+            let deletedCoords = deletedRegion.geometry.coordinates[j]
+            //let deleted = JSON.parse(JSON.stringify(deletedRegion)); //create a deep copy
+            store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 0, deletedCoords)
+            //store.currentMap.dataFromMap.features[i] = deleted;
+        } else {
+            console.log("TRIED TO REDO BRYH")
+            let i = keys[0]
+            let deleted = JSON.parse(JSON.stringify(deletedRegion)); //create a deep copy
+            store.currentMap.dataFromMap.features.splice(i, 0, deleted)
+            //store.currentMap.dataFromMap.features[i] = deleted;
+        }
+
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    //----------------------------------------------------------------------------------------------------->DONE\
 
     store.markSubregion = function (feature) {
         storeReducer({
