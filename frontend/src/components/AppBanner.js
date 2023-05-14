@@ -83,6 +83,9 @@ export default function AppBanner() {
     }
 
     const handleSearchProperty = () => {
+        navigate('/public');
+        setS("");
+        store.setFilterSearch("property");
         setLabel("Search by map properties")
     }
 

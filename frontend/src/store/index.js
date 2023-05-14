@@ -992,6 +992,10 @@ function GlobalStoreContextProvider(props) {
                 const ownerName = pair.owner.toLowerCase();
                 return store.search !== "" && ownerName === store.search.toLowerCase() && pair.publish.isPublished;
             });
+        } else if (store.filterSearch === "property" && store.search !== "") {        
+            screenList = store.idNamePairs.filter(pair => {
+                return store.search !== "" && pair.uniqueProperties.indexOf(store.search) > -1 && pair.publish.isPublished;
+            });
         } else {
             console.log("3");
             console.log(store.search);
