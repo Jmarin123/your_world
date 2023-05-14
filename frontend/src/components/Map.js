@@ -7,9 +7,10 @@ import { styled } from '@mui/material/styles';
 import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
+import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import {
-  Explore, Save, Undo, Redo, Compress, GridView, Merge, Public,
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title,
+  Explore, Save, Undo, Redo, Compress, GridView, Merge,
+  ColorLens, FormatColorFill, BorderColor, Title,
 } from '@mui/icons-material/';
 
 import SaveAsOutlined from '@mui/icons-material/SaveAsOutlined';
@@ -205,6 +206,11 @@ export default function Map() {
 
   const handleToggleTileLayer = (index) => {
     setTileLayerOn(!tileLayerOn)
+    if(tileLayerOn) {
+      setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px" }} titleAccess="Toggle Layer" />)
+    } else {
+      setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Toggle Layer" />)
+    }
   };
 
 
@@ -1638,6 +1644,7 @@ export default function Map() {
   const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
   const [colorSubregionButton, setColorSubregionButton] = useState(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
   const [colorBorderButton, setColorBorderButton] = useState(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
+  const [toggleLayerButton, setToggleLayerButton] = useState(<MapRoundedIcon style={{ fontSize: "45px" }} titleAccess="Toggle Layer" />)
 
 
   const openPropertyModal = () => {
@@ -1912,7 +1919,8 @@ export default function Map() {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={handleToggleTileLayer}
           >
-            <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" />
+            {toggleLayerButton}
+            {/* <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" /> */}
           </StyledIconButton>
 
           <StyledIconButton
