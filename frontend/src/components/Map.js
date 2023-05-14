@@ -775,7 +775,7 @@ export default function Map() {
                 key={Math.random()}
                 center={feature.geometry.coordinates[0][i]}
                 pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                radius={10000}
+                radius={10}
                 eventHandlers={{ click: eventHandlers }}
                 ifMultiPolygon={false}
                 circleCustomProp={index}
@@ -794,7 +794,7 @@ export default function Map() {
                   key={Math.random()}
                   center={multiArray[i]}
                   pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                  radius={10000}
+                  radius={10}
                   eventHandlers={{ click: eventHandlers }}
                   ifMultiPolygon={true}
                   circleCustomProp={index + "-" + polygonIndex}
