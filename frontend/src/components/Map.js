@@ -386,7 +386,12 @@ export default function Map() {
     setSelectFLAG(0)
 
     colorFlag = !colorFlag
-  }
+    if(colorFlag == 0){
+      setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
+    } else {
+      setColorSubregionButton(<ColorLens style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Color Subregion" />)
+    }
+   }
 
   function handleColorBorder() {
     setSelectedFeature(null)
@@ -396,6 +401,7 @@ export default function Map() {
     colorFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
+    setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
     setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
     setSelectSubregion(null)
@@ -413,6 +419,7 @@ export default function Map() {
     colorFlag = 0;
     mergeFeatureFlag = null
     borderFlag = 0;
+    setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
     setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
     setSelectSubregion(null)
@@ -1210,6 +1217,7 @@ export default function Map() {
         // backgroundFlag = 0;
 
         mergeFlag = 1
+        setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
         setMergeButton(<Merge style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Merge" onClick={handleMerge} />)
         setSelectSubregion(null)
         selectFeatureFlag = null
@@ -1496,6 +1504,7 @@ export default function Map() {
         mergeFlag = 0
         setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
         colorFlag = 0
+        setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
         borderFlag = 0;
         if(geoJsonLayer.current) {
           geoJsonLayer.current.resetStyle();
@@ -1555,7 +1564,7 @@ export default function Map() {
   const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
   const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />)
   const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
-
+  const [colorSubregionButton, setColorSubregionButton] = useState(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
 
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
@@ -1647,7 +1656,8 @@ export default function Map() {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={() => handleColorSubregion()}
           >
-            <ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />
+            {colorSubregionButton}
+            {/* <ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" /> */}
           </StyledIconButton>
 
           <StyledIconButton
