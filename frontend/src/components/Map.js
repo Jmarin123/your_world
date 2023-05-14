@@ -381,15 +381,16 @@ export default function Map() {
     mergeFeatureFlag = null
     setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
     setSelectSubregion(null)
     selectFeatureFlag = null
     setSelectFLAG(0)
 
     colorFlag = !colorFlag
-    if(colorFlag == 0){
-      setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
-    } else {
+    if(colorFlag){
       setColorSubregionButton(<ColorLens style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Color Subregion" />)
+    } else {
+      setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
     }
    }
 
@@ -409,6 +410,11 @@ export default function Map() {
     setSelectFLAG(0)
 
     borderFlag = !borderFlag
+    if(borderFlag){
+      setColorBorderButton(<BorderColor style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Color Border" />)
+    } else {
+      setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
+    }
   }
 
   function handleColorBackground() {
@@ -422,6 +428,7 @@ export default function Map() {
     setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
     setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
     setSelectSubregion(null)
     selectFeatureFlag = null
     setSelectFLAG(0)
@@ -1223,6 +1230,7 @@ export default function Map() {
         selectFeatureFlag = null
         setSelectFLAG(0)
         setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+        setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
         //selectFLAG = 0
       }
     } 
@@ -1506,6 +1514,7 @@ export default function Map() {
         colorFlag = 0
         setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
         borderFlag = 0;
+        setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
         if(geoJsonLayer.current) {
           geoJsonLayer.current.resetStyle();
         }
@@ -1565,7 +1574,8 @@ export default function Map() {
   const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />)
   const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
   const [colorSubregionButton, setColorSubregionButton] = useState(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
-
+  const [colorBorderButton, setColorBorderButton] = useState(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
+  
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
@@ -1677,7 +1687,8 @@ export default function Map() {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={() => handleColorBorder()}
           >
-            <BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />
+            {colorBorderButton}
+            {/* <BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" /> */}
           </StyledIconButton>
 
           <StyledIconButton
