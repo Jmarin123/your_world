@@ -36,7 +36,7 @@ let splitArray = [];
 
 //GLOBAL VARIABLES FOR SELECTION A SUBREGION
 let selectFeatureFlag = null
-//let selectFLAG = 0;
+let selectHIGHLIGHTFLAG = 0;
 let regionToEdit = null;
 let drawFlag = true
 
@@ -376,6 +376,11 @@ export default function Map() {
     // backgroundFlag = 0;
     mergeFeatureFlag = null
 
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setSelectSubregion(null)
+    selectFeatureFlag = null
+    setSelectFLAG(0)
+
     colorFlag = !colorFlag
   }
 
@@ -387,6 +392,10 @@ export default function Map() {
     colorFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setSelectSubregion(null)
+    selectFeatureFlag = null
+    setSelectFLAG(0)
 
     borderFlag = !borderFlag
   }
@@ -399,6 +408,10 @@ export default function Map() {
     colorFlag = 0;
     mergeFeatureFlag = null
     borderFlag = 0;
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setSelectSubregion(null)
+    selectFeatureFlag = null
+    setSelectFLAG(0)
 
     store.currentMap.dataFromMap.background = colorFill
     setBackground(colorFill)
@@ -590,8 +603,6 @@ export default function Map() {
   const stableClickFeature = useCbStable(clickFeature);
 
   function clickFeature(event) {
-    console.log("HEY IT CLICKED HERE");
-    console.log(event.target);
     if (mergeFlag) { // Merge active. Mark region if first, and merge if second. 
       event.target.setStyle({
         color: "#000000",
@@ -716,6 +727,9 @@ export default function Map() {
   useEffect(() => {
     if(selectFLAG === 0){
       selectFeatureFlag = null
+      selectHIGHLIGHTFLAG = 0
+    } else {
+      selectHIGHLIGHTFLAG = 1
     }
   }, [selectFLAG]);
 
@@ -1134,7 +1148,7 @@ export default function Map() {
         setMergedFlag(true)
 
 
-        const bufferDistance = 0.13; // adjust this value as needed
+        const bufferDistance = 0.15; // adjust this value as needed
         const bufferedPolygon1 = turf.buffer(mergeFeature.feature, bufferDistance);
         const bufferedPolygon2 = turf.buffer(mergeFeature_1.feature, bufferDistance);
 
@@ -1179,11 +1193,10 @@ export default function Map() {
         setSelectSubregion(null)
         selectFeatureFlag = null
         setSelectFLAG(0)
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
         //selectFLAG = 0
       }
-    } else {
-      // setMaplayout()
-    }
+    } 
   }
 
   // man.
@@ -1441,12 +1454,15 @@ export default function Map() {
   //FUNCTION FOR SELECTING A SUBREGION TO LATER EDIT
   function handleSelect(event) {
     if (MapLayOutFLAG !== 1) {
-      if (selectFLAG) {
+      if (selectHIGHLIGHTFLAG) {
+        
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
         setSelectSubregion(null)
         selectFeatureFlag = null
         setSelectFLAG(0)
         //selectFLAG = 0
       } else {
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Select Region"  onClick={handleSelect} />)
         setSelectedFeature(null)
         setSelectFLAG(1)
         //selectFLAG = 1
@@ -1455,6 +1471,8 @@ export default function Map() {
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
+        colorFlag = 0
+        borderFlag = 0;
         if(geoJsonLayer.current) {
           geoJsonLayer.current.resetStyle();
         }
@@ -1511,6 +1529,7 @@ export default function Map() {
   };
 
   const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+  const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />)
 
 
 
@@ -1592,7 +1611,8 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />
+            {selectButton}
+            {/* <TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} /> */}
           </StyledIconButton>
 
           <StyledIconButton
@@ -1717,7 +1737,7 @@ export default function Map() {
         <Statusbar />
       </Box>
 
-      <Box id="mapBoxEdit" component="form" noValidate >
+      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={center} doubleClickZoom={false}>
           <Recenter lat={center.lat} lng={center.lng} />
           <Screenshot />
