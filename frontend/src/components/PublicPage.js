@@ -30,7 +30,10 @@ export default function PublicPage() {
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
-            <Box id="publicBox" component="form" noValidate >
+            <Box id="publicBox" sx={{
+                        overflowY: 'auto',
+                        overflowX: 'hidden'
+                    }}component="form" noValidate >
                 {/* {store.search && store.filterSearch ? resultScreen : publicScreen} */}
                 <section id="public">Public Maps</section>
                 <FormControl variant="standard" sx={{
