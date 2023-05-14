@@ -95,7 +95,9 @@ export default function UploadModal() {
         for (let i = 0; i < dataForMap.features.length; i++) {
             dataForMap.features[i].properties.fillColor = "#ff0000";
             dataForMap.features[i].properties.borderColor = "#000000";
+            dataForMap.features[i].properties.label = "Untitled";
         }
+        dataForMap.background = "#abd2da"
         return dataForMap;
     }
 
@@ -108,7 +110,7 @@ export default function UploadModal() {
             assignName(object)
             assignColor(object)
 
-            let options = { tolerance: 0.015, highQuality: false };
+            let options = { tolerance: 0.002, highQuality: false };
             // eslint-disable-next-line
             let newMap = turf.simplify(object, options);
 

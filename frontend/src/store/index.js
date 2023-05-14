@@ -12,6 +12,7 @@ import EditVertex_Transaction from '../transactions/EditVertex_Transaction'
 import SplitRegion_Transaction from '../transactions/SplitRegion_Transaction'
 import MergeRegion_Transaction from '../transactions/MergeRegion_Transaction'
 import AddRegion_Transaction from '../transactions/AddRegion_Transaction'
+import DeleteRegion_Transaction from '../transactions/DeleteRegion_Transaction'
 
 import * as turf from '@turf/turf';
 
@@ -49,6 +50,8 @@ export const GlobalStoreActionType = {
     ADDED_REGION: "ADDED_REGION",
     REVERTED_REGION: "REVERTED_REGION",
     SAVE_MARKER: "SAVE_MARKER",
+    SET_LEGEND_COLOR: "SET_LEGEND_COLOR",
+    EXPORT_IMAGE: "EXPORT_IMAGE",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -85,7 +88,9 @@ function GlobalStoreContextProvider(props) {
         exportMapData: null,
         isFirstUpload: false,
         compressStatus: false,
-        addedRegion: false
+        addedRegion: false,
+        legendColor: false,
+        exportImage: false
     });
     // const history = useHistory();
 
@@ -115,6 +120,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.DUPLICATE_MAP: {
@@ -134,7 +141,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.HIDE_MODAL: {
@@ -154,7 +162,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_MAP: {
@@ -174,6 +183,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: payload.firstUpload,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -194,7 +205,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.CLOSE_COMMENT: {
@@ -214,6 +226,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -234,6 +248,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -254,6 +270,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -275,6 +293,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: payload.mapData,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -296,6 +316,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -316,6 +338,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -336,6 +360,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -355,6 +381,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -374,6 +402,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -393,6 +423,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -412,6 +444,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.EDIT_MAP_VERTEX: {
@@ -431,6 +465,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -451,7 +487,9 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: true
+                    addedRegion: true,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.REVERTED_REGION: {
@@ -471,7 +509,9 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    addedRegion: false
+                    addedRegion: false,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.MARK_SUBREGION_FOR_RENAME: {
@@ -491,6 +531,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -511,6 +553,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
 
                 });
             }
@@ -531,7 +575,8 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.SET_SORT: {
@@ -551,6 +596,8 @@ function GlobalStoreContextProvider(props) {
                     sort: payload,
                     exportMapData: null,
                     isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION: {
@@ -569,7 +616,9 @@ function GlobalStoreContextProvider(props) {
                     thumbnail: false,
                     sort: store.sort,
                     exportMapData: null,
-                    isFirstUpload: false
+                    isFirstUpload: false,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
             case GlobalStoreActionType.PROPERTIES: {
@@ -608,10 +657,11 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
-                    compressStatus: true
+                    compressStatus: true,
+                    legendColor: false,
+                    exportImage: false,
                 });
             }
-
             case GlobalStoreActionType.SAVE_MARKER: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
@@ -629,12 +679,62 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort,
                     exportMapData: null,
                     isFirstUpload: false,
+                    exportImage: false,
+                    legendColor: false,
+                });
+            }
+            case GlobalStoreActionType.EXPORT_IMAGE: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    legendColor: true,
+                    exportImage: payload.exportImage,
+                });
+            }
+            case GlobalStoreActionType.SET_LEGEND_COLOR: {
+                return setStore({
+                    currentModal: CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false,
+                    legendColor: true,
                 });
             }
             default:
                 return store;
         }
     }
+    store.setLegendColor = function () {
+        console.log("store.setLegendColor");
+        storeReducer({
+            type: GlobalStoreActionType.SET_LEGEND_COLOR
+        });
+    }
+
 
     store.compressMap = function () {
         storeReducer({
@@ -1134,6 +1234,13 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.toggleExportImage = function () {
+        storeReducer({
+            type: GlobalStoreActionType.EXPORT_IMAGE,
+            payload: { exportImage: !store.exportImage }
+        });
+    }
+
     //-------------------------------------------->FUNCTION FOR UNDO/REDO OF EDITING VERTEX
     //this function will be called from Map.js
     store.editCurrentMapVertex = function (key, newFeature, oldFeature) {
@@ -1372,12 +1479,55 @@ function GlobalStoreContextProvider(props) {
 
     //----------------------------------------------------------------------------------------------------->DONE\
 
-    store.deleteSubregion = function () {
+    //-------------------------------------------->FUNCTION FOR UNDO/REDO OF DELETING A REGION
+    store.deleteCurrentRegion = function (keys, deletedRegion) {
+        this.addDeleteRegionTransaction(keys, deletedRegion);
+    }
+    store.addDeleteRegionTransaction = (keys, deletedRegion) => {
+        let transaction = new DeleteRegion_Transaction(store, keys, deletedRegion);
+        tps.addTransaction(transaction);
+    }
+    store.deleteSubregion = function(keys){
+
+        if(keys.length === 2) {
+            let i = keys[0]
+            let j = keys[1]
+            store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 1);
+        } else {
+            let i = keys[0]
+            store.currentMap.dataFromMap.features.splice(i, 1);
+        }
+
         storeReducer({
             type: GlobalStoreActionType.EDIT_MAP_VERTEX,
             payload: { currentMap: store.currentMap }
         });
     }
+    store.addDeletedSubregion = function(keys, deletedRegion){
+        console.log("WTF ARE KEYS")
+        console.log(keys)
+        if(keys.length === 2) {
+            console.log("why isnt this working")
+            let i = keys[0]
+            let j = keys[1]
+            let deletedCoords = deletedRegion.geometry.coordinates[j]
+            //let deleted = JSON.parse(JSON.stringify(deletedRegion)); //create a deep copy
+            store.currentMap.dataFromMap.features[i].geometry.coordinates.splice(j, 0, deletedCoords)
+            //store.currentMap.dataFromMap.features[i] = deleted;
+        } else {
+            console.log("TRIED TO REDO BRYH")
+            let i = keys[0]
+            let deleted = JSON.parse(JSON.stringify(deletedRegion)); //create a deep copy
+            store.currentMap.dataFromMap.features.splice(i, 0, deleted)
+            //store.currentMap.dataFromMap.features[i] = deleted;
+        }
+
+        storeReducer({
+            type: GlobalStoreActionType.EDIT_MAP_VERTEX,
+            payload: { currentMap: store.currentMap }
+        });
+    }
+    //----------------------------------------------------------------------------------------------------->DONE\
 
     store.markSubregion = function (feature) {
         storeReducer({

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import { GlobalStoreContext } from '../store'
 
@@ -7,28 +7,81 @@ import { Box, Grid } from '@mui/material';
 import Comment from './Comment';
 import Statusbar from './Statusbar';
 
-import { MapContainer, GeoJSON, TileLayer, Marker, Tooltip } from 'react-leaflet';
-
+import { MapContainer, GeoJSON, Marker, Tooltip } from 'react-leaflet';
+// TileLayer
 
 export default function Mapview() {
     const { store } = useContext(GlobalStoreContext);
-    console.log(store.openComment);
+    const [background, setBackground] = useState("#AAD3DF");
+    const [containerKey, setContainerKey] = useState(0);
+    const [legendItems, setLegendItems] = useState([]);
 
-    const countryStyle = {
-        fillColor: "red",
-        fillOpacity: 1,
-        color: "black",
-        weight: 2,
-    };
+    // useEffect(() => {
+    //     console.log('State variable changed:', store.currentMap);
+    //     if(store.currentMap && store.currentMap.dataFromMap.background){
+    //         setBackground(store.currentMap.dataFromMap.background)
+    //         setContainerKey(containerKey+1)
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [store.currentMap]);
+    useEffect(() => {
+        console.log('State variable changed:', store.currentMap);
+        if (store.currentMap && store.currentMap.dataFromMap.background) {
+            setBackground(store.currentMap.dataFromMap.background);
+            setContainerKey((prevKey) => prevKey + 1);
+        }
+        if (store.currentMap && store.currentMap.dataFromMap.features) {
+            const uniqueFillColors = new Set();
+            const items = [];
 
-    // const circleIcon = L.divIcon({
-    //     className: "circle-icon",
-    //     iconSize: [12, 12],
-    // });
+            store.currentMap.dataFromMap.features.forEach((feature) => {
+                const fillColor = feature.properties.fillColor;
+                if (!uniqueFillColors.has(fillColor)) {
+                    uniqueFillColors.add(fillColor);
+                    items.push({
+                        color: fillColor,
+                        label: feature.properties.label,
+                    });
+                }
+            });
+
+            setLegendItems(items);
+        }
+    }, [store.currentMap]);
+
+    let myLegend = (
+        <div className="legend">
+            {legendItems.map((item, index) => (
+                <div key={index} className="legend-item">
+                    <span className="legend-color" style={{ backgroundColor: item.color }}></span>
+                    {item.isEditing ? (
+                        <input
+                            type="text"
+                            value={item.label}
+                            // onChange={(event) => handleLabelChange(event, index)}
+                            // onBlur={() => handleLabelBlur(index)}
+                            autoFocus
+                        />
+                    ) : (
+                        <span className="legend-label">
+                            {item.label}
+                        </span>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+
+    function styleMap(feature) {
+        return {
+            fillColor: feature.properties.fillColor || "#ff0000",
+            fillOpacity: 1,
+            color: feature.properties.borderColor || "#000000",
+            weight: 2,
+        }
+    }
 
     function onEachCountry(country, layer) {
-
-
         let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
             popupContent += country.properties.popupContent;
@@ -39,7 +92,7 @@ export default function Mapview() {
 
     const renderedMap = (
         <GeoJSON
-            style={countryStyle}
+            style={styleMap}
             data={store.currentMap ? store.currentMap.dataFromMap.features : null}
             onEachFeature={onEachCountry}
         >
@@ -73,8 +126,6 @@ export default function Mapview() {
         </GeoJSON>
     );
 
-
-
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
             <Box id="statusBoxEdit">
@@ -82,11 +133,12 @@ export default function Mapview() {
             </Box>
 
             <Box id="mapBox" component="form" noValidate >
-                <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={[20, 100]}>
+                    {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                     {
                         store.currentMap ? renderedMap : <div></div>
                     }
+                    {myLegend}
                 </MapContainer>
             </Box>
 
@@ -111,11 +163,12 @@ export default function Mapview() {
                                 <Statusbar />
                             </Box>
                             <Box id="mapBox" component="form" noValidate >
-                                <MapContainer id="mapContainer" style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
-                                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} zoom={2} center={[20, 100]}>
+                                    {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                                     {
                                         store.currentMap ? renderedMap : <div></div>
                                     }
+                                    {myLegend}
                                 </MapContainer>
                             </Box>
 
