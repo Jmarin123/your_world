@@ -40,6 +40,10 @@ let selectHIGHLIGHTFLAG = 0;
 let regionToEdit = null;
 let drawFlag = true
 
+//GLOBAL VARIABLES FOR MERGING TWO REGIONS
+let firstMerge = null;
+let secondMerge = null;
+
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   // const [font, setFont] = React.useState("Arial");
@@ -375,7 +379,7 @@ export default function Map() {
     borderFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
-
+    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
     setSelectSubregion(null)
     selectFeatureFlag = null
@@ -392,6 +396,7 @@ export default function Map() {
     colorFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
+    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
     setSelectSubregion(null)
     selectFeatureFlag = null
@@ -408,6 +413,7 @@ export default function Map() {
     colorFlag = 0;
     mergeFeatureFlag = null
     borderFlag = 0;
+    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
     setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
     setSelectSubregion(null)
     selectFeatureFlag = null
@@ -709,6 +715,16 @@ export default function Map() {
   />
 
   const [maplayout, setMaplayout] = useState(newMap ? renderedMap : <div></div>);
+
+  //THIS IS FOR SELECTING TO MERGE 1ST REGION
+  useEffect(() => {
+    firstMerge = mergeFeature
+  }, [mergeFeature]);
+
+  //THIS IS FOR SELECTING TO MERGE 1ST REGION
+  useEffect(() => {
+    secondMerge = mergeFeature_1
+  }, [mergeFeature_1]);
 
    //THIS IS FOR SELECTING A SUBREGION
    useEffect(() => {
@@ -1144,43 +1160,47 @@ export default function Map() {
 
   function handleMerge(event) {
     if (MapLayOutFLAG !== 1) {
-      if (mergeFlag > 0 && mergeFeature && mergeFeature_1) {
+      console.log(mergeFeature)
+      console.log(mergeFeature_1)
+      if (mergeFlag > 0 && firstMerge && secondMerge) {
         setMergedFlag(true)
 
 
         const bufferDistance = 0.15; // adjust this value as needed
-        const bufferedPolygon1 = turf.buffer(mergeFeature.feature, bufferDistance);
-        const bufferedPolygon2 = turf.buffer(mergeFeature_1.feature, bufferDistance);
+        const bufferedPolygon1 = turf.buffer(firstMerge.feature, bufferDistance);
+        const bufferedPolygon2 = turf.buffer(secondMerge.feature, bufferDistance);
 
         let union = turf.union(bufferedPolygon1, bufferedPolygon2);
         let index1;
         let index2;
         for (let i = 0; i < store.currentMap.dataFromMap.features.length; i++) {
           let currentFeature = store.currentMap.dataFromMap.features[i]
-          if (currentFeature.properties.admin === mergeFeature.feature.properties.admin) {
+          if (currentFeature.properties.admin === firstMerge.feature.properties.admin) {
             index1 = i;
           }
-          if (currentFeature.properties.admin === mergeFeature_1.feature.properties.admin) {
+          if (currentFeature.properties.admin === secondMerge.feature.properties.admin) {
             index2 = i;
           }
         }
 
         let keys = [index1, index2]
         let copiedUnion = JSON.parse(JSON.stringify(union));
-        let copiedFeature1 = JSON.parse(JSON.stringify(mergeFeature.feature));
-        let copiedFeature2 = JSON.parse(JSON.stringify(mergeFeature_1.feature));
+        let copiedFeature1 = JSON.parse(JSON.stringify(firstMerge.feature));
+        let copiedFeature2 = JSON.parse(JSON.stringify(secondMerge.feature));
         store.mergeCurrentRegions(keys, copiedUnion, copiedFeature1, copiedFeature2)
 
         setMergeFeature(null)
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
+        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
       }
       else if (mergeFlag) {
         setMergeFeature(null)
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
+        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
         //geoJsonLayer.current.resetStyle();
       }
       else {
@@ -1190,6 +1210,7 @@ export default function Map() {
         // backgroundFlag = 0;
 
         mergeFlag = 1
+        setMergeButton(<Merge style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Merge" onClick={handleMerge} />)
         setSelectSubregion(null)
         selectFeatureFlag = null
         setSelectFLAG(0)
@@ -1339,115 +1360,117 @@ export default function Map() {
 
   //FUNCTIONS FOR SPLITTING REGIONS
   const handleSplit = () => {
-    if (splitArray.length === 2 && splitArray[0][3] === splitArray[1][3] && splitArray[0][0] === splitArray[1][0]) { //check if array is full, then if both vertices are the same type(Poly or Multi) then check both vertices belong to the same Polygon
-      let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
-      let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
+    if(regionToEdit){
+      if (splitArray.length === 2 && splitArray[0][3] === splitArray[1][3] && splitArray[0][0] === splitArray[1][0]) { //check if array is full, then if both vertices are the same type(Poly or Multi) then check both vertices belong to the same Polygon
+        let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
+        let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
 
-      if (!ver1[3]) { //splitting a regular polygon
-        let i1 = ver1[1]
-        let i2 = ver2[1]
-        if (i1 > i2) {
-          i2 = ver1[1]
-          i1 = ver2[1]
-        }
-        let featureFound = store.currentMap.dataFromMap.features[ver1[0]]
-        const oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
+        if (!ver1[3]) { //splitting a regular polygon
+          let i1 = ver1[1]
+          let i2 = ver2[1]
+          if (i1 > i2) {
+            i2 = ver1[1]
+            i1 = ver2[1]
+          }
+          let featureFound = store.currentMap.dataFromMap.features[ver1[0]]
+          const oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
 
-        let vertex1 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver1[1]]
-        let vertex2 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver2[1]]
+          let vertex1 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver1[1]]
+          let vertex2 = store.currentMap.dataFromMap.features[ver1[0]].geometry.coordinates[0][ver2[1]]
 
-        let line = turf.lineString([vertex1, vertex2]);
-        let intersects = turf.lineIntersect(line, featureFound);
-        let noOfIntersects = intersects.features.length
+          let line = turf.lineString([vertex1, vertex2]);
+          let intersects = turf.lineIntersect(line, featureFound);
+          let noOfIntersects = intersects.features.length
 
-        const isP1Inside = turf.booleanPointInPolygon(vertex1, featureFound);
-        const isP2Inside = turf.booleanPointInPolygon(vertex2, featureFound);
-        console.log(noOfIntersects)
-        console.log(isP1Inside + " " + isP2Inside)
-        if (noOfIntersects <= 2) {
-          const slicedFeatureArray = featureFound.geometry.coordinates[0].slice(i1, (i2 + 1)); // [3, 4, 5]
-          let repeatCoord = slicedFeatureArray[0]
-          slicedFeatureArray.push(repeatCoord)
+          const isP1Inside = turf.booleanPointInPolygon(vertex1, featureFound);
+          const isP2Inside = turf.booleanPointInPolygon(vertex2, featureFound);
+          console.log(noOfIntersects)
+          console.log(isP1Inside + " " + isP2Inside)
+          if (noOfIntersects <= 2) {
+            const slicedFeatureArray = featureFound.geometry.coordinates[0].slice(i1, (i2 + 1)); // [3, 4, 5]
+            let repeatCoord = slicedFeatureArray[0]
+            slicedFeatureArray.push(repeatCoord)
 
-          if (slicedFeatureArray.length > 3) {
+            if (slicedFeatureArray.length > 3) {
 
-            const copiedArray = JSON.parse(JSON.stringify(splitArray)); //DEEP COPY ARRAY SO NO ISSUES OCCUR FOR REDO
-            store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
+              const copiedArray = JSON.parse(JSON.stringify(splitArray)); //DEEP COPY ARRAY SO NO ISSUES OCCUR FOR REDO
+              store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
 
+              splitArray.length = 0
+              setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+              if (MapLayOutFLAG !== 1) {
+                setMapLayOutFLAG(1)
+              } else {
+                setMapLayOutFLAG(0)
+              }
+            }
+          } else {
             splitArray.length = 0
             setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-            if (MapLayOutFLAG !== 1) {
-              setMapLayOutFLAG(1)
-            } else {
-              setMapLayOutFLAG(0)
-            }
+            setSplitFlag(Math.random())
           }
-        } else {
-          splitArray.length = 0
-          setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-          setSplitFlag(Math.random())
-        }
-      } else { //splitting a poly from a multipolygon, //[8-3, 2, {x,y}, T/F] ------------------------------------------------->
-        console.log("MULTI POLY ENTERED HERE")
-        let i1 = ver1[1]
-        let parts1 = ver1[0].split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
-        let indexPoly1 = parseInt(parts1[0]);
-        let indexCoordPoly1 = parseInt(parts1[1]);
-        let i2 = ver2[1]
+        } else { //splitting a poly from a multipolygon, //[8-3, 2, {x,y}, T/F] ------------------------------------------------->
+          console.log("MULTI POLY ENTERED HERE")
+          let i1 = ver1[1]
+          let parts1 = ver1[0].split("-"); //parts = ["index of subregion", "index of subregion in multipolygon"]
+          let indexPoly1 = parseInt(parts1[0]);
+          let indexCoordPoly1 = parseInt(parts1[1]);
+          let i2 = ver2[1]
 
-        if (i1 > i2) {
-          i2 = ver1[1]
-          i1 = ver2[1]
-        }
-        let featureFound = store.currentMap.dataFromMap.features[indexPoly1]
-        let oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
+          if (i1 > i2) {
+            i2 = ver1[1]
+            i1 = ver2[1]
+          }
+          let featureFound = store.currentMap.dataFromMap.features[indexPoly1]
+          let oldFeature = JSON.parse(JSON.stringify(featureFound)); //create a deep copy
 
-        let vertex1 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver1[1]]
-        let vertex2 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver2[1]]
+          let vertex1 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver1[1]]
+          let vertex2 = featureFound.geometry.coordinates[indexCoordPoly1][0][ver2[1]]
 
-        let line = turf.lineString([vertex1, vertex2]);
-        let intersects = turf.lineIntersect(line, featureFound);
-        let noOfIntersects = intersects.features.length
-        console.log(noOfIntersects)
-        if (noOfIntersects <= 2) {
+          let line = turf.lineString([vertex1, vertex2]);
+          let intersects = turf.lineIntersect(line, featureFound);
+          let noOfIntersects = intersects.features.length
+          console.log(noOfIntersects)
+          if (noOfIntersects <= 2) {
 
-          const slicedFeatureArray = featureFound.geometry.coordinates[indexCoordPoly1][0].slice(i1, (i2 + 1)); // [3, 4, 5]
-          let repeatCoord = slicedFeatureArray[0]
-          slicedFeatureArray.push(repeatCoord)
+            const slicedFeatureArray = featureFound.geometry.coordinates[indexCoordPoly1][0].slice(i1, (i2 + 1)); // [3, 4, 5]
+            let repeatCoord = slicedFeatureArray[0]
+            slicedFeatureArray.push(repeatCoord)
 
-          if (slicedFeatureArray.length > 3) {
+            if (slicedFeatureArray.length > 3) {
 
 
-            // let slicedFeature = turf.polygon([slicedFeatureArray]);
-            // let index = store.currentMap.dataFromMap.features.length
-            // let name = "NewRegion-" + index
-            // slicedFeature.properties.admin = name
-            // slicedFeature.properties.sovereignt = name
-            // store.currentMap.dataFromMap.features[indexPoly1].geometry.coordinates[indexCoordPoly1][0].splice(i1 + 1, i2 - i1 - 1)
-            // store.currentMap.dataFromMap.features.push(slicedFeature)
+              // let slicedFeature = turf.polygon([slicedFeatureArray]);
+              // let index = store.currentMap.dataFromMap.features.length
+              // let name = "NewRegion-" + index
+              // slicedFeature.properties.admin = name
+              // slicedFeature.properties.sovereignt = name
+              // store.currentMap.dataFromMap.features[indexPoly1].geometry.coordinates[indexCoordPoly1][0].splice(i1 + 1, i2 - i1 - 1)
+              // store.currentMap.dataFromMap.features.push(slicedFeature)
 
-            const copiedArray = JSON.parse(JSON.stringify(splitArray)); //DEEP COPY ARRAY SO NO ISSUES OCCUR FOR REDO
-            store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
+              const copiedArray = JSON.parse(JSON.stringify(splitArray)); //DEEP COPY ARRAY SO NO ISSUES OCCUR FOR REDO
+              store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
 
+              splitArray.length = 0
+              
+              setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+              if (MapLayOutFLAG !== 1) {
+                setMapLayOutFLAG(1)
+              } else {
+                setMapLayOutFLAG(0)
+              }
+            }
+          } else {
             splitArray.length = 0
-            
             setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-            if (MapLayOutFLAG !== 1) {
-              setMapLayOutFLAG(1)
-            } else {
-              setMapLayOutFLAG(0)
-            }
+            setSplitFlag(Math.random())
           }
-        } else {
-          splitArray.length = 0
-          setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-          setSplitFlag(Math.random())
         }
+      } else {
+        splitArray.length = 0
+        setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+        setSplitFlag(Math.random())
       }
-    } else {
-      splitArray.length = 0
-      setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-      setSplitFlag(Math.random())
     }
   }
 
@@ -1471,6 +1494,7 @@ export default function Map() {
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
+        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
         colorFlag = 0
         borderFlag = 0;
         if(geoJsonLayer.current) {
@@ -1530,7 +1554,7 @@ export default function Map() {
 
   const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
   const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />)
-
+  const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
 
 
   return (
@@ -1602,7 +1626,8 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />
+            {mergeButton}
+            {/* <Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} /> */}
           </StyledIconButton>
 
           <StyledIconButton
