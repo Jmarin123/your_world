@@ -43,7 +43,10 @@ export default function HomePage() {
     // }
     return (
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
-            <Box id="publicBox" component="form" noValidate >
+            <Box id="publicBox" sx={{
+                        overflowY: 'auto',
+                        overflowX: 'hidden'
+                    }}component="form" noValidate >
                 <section id="public">Your Maps</section>
 
 
@@ -84,7 +87,7 @@ export default function HomePage() {
                 <List id="map-cards-list"
                     sx={{
                         display: 'flex',
-                        // overflowY: 'auto',
+                        // overflow: 'auto',
                     }}
                     data-cy="list-of-cards"
                 >
