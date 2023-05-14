@@ -1910,8 +1910,9 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={handleToggleTileLayer}
           >
-            <EmojiFlags style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
+            <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" />
           </StyledIconButton>
 
           <StyledIconButton
@@ -1933,17 +1934,6 @@ export default function Map() {
 
           >
             <Title style={{ fontSize: "45px" }} titleAccess="Insert Text" />
-          </StyledIconButton>
-          
-          <StyledIconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ marginBottom: "10px" }}
-            onClick={handleToggleTileLayer}
-
-          >
-            <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" />
           </StyledIconButton>
 
         </Box>

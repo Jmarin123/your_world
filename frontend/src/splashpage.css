@@ -687,7 +687,7 @@ input {
     width: 80%;
     height: 0px;
     left: 9%;
-    top: 76.5%;
+    top: 63%;
     border: 1px solid #000000;
 }
 
@@ -696,7 +696,7 @@ input {
     width: 80%;
     height: 0px;
     left: 9%;
-    top: 70.5%;
+    top: 69%;
     border: 1px solid #000000;
 }
 
@@ -705,7 +705,7 @@ input {
     width: 75%;
     height: 5%;
     left: 10%;
-    top: 78%;
+    top: 72%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
@@ -716,7 +716,7 @@ input {
     width: 75%;
     height: 5%;
     left: 10%;
-    top: 85%;
+    top: 79%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
