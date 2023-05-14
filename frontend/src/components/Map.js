@@ -1868,11 +1868,11 @@ export default function Map() {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            sx={{ marginBottom: "10px" }}
+            sx={{ flex: "1 0 50%", marginBottom: "10px" }}
             onClick={handleAddMarker}
 
           >
-            <Title style={{ fontSize: "45px", float: "left" }} titleAccess="Insert Text" />
+            <Title style={{ fontSize: "45px" }} titleAccess="Insert Text" />
           </StyledIconButton>
 
         </Box>
