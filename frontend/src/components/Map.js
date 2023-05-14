@@ -187,13 +187,19 @@ export default function Map() {
       const { dataFromMap } = store.currentMap;
 
       const legendItem = updatedItems[index];
-      const feature = dataFromMap.features.find(
-        (feature) => feature.properties.fillColor === legendItem.color
-      );
+      // const feature = dataFromMap.features.find(
+      //   (feature) => feature.properties.fillColor === legendItem.color
+      // );
 
-      if (feature) {
-        feature.properties.label = newLabel;
-      }
+      // if (feature) {
+      //   feature.properties.label = newLabel;
+      // }
+
+      dataFromMap.features.forEach((feature) => {
+        if (feature.properties.fillColor === legendItem.color) {
+          feature.properties.label = newLabel;
+        }
+      });
 
       return updatedItems;
     });
