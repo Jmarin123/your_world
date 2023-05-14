@@ -664,6 +664,24 @@ input {
     margin-left: 15px;
 }
 
+#edit-line4 {
+    position: absolute;
+    width: 80%;
+    height: 0px;
+    left: 9%;
+    top: 27.3%;
+    border: 1px solid #000000;
+}
+
+#edit-line5 {
+    position: absolute;
+    width: 80%;
+    height: 0px;
+    left: 9%;
+    top: 41.5%;
+    border: 1px solid #000000;
+}
+
 #edit-line2 {
     position: absolute;
     width: 80%;

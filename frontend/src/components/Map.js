@@ -1774,6 +1774,8 @@ export default function Map() {
             <Redo style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
+          <div id="edit-line4"></div>
+
           <StyledIconButton
             edge="start"
             color="inherit"
@@ -1812,6 +1814,8 @@ export default function Map() {
             {selectButton}
             {/* <TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} /> */}
           </StyledIconButton>
+
+          <div id="edit-line5"></div>
 
           <StyledIconButton
             edge="start"
