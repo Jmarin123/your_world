@@ -1091,6 +1091,10 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.redirectToHome = function () {
+        navigate("/");
+    }
+
     store.openCommentView = function () {
         const toggle = !store.openComment
         storeReducer({
