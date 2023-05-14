@@ -1,4 +1,5 @@
 import { useEffect, useContext } from 'react';
+// useState
 
 import { GlobalStoreContext } from '../store'
 
@@ -6,6 +7,7 @@ import { GlobalStoreContext } from '../store'
 import * as L from 'leaflet'
 import { useMap } from 'react-leaflet';
 import { SimpleMapScreenshoter } from 'leaflet-simple-map-screenshoter'
+// useMapEvents
 
 const pluginOptions = {
     hideElementsWithSelectors: [
@@ -22,6 +24,25 @@ const Screenshot = () => {
     const { store } = useContext(GlobalStoreContext);
     const map = useMap();
     screenshotter.addTo(map)
+
+    // const [drag, setDrag] = useState(false)
+
+            // onDragStart={handleDragStart}
+            // onDragOver={handleDragOver}
+            // onDragEnter={handleDragEnter}
+            // onDragLeave={handleDragLeave}
+            // onDrop={handleDrop}
+
+    // const events = useMapEvents({
+    //     dragstart: () => {
+    //       console.log("Started drag")
+    //       setDrag(true)
+    //     },
+    //     dragend: () => {
+    //       console.log("Drag end")
+    //       setDrag(false)
+    //     }
+    //   })
 
     useEffect(() => {
         if(store.currentMap && store.thumbnail){
@@ -40,22 +61,31 @@ const Screenshot = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store.thumbnail]);
 
-    useEffect(() => {
-        if(store.currentMap && store.isFirstUpload){
-            let format = 'image' // 'image' - return base64, 'canvas' - return canvas
-            let overridedPluginOptions = {
-            mimeType: 'image/jpeg'
-            }
+    // useEffect(() => {
+    //     if(store.currentMap && store.isFirstUpload){
+    //         let format = 'image' // 'image' - return base64, 'canvas' - return canvas
+    //         let overridedPluginOptions = {
+    //         mimeType: 'image/jpeg'
+    //         }
+
+    //         console.log(map)
             
-            screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
-                store.currentMap.image = image;
-                store.updateCurrentMap();
-                }).catch(e => {
-                console.error(e)
-                })
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [store.isFirstUpload]);
+    //         var allowDrag = function(){
+    //             map.dragging.enable();
+    //         }
+
+    //         map.dragging.disable()
+    //         screenshotter.takeScreen(format, overridedPluginOptions).then(image => {
+    //             store.currentMap.image = image;
+    //             store.updateCurrentMap();
+    //             }).catch(e => {
+    //             console.error(e)
+    //         })
+    //         setTimeout(allowDrag, 1000);
+            
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [store.isFirstUpload]);
 
     useEffect(() => {
         if(store.currentMap && store.exportImage){

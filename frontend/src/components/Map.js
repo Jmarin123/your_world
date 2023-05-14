@@ -23,7 +23,7 @@ import { MapContainer, GeoJSON, FeatureGroup, Polygon, Circle, Marker, Tooltip }
 // TileLayer
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
-import { MuiColorInput } from 'mui-color-input'
+import { ChromePicker } from 'react-color'
 
 import L from 'leaflet';
 
@@ -48,7 +48,7 @@ export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   // const [font, setFont] = React.useState("Arial");
   const navigate = useNavigate();
-  const [center, setCenter] = useState({ lat: 20, lng: 100 });
+  const [bounds, setBounds] = useState(null);
   let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
@@ -77,9 +77,9 @@ export default function Map() {
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
-    let newCenter = (turf.center(store.currentMap.dataFromMap)).geometry.coordinates
-    let newCenterObject = { lat: newCenter[1], lng: newCenter[0] }
-    setCenter(newCenterObject)
+    // let newCenter = (turf.center(store.currentMap.dataFromMap)).geometry.coordinates
+    // let newCenterObject = { lat: newCenter[1], lng: newCenter[0] }
+    // setCenter(newCenterObject)
     mergeFlag = 0;
     colorFlag = 0;
     borderFlag = 0;
@@ -89,6 +89,16 @@ export default function Map() {
       setMarkers(store.currentMap.markers);
     }
   }, [store.currentMap]);
+
+  useEffect(() => {
+    console.log('State variable changed:', geoJsonLayer.current);
+    if(geoJsonLayer.current){
+      if(geoJsonLayer.current.getBounds() !== null){
+        setBounds(geoJsonLayer.current.getBounds())
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [geoJsonLayer.current]);
 
   useEffect(() => {
     store.subregion ? setOldName(store.subregion.properties.admin) : setOldName("")
@@ -760,10 +770,6 @@ export default function Map() {
         })
       }
     }
-  };
-
-  const handleColorChange = (newValue) => {
-    setColorFill(newValue)
   };
 
   newMap.features.forEach((feature, index) => {
@@ -1725,11 +1731,56 @@ export default function Map() {
         <Button id="modal-button" onClick={handleConfirmProperty}>Confirm</Button>
         <Button id="modal-button" onClick={handleCloseProperty}>Cancel</Button>
       </Grid>
-      <h6>Declaimer: Property changes cannot be reverted</h6>
+      <h6>Disclaimer: Property changes cannot be reverted</h6>
     </Grid>
   </Modal>
 
+    // ------------ Color Picker Related
 
+    const [colorPickerOpen, setColorPickerOpen] = useState(false)
+  
+    function handleColorClick() {
+      setColorPickerOpen(!colorPickerOpen)
+    };
+    
+    function handleColorClose() {
+      setColorPickerOpen(false)
+    };
+    
+    function handleColorChange(color){
+      setColorFill(color.hex)
+    };
+  
+    const styles = {
+        color: {
+          width: '36px',
+          height: '14px',
+          borderRadius: '2px',
+          background: colorFill,
+        },
+        swatch: {
+          padding: '5px',
+          background: '#fff',
+          borderRadius: '1px',
+          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+          display: 'inline-block',
+          cursor: 'pointer',
+        },
+        popover: {
+          position: 'absolute',
+          zIndex: '2',
+        },
+        cover: {
+          position: 'fixed',
+          top: '0px',
+          right: '0px',
+          bottom: '0px',
+          left: '0px',
+        },
+    };
+  
+    // ------------ Color Picker End
+  
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
@@ -1942,15 +1993,25 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
-        <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={center} doubleClickZoom={false}>
-          <Recenter lat={center.lat} lng={center.lng} />
+        <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
+          <Recenter bounds={bounds} />
           <Screenshot />
           {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
           {maplayout}
           {textMarker}
           {myLegend}
         </MapContainer>
-        <MuiColorInput value={colorFill} onChange={handleColorChange} />
+
+        <Box>
+        <div style={ styles.swatch } onClick={ handleColorClick }>
+          <div style={ styles.color } />
+        </div>
+        { colorPickerOpen ? <div style={ styles.popover }>
+          <div style={ styles.cover } onClick={ handleColorClose }/>
+          <ChromePicker disableAlpha={true} color={ colorFill } onChange={ handleColorChange } />
+        </div> : null }
+        </Box>
+
         <Box>
           <header>
             <h2>Current Region's Properties:</h2>

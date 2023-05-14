@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 
-const Recenter = ({lat,lng}) => {
+const Recenter = ({bounds}) => {
     const map = useMap();
     useEffect(() => {
-        map.setView([lat, lng]);
+        if(bounds !== null){
+            map.fitBounds(bounds, { animate: false, })
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lat, lng]);
+    }, [bounds]);
     return null;
 }
 

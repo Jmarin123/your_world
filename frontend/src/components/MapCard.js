@@ -9,6 +9,7 @@ import { Box, Typography, ListItem, IconButton } from '@mui/material';
 import { Download, FileCopy, DeleteOutline, BorderColor, ThumbDownOffAlt, ThumbUpOffAlt } from '@mui/icons-material/';
 
 import MapCardSample from './/mapcardsample.jpg'
+import UnpublishedMapCardSample from './/unpubmapcardsample.png'
 
 export default function MapCard(props) {
     const location = useLocation();
@@ -60,7 +61,8 @@ export default function MapCard(props) {
         navigate("/mapview/" + id);
     }
 
-    let image = idNamePair.image === "temp" ? MapCardSample : idNamePair.image
+    let pub_image = idNamePair.image === "temp" && idNamePair.publish.isPublished ? MapCardSample : idNamePair.image
+    let image = idNamePair.image === "temp" ? UnpublishedMapCardSample : idNamePair.image
 
     /* handleLikeDislike will handle updating the liked and disliked button, as well as the 
     like and/or dislike count of this list */
@@ -163,7 +165,7 @@ export default function MapCard(props) {
                 </Typography>
             </Box>
 
-            <img id="map-card-image" src={image} alt="mapcardsample" />
+            <img id="map-card-image" src={pub_image} alt="mapcardsample" />
 
             <StyledIconButton
                 edge="start"
