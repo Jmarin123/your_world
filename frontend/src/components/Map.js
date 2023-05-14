@@ -52,6 +52,8 @@ export default function Map() {
   let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
+  const [propertyKey, setPropertyKey] = useState("");
+  const [propertyValue, setProperyValue] = useState("");
   const [undoFlag, setUndoFlag] = useState(-1);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
   const [compressionStatus, setCompressionStatus] = useState('normal');
@@ -71,6 +73,7 @@ export default function Map() {
 
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
+  const [listOfProperties, setListOfProperties] = useState({});
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -82,6 +85,9 @@ export default function Map() {
     borderFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
+    if (store.currentMap && store.currentMap.markers) {
+      setMarkers(store.currentMap.markers);
+    }
   }, [store.currentMap]);
 
   useEffect(() => {
@@ -115,9 +121,37 @@ export default function Map() {
     p: 4,
   };
 
+  const styleProperties = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    height: 600,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
+    p: 4,
+  };
+
+  const removePropertyStyle = {
+    borderRadius: "50%",
+    width: "20px",
+    height: "20px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    color: "white",
+    backgroundColor: "red",
+    border: "none",
+    outline: "none",
+    cursor: "pointer",
+    marginLeft: "auto",
+    marginRight: "5px",
+  }
+
   const top = {
     position: 'absolute',
-    width: 423,
+    width: "100%",
     height: 71,
     left: 0,
     top: 0,
@@ -130,6 +164,27 @@ export default function Map() {
     alignItems: 'center',
     justifyContent: 'center',
   }
+
+  const addPropertyButtonStyle = {
+    backgroundColor: "green",
+    borderRadius: "50%",
+    width: "40px",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0px 0px 5px black",
+    cursor: "pointer",
+    marginRight: "auto",
+    marginLeft: "auto"
+  };
+
+  const plusSignStyle = {
+    color: "black",
+    fontSize: "30px",
+    fontWeight: "bold",
+    lineHeight: 0,
+  };
 
   const buttonBox = {
     display: 'flex',
@@ -271,12 +326,6 @@ export default function Map() {
     { label: 'Comic Sans MS', value: 'Comic Sans MS, cursive' },
   ];
 
-  useEffect(() => {
-    if (store.currentMap && store.currentMap.markers) {
-      setMarkers(store.currentMap.markers);
-    }
-  }, [store.currentMap]);
-
   const handleMarkerDragEnd = (markerIndex, event) => {
     const { lat, lng } = event.target.getLatLng();
     const updatedMarkers = [...markers];
@@ -379,20 +428,20 @@ export default function Map() {
     borderFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
-    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
-    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
-    setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
+    setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
+    setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
     setSelectSubregion(null)
     selectFeatureFlag = null
     setSelectFLAG(0)
 
     colorFlag = !colorFlag
-    if(colorFlag){
-      setColorSubregionButton(<ColorLens style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Color Subregion" />)
+    if (colorFlag) {
+      setColorSubregionButton(<ColorLens style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Color Subregion" />)
     } else {
-      setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
+      setColorSubregionButton(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
     }
-   }
+  }
 
   function handleColorBorder() {
     setSelectedFeature(null)
@@ -402,16 +451,16 @@ export default function Map() {
     colorFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
-    setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
-    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
-    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+    setColorSubregionButton(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
+    setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
     setSelectSubregion(null)
     selectFeatureFlag = null
     setSelectFLAG(0)
 
     borderFlag = !borderFlag
-    if(borderFlag){
-      setColorBorderButton(<BorderColor style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Color Border" />)
+    if (borderFlag) {
+      setColorBorderButton(<BorderColor style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Color Border" />)
     } else {
       setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
     }
@@ -425,10 +474,10 @@ export default function Map() {
     colorFlag = 0;
     mergeFeatureFlag = null
     borderFlag = 0;
-    setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
-    setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
-    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
-    setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
+    setColorSubregionButton(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
+    setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
+    setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
+    setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
     setSelectSubregion(null)
     selectFeatureFlag = null
     setSelectFLAG(0)
@@ -637,7 +686,7 @@ export default function Map() {
       else {
         setMergeFeature_1(event.target)
       }
-    } else if(selectFLAG) {
+    } else if (selectFLAG) {
       if (selectFeatureFlag === null) {
         event.target.setStyle({
           color: "#3388FF",
@@ -650,9 +699,9 @@ export default function Map() {
         //set the region by setting it to a global variable bc for some reason the state variable resets to null in here...lol
         setSelectSubregion(copied)
         selectFeatureFlag = copied
-      } else if(event.target.feature.properties.admin === regionToEdit.properties.admin) { //deselect the selected region
+      } else if (event.target.feature.properties.admin === regionToEdit.properties.admin) { //deselect the selected region
         geoJsonLayer.current.resetStyle();
-        
+
         setSelectSubregion(null)
         selectFeatureFlag = null
         //selectFLAG = 0
@@ -702,8 +751,8 @@ export default function Map() {
     }
     layer.bindPopup(popupContent);
 
-    if(selectSubregion){
-      if(country.properties.admin === selectSubregion.properties.admin){
+    if (selectSubregion) {
+      if (country.properties.admin === selectSubregion.properties.admin) {
         layer.setStyle({
           color: "#3388FF",
           fillColor: "#3388FF",
@@ -740,9 +789,9 @@ export default function Map() {
     secondMerge = mergeFeature_1
   }, [mergeFeature_1]);
 
-   //THIS IS FOR SELECTING A SUBREGION
-   useEffect(() => {
-    if(selectSubregion === null && geoJsonLayer.current){
+  //THIS IS FOR SELECTING A SUBREGION
+  useEffect(() => {
+    if (selectSubregion === null && geoJsonLayer.current) {
       geoJsonLayer.current.resetStyle();
       regionToEdit = null;
       drawFlag = true;
@@ -755,7 +804,7 @@ export default function Map() {
 
   //THIS IS FOR SELECTING A SUBREGION
   useEffect(() => {
-    if(selectFLAG === 0){
+    if (selectFLAG === 0) {
       selectFeatureFlag = null
       selectHIGHLIGHTFLAG = 0
     } else {
@@ -802,13 +851,13 @@ export default function Map() {
 
   //THIS IS FOR MAP MODE SWITCHING AKA NAVIGATION
   useEffect(() => {
-    if(selectSubregion){
+    if (selectSubregion) {
       drawFlag = false
     } else {
       drawFlag = true
     }
 
-    if(compressValue !== -1 && MapLayOutFLAG === 1){
+    if (compressValue !== -1 && MapLayOutFLAG === 1) {
       let options = { tolerance: compressValue, highQuality: false };
       // eslint-disable-next-line
       newMap = turf.simplify(newMap, options);
@@ -828,14 +877,14 @@ export default function Map() {
         })}
       </FeatureGroup>)
       setCompressValue(-1)
-    }else if (MapLayOutFLAG === 1) {
+    } else if (MapLayOutFLAG === 1) {
       splitArray.length = 0
       setMaplayout(<div>
         <FeatureGroup>
           {newMap && newMap.features.map((feature, index) => {
-            if(regionToEdit){
+            if (regionToEdit) {
               if (feature.properties.admin !== regionToEdit.properties.admin) {
-                if(feature.geometry.type === 'Polygon'){
+                if (feature.geometry.type === 'Polygon') {
                   console.log("WHY ARENT U SHOWING UP")
                   return <Polygon key={Math.random()} pathOptions={{
                     fillColor: '#CCDAED',
@@ -843,7 +892,7 @@ export default function Map() {
                     color: '#3388FF',
                     opacity: 0.4, // Set the border opacity
                   }}
-                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
                 } else if (feature.geometry.type === 'MultiPolygon') {
                   const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
                     <Polygon key={Math.random()} pathOptions={{
@@ -852,20 +901,20 @@ export default function Map() {
                       color: '#3388FF',
                       opacity: 0.4, // Set the border opacity
                     }}
-                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
                   ));
                   return polygons;
                 }
-              } 
+              }
             } else {
-              if(feature.geometry.type === 'Polygon'){
+              if (feature.geometry.type === 'Polygon') {
                 return <Polygon key={Math.random()} pathOptions={{
                   fillColor: '#CCDAED',
                   fillOpacity: 0.8, // Set the fill opacity
                   color: '#3388FF',
                   opacity: 0.5, // Set the border opacity
                 }}
-                positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
               } else if (feature.geometry.type === 'MultiPolygon') {
                 const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
                   <Polygon key={Math.random()} pathOptions={{
@@ -874,7 +923,7 @@ export default function Map() {
                     color: '#3388FF',
                     opacity: 0.5, // Set the border opacity
                   }}
-                  positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
                 ));
                 return polygons;
               }
@@ -886,9 +935,9 @@ export default function Map() {
 
         <FeatureGroup>
           {newMap && newMap.features.map((feature, index) => {
-            if(regionToEdit){
+            if (regionToEdit) {
               if (feature.properties.admin === regionToEdit.properties.admin) {
-                if(feature.geometry.type === 'Polygon'){
+                if (feature.geometry.type === 'Polygon') {
                   return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
                 } else if (feature.geometry.type === 'MultiPolygon') {
                   const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
@@ -896,11 +945,11 @@ export default function Map() {
                   ));
                   return polygons;
                 }
-              } 
+              }
             }
             return null;
           })}
-          
+
           <EditControl
             position='topright'
             onEdited={handleEditable}
@@ -928,7 +977,7 @@ export default function Map() {
   useEffect(() => {
     if (compressValue !== -1) {
       splitArray.length = 0
-      
+
       // let options = { tolerance: compressValue, highQuality: false };
       // // eslint-disable-next-line
       // newMap = turf.simplify(newMap, options);
@@ -971,40 +1020,18 @@ export default function Map() {
     if (splitFlag > -1) {
       setMaplayout(<div>
         <FeatureGroup>
-            {newMap && newMap.features.map((feature, index) => {
-              if(regionToEdit){
-                if (feature.properties.admin !== regionToEdit.properties.admin) {
-                  if(feature.geometry.type === 'Polygon'){
-                    console.log("WHY ARENT U SHOWING UP")
-                    return <Polygon key={Math.random()} pathOptions={{
-                      fillColor: '#CCDAED',
-                      fillOpacity: 0.7, // Set the fill opacity
-                      color: '#3388FF',
-                      opacity: 0.3, // Set the border opacity
-                    }}
-                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-                  } else if (feature.geometry.type === 'MultiPolygon') {
-                    const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-                      <Polygon key={Math.random()} pathOptions={{
-                        fillColor: '#CCDAED',
-                        fillOpacity: 0.7, // Set the fill opacity
-                        color: '#3388FF',
-                        opacity: 0.3, // Set the border opacity
-                      }}
-                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-                    ));
-                    return polygons;
-                  }
-                } 
-              } else {
-                if(feature.geometry.type === 'Polygon'){
+          {newMap && newMap.features.map((feature, index) => {
+            if (regionToEdit) {
+              if (feature.properties.admin !== regionToEdit.properties.admin) {
+                if (feature.geometry.type === 'Polygon') {
+                  console.log("WHY ARENT U SHOWING UP")
                   return <Polygon key={Math.random()} pathOptions={{
                     fillColor: '#CCDAED',
                     fillOpacity: 0.7, // Set the fill opacity
                     color: '#3388FF',
                     opacity: 0.3, // Set the border opacity
                   }}
-                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
                 } else if (feature.geometry.type === 'MultiPolygon') {
                   const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
                     <Polygon key={Math.random()} pathOptions={{
@@ -1013,150 +1040,172 @@ export default function Map() {
                       color: '#3388FF',
                       opacity: 0.3, // Set the border opacity
                     }}
-                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
                   ));
                   return polygons;
                 }
               }
-              return null;
-            })}
-      
+            } else {
+              if (feature.geometry.type === 'Polygon') {
+                return <Polygon key={Math.random()} pathOptions={{
+                  fillColor: '#CCDAED',
+                  fillOpacity: 0.7, // Set the fill opacity
+                  color: '#3388FF',
+                  opacity: 0.3, // Set the border opacity
+                }}
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+              } else if (feature.geometry.type === 'MultiPolygon') {
+                const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                  <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.7, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.3, // Set the border opacity
+                  }}
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                ));
+                return polygons;
+              }
+            }
+            return null;
+          })}
+
         </FeatureGroup>
 
         <FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if(regionToEdit){
-            if (feature.properties.admin === regionToEdit.properties.admin) {
-              if (feature.geometry.type === 'Polygon') {
-                let circles = []
-                circles.push(<Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>)
-                for(let i = 0; i < feature.geometry.coordinates[0].length; i++){
-                  circles.push(<Circle
-                    key={Math.random()}
-                    center={feature.geometry.coordinates[0][i]}
-                    pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                    radius={10}
-                    eventHandlers={{ click: eventHandlers }}
-                    ifMultiPolygon={false}
-                    circleCustomProp={index}
-                    circleCustomCoordProp={i}>
-                  </Circle>)
-                }
-                return circles;
-                //return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-              } else if (feature.geometry.type === 'MultiPolygon') {
-                let circles = []
-                feature.geometry.coordinates.map((polygonCoords, polygonIndex) => {
-                  circles.push(<Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin}/>)
-                  let multiArray = polygonCoords[0]
-                  for(let i = 0; i < multiArray.length; i++){
+          {newMap && newMap.features.map((feature, index) => {
+            if (regionToEdit) {
+              if (feature.properties.admin === regionToEdit.properties.admin) {
+                if (feature.geometry.type === 'Polygon') {
+                  let circles = []
+                  circles.push(<Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />)
+                  for (let i = 0; i < feature.geometry.coordinates[0].length; i++) {
                     circles.push(<Circle
                       key={Math.random()}
-                      center={multiArray[i]}
+                      center={feature.geometry.coordinates[0][i]}
                       pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                      radius={10000}
+                      radius={10}
                       eventHandlers={{ click: eventHandlers }}
-                      ifMultiPolygon={true}
-                      circleCustomProp={index + "-" + polygonIndex}
+                      ifMultiPolygon={false}
+                      circleCustomProp={index}
                       circleCustomCoordProp={i}>
                     </Circle>)
                   }
-                  return polygonCoords;
-                });
-                return circles;
+                  return circles;
+                  //return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  let circles = []
+                  feature.geometry.coordinates.map((polygonCoords, polygonIndex) => {
+                    circles.push(<Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />)
+                    let multiArray = polygonCoords[0]
+                    for (let i = 0; i < multiArray.length; i++) {
+                      circles.push(<Circle
+                        key={Math.random()}
+                        center={multiArray[i]}
+                        pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
+                        radius={10000}
+                        eventHandlers={{ click: eventHandlers }}
+                        ifMultiPolygon={true}
+                        circleCustomProp={index + "-" + polygonIndex}
+                        circleCustomCoordProp={i}>
+                      </Circle>)
+                    }
+                    return polygonCoords;
+                  });
+                  return circles;
+                }
               }
             }
-          }
-          return null;
-        })}
-      </FeatureGroup>
+            return null;
+          })}
+        </FeatureGroup>
       </div>)
     } else if (splitFlag === -2) {
       splitArray.length = 0
       setMaplayout(<div>
         <FeatureGroup>
-            {newMap && newMap.features.map((feature, index) => {
-              if(regionToEdit){
-                if (feature.properties.admin !== regionToEdit.properties.admin) {
-                  if(feature.geometry.type === 'Polygon'){
-                    console.log("WHY ARENT U SHOWING UP")
-                    return <Polygon key={Math.random()} pathOptions={{
-                      fillColor: '#CCDAED',
-                      fillOpacity: 0.85, // Set the fill opacity
-                      color: '#3388FF',
-                      opacity: 0, // Set the border opacity
-                    }}
-                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-                  } else if (feature.geometry.type === 'MultiPolygon') {
-                    const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-                      <Polygon key={Math.random()} pathOptions={{
-                        fillColor: '#CCDAED',
-                        fillOpacity: 0.8, // Set the fill opacity
-                        color: '#3388FF',
-                        opacity: 0, // Set the border opacity
-                      }}
-                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-                    ));
-                    return polygons;
-                  }
-                } 
-              } else {
-                if(feature.geometry.type === 'Polygon'){
+          {newMap && newMap.features.map((feature, index) => {
+            if (regionToEdit) {
+              if (feature.properties.admin !== regionToEdit.properties.admin) {
+                if (feature.geometry.type === 'Polygon') {
+                  console.log("WHY ARENT U SHOWING UP")
                   return <Polygon key={Math.random()} pathOptions={{
                     fillColor: '#CCDAED',
-                    fillOpacity: 0.8, // Set the fill opacity
+                    fillOpacity: 0.85, // Set the fill opacity
                     color: '#3388FF',
-                    opacity: 0.5, // Set the border opacity
+                    opacity: 0, // Set the border opacity
                   }}
-                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
                 } else if (feature.geometry.type === 'MultiPolygon') {
                   const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
                     <Polygon key={Math.random()} pathOptions={{
                       fillColor: '#CCDAED',
                       fillOpacity: 0.8, // Set the fill opacity
                       color: '#3388FF',
-                      opacity: 0.5, // Set the border opacity
+                      opacity: 0, // Set the border opacity
                     }}
-                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
                   ));
                   return polygons;
                 }
               }
-              return null;
-            })}
-      
-        </FeatureGroup>
-          
-        <FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if(regionToEdit){
-            if (feature.properties.admin === regionToEdit.properties.admin) {
+            } else {
               if (feature.geometry.type === 'Polygon') {
-                return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+                return <Polygon key={Math.random()} pathOptions={{
+                  fillColor: '#CCDAED',
+                  fillOpacity: 0.8, // Set the fill opacity
+                  color: '#3388FF',
+                  opacity: 0.5, // Set the border opacity
+                }}
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
               } else if (feature.geometry.type === 'MultiPolygon') {
                 const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-                  <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+                  <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.8, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.5, // Set the border opacity
+                  }}
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
                 ));
                 return polygons;
               }
             }
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-          onDeleted={_onDelete}
-          onCreated={_onCreated}
-          draw={{
-            polyline: false,
-            circle: false,
-            rectangle: false,
-            marker: true,
-            polygon: drawFlag
-          }}
-        />
-      </FeatureGroup>
+            return null;
+          })}
+
+        </FeatureGroup>
+
+        <FeatureGroup>
+          {newMap && newMap.features.map((feature, index) => {
+            if (regionToEdit) {
+              if (feature.properties.admin === regionToEdit.properties.admin) {
+                if (feature.geometry.type === 'Polygon') {
+                  return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                    <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+                  ));
+                  return polygons;
+                }
+              }
+            }
+            return null;
+          })}
+          <EditControl
+            position='topright'
+            onEdited={handleEditable}
+            onDeleted={_onDelete}
+            onCreated={_onCreated}
+            draw={{
+              polyline: false,
+              circle: false,
+              rectangle: false,
+              marker: true,
+              polygon: drawFlag
+            }}
+          />
+        </FeatureGroup>
       </div>
       )
     }
@@ -1207,14 +1256,14 @@ export default function Map() {
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
-        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
+        setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
       }
       else if (mergeFlag) {
         setMergeFeature(null)
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
-        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
+        setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
         //geoJsonLayer.current.resetStyle();
       }
       else {
@@ -1224,16 +1273,16 @@ export default function Map() {
         // backgroundFlag = 0;
 
         mergeFlag = 1
-        setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
-        setMergeButton(<Merge style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Merge" onClick={handleMerge} />)
+        setColorSubregionButton(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
+        setMergeButton(<Merge style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Merge" onClick={handleMerge} />)
         setSelectSubregion(null)
         selectFeatureFlag = null
         setSelectFLAG(0)
-        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
         setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
         //selectFLAG = 0
       }
-    } 
+    }
   }
 
   // man.
@@ -1253,6 +1302,9 @@ export default function Map() {
       selectedFeature.setStyle({
         fillColor: "#4CBB17"
       })
+      setListOfProperties(selectedFeature.feature.properties)
+    } else {
+      setListOfProperties({});
     }
   }, [selectedFeature]);
 
@@ -1342,10 +1394,10 @@ export default function Map() {
       //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
 
       let editedKey;
-      if(layer.options.myCustomKeyProp) {
+      if (layer.options.myCustomKeyProp) {
         editedKey = layer.options.myCustomKeyProp;
       } else {
-        editedKey = (store.currentMap.dataFromMap.features.length-1) + ""
+        editedKey = (store.currentMap.dataFromMap.features.length - 1) + ""
       }
       let newFeature = layer.toGeoJSON();
 
@@ -1376,7 +1428,7 @@ export default function Map() {
 
   //FUNCTIONS FOR SPLITTING REGIONS
   const handleSplit = () => {
-    if(regionToEdit){
+    if (regionToEdit) {
       if (splitArray.length === 2 && splitArray[0][3] === splitArray[1][3] && splitArray[0][0] === splitArray[1][0]) { //check if array is full, then if both vertices are the same type(Poly or Multi) then check both vertices belong to the same Polygon
         let ver1 = splitArray[0] //[14, 2, {x,y}, T/F]
         let ver2 = splitArray[1] //[14, 4, {x,y}, T/F]
@@ -1468,7 +1520,7 @@ export default function Map() {
               store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
 
               splitArray.length = 0
-              
+
               setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
               if (MapLayOutFLAG !== 1) {
                 setMapLayOutFLAG(1)
@@ -1494,14 +1546,14 @@ export default function Map() {
   function handleSelect(event) {
     if (MapLayOutFLAG !== 1) {
       if (selectHIGHLIGHTFLAG) {
-        
-        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px"}} titleAccess="Select Region"  onClick={handleSelect} />)
+
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
         setSelectSubregion(null)
         selectFeatureFlag = null
         setSelectFLAG(0)
         //selectFLAG = 0
       } else {
-        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px", color: "#FDE66B"}} titleAccess="Select Region"  onClick={handleSelect} />)
+        setSelectButton(<TouchAppSharpIcon style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Select Region" onClick={handleSelect} />)
         setSelectedFeature(null)
         setSelectFLAG(1)
         //selectFLAG = 1
@@ -1510,12 +1562,12 @@ export default function Map() {
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
-        setMergeButton(<Merge style={{ fontSize: "45px"}} titleAccess="Merge" onClick={handleMerge} />)
+        setMergeButton(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
         colorFlag = 0
-        setColorSubregionButton(<ColorLens style={{ fontSize: "45px"}} titleAccess="Color Subregion" />)
+        setColorSubregionButton(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
         borderFlag = 0;
-        setColorBorderButton(<BorderColor style={{ fontSize: "45px"}} titleAccess="Color Border" />)
-        if(geoJsonLayer.current) {
+        setColorBorderButton(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
+        if (geoJsonLayer.current) {
           geoJsonLayer.current.resetStyle();
         }
       }
@@ -1571,11 +1623,113 @@ export default function Map() {
   };
 
   const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-  const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />)
+  const [selectButton, setSelectButton] = useState(<TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region" onClick={handleSelect} />)
   const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
   const [colorSubregionButton, setColorSubregionButton] = useState(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
   const [colorBorderButton, setColorBorderButton] = useState(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
-  
+
+
+  const openPropertyModal = () => {
+    store.startModifyProperty();
+  }
+  const handleDeleteProperty = (key) => {
+    const { [key]: value, ...newProps } = listOfProperties;
+    setListOfProperties(newProps);
+    //setCards(newCards);
+  }
+  const handleUpdateKeyProperty = (event) => {
+    setPropertyKey(event.target.value);
+  }
+
+  const handleUpdateValueProperty = (event) => {
+    setProperyValue(event.target.value);
+  }
+
+  const addProperty = () => {
+    let temp = listOfProperties;
+    temp[propertyKey] = propertyValue;
+    setListOfProperties(temp)
+    setPropertyKey("");
+    setProperyValue("");
+  }
+
+  let propertyElement = (<ul>{
+    Object.entries(listOfProperties).map(([property, value]) => {
+      return <li key={property}>{property}: {value}</li>
+    })
+  }
+  </ul>
+  )
+  let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
+    return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
+      <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
+      <div className="card-body">Value: {value}</div>
+      <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
+    </div>
+  });
+
+  let buttonIfProperty = null;
+  if (selectedFeature) {
+    buttonIfProperty = (
+      <button id="addPropertyButton" style={addPropertyButtonStyle} type="button" onClick={openPropertyModal}>
+        <span style={plusSignStyle}>+</span>
+      </button>
+    )
+  }
+  const handleCloseProperty = () => {
+    setPropertyKey("");
+    setProperyValue("");
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+
+  const handleConfirmProperty = () => {
+    let temp = selectedFeature;
+    temp.feature.properties = listOfProperties;
+    setPropertyKey("");
+    setProperyValue("");
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+
+  let customPropertiesModal = <Modal
+    open={store.currentModal === "PROPERTIES"}
+  >
+    <Grid container sx={styleProperties}>
+      <Grid container item >
+        <Box sx={top}>
+          <Typography id="modal-heading">Add Or Remove Property</Typography>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box sx={{ width: "100%" }}>
+          <Typography id="modal-text" xs={4}>Properties: </Typography>
+          <div style={{ overflowY: "scroll", height: "200px", width: "100%" }}>
+            {cardProperties}
+          </div>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box sx={{ display: "flex", flexFlow: "row", alignItems: "center" }}>
+          <Typography id="modal-text">Add Properties: </Typography>
+          <TextField id="modal-textfield-propertykey" label="Key" fullWidth={true}
+            value={propertyKey} onChange={handleUpdateKeyProperty} size="medium" sx={{ flex: 1, minWidth: "0" }} />
+          <TextField id="modal-textfield-propertyvalue" label="Value"
+            value={propertyValue} onChange={handleUpdateValueProperty} size="medium" sx={{ flex: 1, minWidth: "0" }} />
+          <button style={addPropertyButtonStyle} type="button" onClick={addProperty}>
+            <span style={plusSignStyle}>+</span>
+          </button>
+        </Box>
+      </Grid>
+      <Grid container item sx={buttonBox}>
+        <Button id="modal-button" onClick={handleConfirmProperty}>Confirm</Button>
+        <Button id="modal-button" onClick={handleCloseProperty}>Cancel</Button>
+      </Grid>
+      <h6>Declaimer: Property changes cannot be reverted</h6>
+    </Grid>
+  </Modal>
+
+
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
@@ -1793,10 +1947,19 @@ export default function Map() {
           {myLegend}
         </MapContainer>
         <MuiColorInput value={colorFill} onChange={handleColorChange} />
+        <Box>
+          <header>
+            <h2>Current Region's Properties:</h2>
+          </header>
+          <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+            {propertyElement}
+          </Box>
+          {buttonIfProperty}
+        </Box>
       </Box>
-
       {modal}
       {compressModal}
+      {customPropertiesModal}
     </Box>
   );
 }

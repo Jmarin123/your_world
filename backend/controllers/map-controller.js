@@ -69,7 +69,20 @@ createMap = async (req, res) => {
                 };
             });
         }
-
+        let allUniqueVals = new Set();
+        if (dataFromMap.type == "FeatureCollection") {
+            for (feature of dataFromMap.features) {
+                for (prop in feature.properties) {
+                    allUniqueVals.add(prop);
+                }
+            }
+        } else if (dataFromMap.type == "Feature") {
+            for (prop in dataFromMap.properties) {
+                allUniqueVals.add(prop);
+            }
+        }
+        let listOfUnique = Array.from(allUniqueVals);
+        mapBody.uniqueProperties = listOfUnique;
         await mapBody.save(); // Save the Map instance
 
         const foundUser = await User.findOne({ _id: req.userId });
@@ -158,7 +171,8 @@ getAllMaps = async (req, res) => {
                 dislikes: map.dislikes,
                 image: map.image,
                 publish: map.publish,
-                markers: map.markers
+                markers: map.markers,
+                uniqueProperties: map.uniqueProperties,
             };
         });
 
@@ -233,7 +247,21 @@ updateMap = async (req, res) => {
         console.log("markers array:", body.map.markers);
 
         if (body.map.dataFromMap) {
-            await MapInfo.findByIdAndUpdate(map.dataFromMap._id, { dataFromMap: body.map.dataFromMap })
+            await MapInfo.findByIdAndUpdate(map.dataFromMap._id, { dataFromMap: body.map.dataFromMap });
+            let allUniqueVals = new Set();
+            if (body.map.dataFromMap.type == "FeatureCollection") {
+                for (feature of body.map.dataFromMap.features) {
+                    for (prop in feature.properties) {
+                        allUniqueVals.add(prop);
+                    }
+                }
+            } else if (body.map.dataFromMap.type == "Feature") {
+                for (prop in dataFromMap.properties) {
+                    allUniqueVals.add(prop);
+                }
+            }
+            let listOfUnique = Array.from(allUniqueVals);
+            map.uniqueProperties = listOfUnique;
         }
         await map.save();
         console.log("markers array  2:", body.map.markers);

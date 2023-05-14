@@ -32,6 +32,7 @@ export const GlobalStoreActionType = {
     REMOVE_SUBREGION: "REMOVE_SUBREGION",
     RENAME_SUBREGION: "RENAME_SUBREGION",
     MARK_SUBREGION_FOR_RENAME: "MARK_SUBREGION_FOR_RENAME",
+    PROPERTIES: "PROPERTIES",
     SET_SEARCH: "SET_SEARCH",
     SET_SORT: "SET_SORT",
     UPLOAD_FILE: "UPLOAD_FILE",
@@ -63,7 +64,8 @@ export const CurrentModal = {
     RENAME_SUBREGION: "RENAME_SUBREGION",
     UPLOAD_FILE: "UPLOAD_FILE",
     EXPORT_MAP: "EXPORT_MAP",
-    COMPRESS_MAP: "COMPRESS_MAP"
+    COMPRESS_MAP: "COMPRESS_MAP",
+    PROPERTIES: "PROPERTIES"
 }
 
 function GlobalStoreContextProvider(props) {
@@ -273,6 +275,7 @@ function GlobalStoreContextProvider(props) {
 
                 });
             }
+
             case GlobalStoreActionType.MAP_EXPORT: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
@@ -618,6 +621,25 @@ function GlobalStoreContextProvider(props) {
                     exportImage: false,
                 });
             }
+            case GlobalStoreActionType.PROPERTIES: {
+                return setStore({
+                    currentModal: CurrentModal.PROPERTIES,
+                    idNamePairs: store.idNamePairs,
+                    uploadType: "",
+                    currentMap: store.currentMap,
+                    openComment: store.openComment,
+                    mapIdMarkedForDeletion: null,
+                    mapMarkedForDeletion: null,
+                    mapMarkedForExport: null,
+                    search: store.search,
+                    filterSearch: store.filterSearch,
+                    subregion: null,
+                    thumbnail: false,
+                    sort: store.sort,
+                    exportMapData: null,
+                    isFirstUpload: false
+                });
+            }
             case GlobalStoreActionType.MAP_COMPRESS: {
                 return setStore({
                     currentModal: CurrentModal.NONE,
@@ -723,6 +745,12 @@ function GlobalStoreContextProvider(props) {
     store.markCompression = function () {
         storeReducer({
             type: GlobalStoreActionType.MARK_MAP_FOR_COMPRESSION
+        });
+    }
+
+    store.startModifyProperty = function () {
+        storeReducer({
+            type: GlobalStoreActionType.PROPERTIES
         });
     }
 
