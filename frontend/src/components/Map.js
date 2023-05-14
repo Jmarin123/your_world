@@ -567,7 +567,7 @@ export default function Map() {
         />
 
       </FeatureGroup>)
-      setMapLayOutFLAG(1)
+      //setMapLayOutFLAG(1)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [undoFlag]);
@@ -877,9 +877,11 @@ export default function Map() {
     let name = "NewRegion-" + index
     newFeature.properties.admin = name
     newFeature.properties.sovereignt = name
+    newFeature.properties.myCustomKeyProp = index
 
     let copiedRegion = JSON.parse(JSON.stringify(newFeature));
     store.addCurrentRegion(copiedRegion);
+    setMapLayOutFLAG(0)
   }
 
   //FUNCTION FOR EDITING VERTICES
@@ -892,8 +894,12 @@ export default function Map() {
       //const editedKey = layer.options.myCustomKeyProp; //gets the special key attached to each <Polygon> to see what country the Poly belongs to in the GEOJSON file
       //layer = turf.flip(layer.toGeoJSON()); //we need to flip the [long, lat] coordinates to [lat, long] FIRST, cause it wont render properly. then convert the layer to a geojson object
 
-
-      const editedKey = layer.options.myCustomKeyProp;
+      let editedKey;
+      if(layer.options.myCustomKeyProp) {
+        editedKey = layer.options.myCustomKeyProp;
+      } else {
+        editedKey = (store.currentMap.dataFromMap.features.length-1) + ""
+      }
       let newFeature = layer.toGeoJSON();
 
       if (editedKey.includes('-')) { //if a '-' is included, this means its a multipolygon -3- 
