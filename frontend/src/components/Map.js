@@ -30,7 +30,6 @@ let colorFlag = 0;
 let borderFlag = 0;
 let mergeFeatureFlag = null
 let splitArray = [];
-
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   // const [font, setFont] = React.useState("Arial");
@@ -39,6 +38,8 @@ export default function Map() {
   let newMap = JSON.parse(JSON.stringify(store.currentMap.dataFromMap));
   const [oldName, setOldName] = useState("");
   const [newName, setNewName] = useState("");
+  const [propertyKey, setPropertyKey] = useState("");
+  const [propertyValue, setProperyValue] = useState("");
   const [undoFlag, setUndoFlag] = useState(-1);
   const [MapLayOutFLAG, setMapLayOutFLAG] = useState(0);
   const [compressionStatus, setCompressionStatus] = useState('normal');
@@ -53,6 +54,7 @@ export default function Map() {
 
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
+  const [listOfProperties, setListOfProperties] = useState({});
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -63,6 +65,9 @@ export default function Map() {
     colorFlag = 0;
     borderFlag = 0;
     mergeFeatureFlag = null
+    if (store.currentMap && store.currentMap.markers) {
+      setMarkers(store.currentMap.markers);
+    }
   }, [store.currentMap]);
 
   useEffect(() => {
@@ -97,9 +102,37 @@ export default function Map() {
     p: 4,
   };
 
+  const styleProperties = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    height: 600,
+    bgcolor: '#ECF2FF',
+    borderRadius: 1,
+    boxShadow: 16,
+    p: 4,
+  };
+
+  const removePropertyStyle = {
+    borderRadius: "50%",
+    width: "20px",
+    height: "20px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    color: "white",
+    backgroundColor: "red",
+    border: "none",
+    outline: "none",
+    cursor: "pointer",
+    marginLeft: "auto",
+    marginRight: "5px",
+  }
+
   const top = {
     position: 'absolute',
-    width: 423,
+    width: "100%",
     height: 71,
     left: 0,
     top: 0,
@@ -112,6 +145,27 @@ export default function Map() {
     alignItems: 'center',
     justifyContent: 'center',
   }
+
+  const addPropertyButtonStyle = {
+    backgroundColor: "green",
+    borderRadius: "50%",
+    width: "40px",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0px 0px 5px black",
+    cursor: "pointer",
+    marginRight: "auto",
+    marginLeft: "auto"
+  };
+
+  const plusSignStyle = {
+    color: "black",
+    fontSize: "30px",
+    fontWeight: "bold",
+    lineHeight: 0,
+  };
 
   const buttonBox = {
     display: 'flex',
@@ -137,12 +191,6 @@ export default function Map() {
     { label: 'Helvetica', value: 'Helvetica, sans-serif' },
     { label: 'Comic Sans MS', value: 'Comic Sans MS, cursive' },
   ];
-
-  useEffect(() => {
-    if (store.currentMap && store.currentMap.markers) {
-      setMarkers(store.currentMap.markers);
-    }
-  }, [store.currentMap]);
 
   const handleMarkerDragEnd = (markerIndex, event) => {
     const { lat, lng } = event.target.getLatLng();
@@ -249,7 +297,7 @@ export default function Map() {
     mergeFlag = 0;
     borderFlag = 0;
     mergeFeatureFlag = null
-    
+
     colorFlag = !colorFlag
   }
 
@@ -381,7 +429,7 @@ export default function Map() {
     }
   });
 
-  function styleMap(feature){
+  function styleMap(feature) {
     return {
       fillColor: feature.properties.fillColor,
       fillOpacity: 1,
@@ -463,13 +511,13 @@ export default function Map() {
         setMergeFeature_1(event.target)
       }
     }
-    else if(colorFlag){
+    else if (colorFlag) {
       event.target.setStyle({
         fillColor: colorFill,
       });
       event.target.feature.properties.fillColor = colorFill
     }
-    else if(borderFlag){
+    else if (borderFlag) {
       event.target.setStyle({
         color: colorFill,
       });
@@ -784,6 +832,9 @@ export default function Map() {
       selectedFeature.setStyle({
         fillColor: "#4CBB17"
       })
+      setListOfProperties(selectedFeature.feature.properties)
+    } else {
+      setListOfProperties({});
     }
   }, [selectedFeature]);
 
@@ -1061,6 +1112,105 @@ export default function Map() {
 
   const [splitButton, setSplitButton] = useState(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
 
+  const openPropertyModal = () => {
+    store.startModifyProperty();
+  }
+  const handleDeleteProperty = (key) => {
+    const { [key]: value, ...newProps } = listOfProperties;
+    setListOfProperties(newProps);
+    //setCards(newCards);
+  }
+  const handleUpdateKeyProperty = (event) => {
+    setPropertyKey(event.target.value);
+  }
+
+  const handleUpdateValueProperty = (event) => {
+    setProperyValue(event.target.value);
+  }
+
+  const addProperty = () => {
+    let temp = listOfProperties;
+    temp[propertyKey] = propertyValue;
+    setListOfProperties(temp)
+    setPropertyKey("");
+    setProperyValue("");
+  }
+
+  let propertyElement = (<ul>{
+    Object.entries(listOfProperties).map(([property, value]) => {
+      return <li key={property}>{property}: {value}</li>
+    })
+  }
+  </ul>
+  )
+  let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
+    return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
+      <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
+      <div className="card-body">Value: {value}</div>
+      <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
+    </div>
+  });
+
+  let buttonIfProperty = null;
+  if (selectedFeature) {
+    buttonIfProperty = (
+      <button id="addPropertyButton" style={addPropertyButtonStyle} type="button" onClick={openPropertyModal}>
+        <span style={plusSignStyle}>+</span>
+      </button>
+    )
+  }
+  const handleCloseProperty = () => {
+    setPropertyKey("");
+    setProperyValue("");
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+
+  const handleConfirmProperty = () => {
+    let temp = selectedFeature;
+    temp.feature.properties = listOfProperties;
+    setPropertyKey("");
+    setProperyValue("");
+    store.hideModals();
+    setMaplayout(newMap ? renderedMap : <div></div>)
+  }
+
+  let customPropertiesModal = <Modal
+    open={store.currentModal === "PROPERTIES"}
+  >
+    <Grid container sx={styleProperties}>
+      <Grid container item >
+        <Box sx={top}>
+          <Typography id="modal-heading">Add Or Remove Property</Typography>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box sx={{ width: "100%" }}>
+          <Typography id="modal-text" xs={4}>Properties: </Typography>
+          <div style={{ overflowY: "scroll", height: "200px", width: "100%" }}>
+            {cardProperties}
+          </div>
+        </Box>
+      </Grid>
+      <Grid container item>
+        <Box sx={{ display: "flex", flexFlow: "row", alignItems: "center" }}>
+          <Typography id="modal-text">Add Properties: </Typography>
+          <TextField id="modal-textfield-propertykey" label="Key" fullWidth={true}
+            value={propertyKey} onChange={handleUpdateKeyProperty} size="medium" sx={{ flex: 1, minWidth: "0" }} />
+          <TextField id="modal-textfield-propertyvalue" label="Value"
+            value={propertyValue} onChange={handleUpdateValueProperty} size="medium" sx={{ flex: 1, minWidth: "0" }} />
+          <button style={addPropertyButtonStyle} type="button" onClick={addProperty}>
+            <span style={plusSignStyle}>+</span>
+          </button>
+        </Box>
+      </Grid>
+      <Grid container item sx={buttonBox}>
+        <Button id="modal-button" onClick={handleConfirmProperty}>Confirm</Button>
+        <Button id="modal-button" onClick={handleCloseProperty}>Cancel</Button>
+      </Grid>
+      <h6>Declaimer: Property changes cannot be reverted</h6>
+    </Grid>
+  </Modal>
 
 
   return (
@@ -1253,10 +1403,19 @@ export default function Map() {
           {textMarker}
         </MapContainer>
         <MuiColorInput value={colorFill} onChange={handleColorChange} />
+        <Box>
+          <header>
+            <h2>Current Region's Properties:</h2>
+          </header>
+          <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+            {propertyElement}
+          </Box>
+          {buttonIfProperty}
+        </Box>
       </Box>
-
       {modal}
       {compressModal}
+      {customPropertiesModal}
     </Box>
   );
 }
