@@ -606,10 +606,12 @@ export default function Map() {
     store.compressMap();
   }
   function markCompression() {
-    setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-    if (!store.compressStatus) {
-      setMaplayout(<div></div>)
-      store.markCompression()
+    if(!store.currentMap.compressionFlag){
+      setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+      if (!store.compressStatus) {
+        setMaplayout(<div></div>)
+        store.markCompression()
+      }
     }
   }
   //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS----------------------------------------->END
@@ -994,39 +996,7 @@ export default function Map() {
   useEffect(() => {
     if (compressValue !== -1) {
       splitArray.length = 0
-
-      // let options = { tolerance: compressValue, highQuality: false };
-      // // eslint-disable-next-line
-      // newMap = turf.simplify(newMap, options);
-      // //setNewMap(turf.simplify(newMap, options));
-      // store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
-      // setMaplayout(<FeatureGroup >
-      //   {newMap && newMap.features.map((feature, index) => {
-      //     if (feature.geometry.type === 'Polygon') {
-      //       return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-      //     } else if (feature.geometry.type === 'MultiPolygon') {
-      //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-      //         <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-      //       ));
-      //       return polygons;
-      //     }
-      //     return null;
-      //   })}
-      //   <EditControl
-      //     position='topright'
-      //     onEdited={handleEditable}
-      //     onDeleted={_onDelete}
-      //     onCreated={_onCreated}
-      //     draw={{
-      //       polyline: false,
-      //       circle: false,
-      //       rectangle: false,
-      //       marker: true,
-      //       circlemarker: false
-      //     }}
-      //   />
-      // </FeatureGroup>)
-
+      store.setCompressionFlag();
       setMapLayOutFLAG(1)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1246,7 +1216,7 @@ export default function Map() {
         setMergedFlag(true)
 
 
-        const bufferDistance = 0.15; // adjust this value as needed
+        const bufferDistance = 0.1; // adjust this value as needed
         const bufferedPolygon1 = turf.buffer(firstMerge.feature, bufferDistance);
         const bufferedPolygon2 = turf.buffer(secondMerge.feature, bufferDistance);
 

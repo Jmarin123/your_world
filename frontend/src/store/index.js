@@ -728,6 +728,7 @@ function GlobalStoreContextProvider(props) {
                 return store;
         }
     }
+
     store.setLegendColor = function () {
         console.log("store.setLegendColor");
         storeReducer({
@@ -735,6 +736,9 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.setCompressionFlag = function () {
+        store.currentMap.compressionFlag = true;
+    }
 
     store.compressMap = function () {
         storeReducer({
@@ -879,6 +883,7 @@ function GlobalStoreContextProvider(props) {
             publish: { isPublished: false, publishedDate: new Date() },
             image: "temp",
             markers: [], // Add an empty array for the markers
+            compressionFlag: false
         };
         console.log(payload);
         const response = await api.createMap(payload);
@@ -1050,7 +1055,6 @@ function GlobalStoreContextProvider(props) {
                     firstUpload: false,
                 }
             });
-
         }
     }
 
@@ -1190,6 +1194,7 @@ function GlobalStoreContextProvider(props) {
                 publish: { isPublished: false, publishedDate: new Date() },
                 image: map.image,
                 markers: map.markers,
+                compressionFlag: false
             };
             const re = await api.createMap(payload);
             if (re.status === 201) {
