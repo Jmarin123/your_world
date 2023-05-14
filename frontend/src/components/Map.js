@@ -6,6 +6,7 @@ import { GlobalStoreContext } from '../store'
 import { styled } from '@mui/material/styles';
 import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
+import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
   ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title
@@ -33,6 +34,12 @@ let borderFlag = 0;
 let mergeFeatureFlag = null
 let splitArray = [];
 
+//GLOBAL VARIABLES FOR SELECTION A SUBREGION
+let selectFeatureFlag = null
+let selectFLAG = 0;
+let regionToEdit = null;
+//let drawFlag = true
+
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
   // const [font, setFont] = React.useState("Arial");
@@ -54,6 +61,8 @@ export default function Map() {
   const [colorFill, setColorFill] = useState("#4CBB17");
   const [background, setBackground] = useState(newMap.background);
   const [containerKey, setContainerKey] = useState(0);
+
+  const [selectSubregion, setSelectSubregion] = useState(null);
 
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
@@ -596,6 +605,37 @@ export default function Map() {
       else {
         setMergeFeature_1(event.target)
       }
+    } else if(selectFLAG) {
+      if (selectFeatureFlag === null) {
+        event.target.setStyle({
+          color: "#3388FF",
+          fillColor: "#3388FF",
+          fillOpacity: 0.75,
+        });
+
+        //deep copy the feature to later edit
+        let copied = JSON.parse(JSON.stringify(event.target.feature));
+        //set the region by setting it to a global variable bc for some reason the state variable resets to null in here...lol
+        setSelectSubregion(copied)
+        selectFeatureFlag = copied
+      } else if(event.target.feature.properties.admin === regionToEdit.properties.admin) { //deselect the selected region
+        geoJsonLayer.current.resetStyle();
+        
+        setSelectSubregion(null)
+        selectFeatureFlag = null
+        //selectFLAG = 0
+      } else {
+        //Reset the color then re-select the new subregion
+        geoJsonLayer.current.resetStyle();
+        event.target.setStyle({
+          color: "#3388FF",
+          fillColor: "#3388FF",
+          fillOpacity: 0.75,
+        });
+        let copied = JSON.parse(JSON.stringify(event.target.feature));
+        setSelectSubregion(copied)
+        selectFeatureFlag = copied
+      }
     }
     else if (colorFlag) {
       event.target.setStyle({
@@ -629,6 +669,16 @@ export default function Map() {
       popupContent += country.properties.popupContent;
     }
     layer.bindPopup(popupContent);
+
+    if(selectSubregion){
+      if(country.properties.admin === selectSubregion.properties.admin){
+        layer.setStyle({
+          color: "#3388FF",
+          fillColor: "#3388FF",
+          fillOpacity: 0.75,
+        })
+      }
+    }
   };
 
   const handleColorChange = (newValue) => {
@@ -647,6 +697,19 @@ export default function Map() {
   />
 
   const [maplayout, setMaplayout] = useState(newMap ? renderedMap : <div></div>);
+
+   //THIS IS FOR SELECTING A SUBREGION
+   useEffect(() => {
+    if(selectSubregion === null && geoJsonLayer.current){
+      geoJsonLayer.current.resetStyle();
+      regionToEdit = null;
+      //drawFlag = true;
+    } else {
+      let copied = JSON.parse(JSON.stringify(selectSubregion));
+      regionToEdit = copied;
+      //drawFlag = false;
+    }
+  }, [selectSubregion]);
 
   //THIS IS FOR UNDO/REDO UPDATING
   useEffect(() => {
@@ -687,6 +750,12 @@ export default function Map() {
 
   //THIS IS FOR MAP MODE SWITCHING AKA NAVIGATION
   useEffect(() => {
+    if(selectSubregion){
+      //drawFlag = false
+    } else {
+      //drawFlag = true
+    }
+
     if (MapLayOutFLAG === 1) {
       splitArray.length = 0
       setMaplayout(<FeatureGroup>
@@ -889,6 +958,7 @@ export default function Map() {
         setMergeFeature_1(null)
         mergeFeatureFlag = null
         mergeFlag = 0
+        //geoJsonLayer.current.resetStyle();
       }
       else {
         setSelectedFeature(null)
@@ -897,6 +967,9 @@ export default function Map() {
         // backgroundFlag = 0;
 
         mergeFlag = 1
+        setSelectSubregion(null)
+        selectFeatureFlag = null
+        selectFLAG = 0
       }
     } else {
       // setMaplayout()
@@ -1155,6 +1228,29 @@ export default function Map() {
     }
   }
 
+  //FUNCTION FOR SELECTING A SUBREGION TO LATER EDIT
+  function handleSelect(event) {
+    if (MapLayOutFLAG !== 1) {
+      if (selectFLAG) {
+        setSelectSubregion(null)
+        selectFeatureFlag = null
+        selectFLAG = 0
+      } else {
+        setSelectedFeature(null)
+        selectFLAG = 1
+
+        setMergeFeature(null)
+        setMergeFeature_1(null)
+        mergeFeatureFlag = null
+        mergeFlag = 0
+        if(geoJsonLayer.current) {
+          geoJsonLayer.current.resetStyle();
+        }
+      }
+    }
+  }
+
+  //CALLBACK WHEN A USER CLICKS THE CIRCLE FOR SPLITING
   const eventHandlers = (e) => {
     if (splitArray.length < 2) { //we select the vertices to be merged
       let removed = false
@@ -1276,6 +1372,15 @@ export default function Map() {
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
             <Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />
+          </StyledIconButton>
+
+          <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+          >
+            <TouchAppSharpIcon style={{ fontSize: "45px" }} titleAccess="Select Region"  onClick={handleSelect} />
           </StyledIconButton>
 
           <StyledIconButton
