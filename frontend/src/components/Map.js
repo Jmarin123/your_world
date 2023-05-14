@@ -36,7 +36,7 @@ let splitArray = [];
 
 //GLOBAL VARIABLES FOR SELECTION A SUBREGION
 let selectFeatureFlag = null
-let selectFLAG = 0;
+//let selectFLAG = 0;
 let regionToEdit = null;
 let drawFlag = true
 
@@ -63,6 +63,7 @@ export default function Map() {
   const [containerKey, setContainerKey] = useState(0);
 
   const [selectSubregion, setSelectSubregion] = useState(null);
+  const [selectFLAG, setSelectFLAG] = useState(0);
 
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
@@ -711,6 +712,13 @@ export default function Map() {
     }
   }, [selectSubregion]);
 
+  //THIS IS FOR SELECTING A SUBREGION
+  useEffect(() => {
+    if(selectFLAG === 0){
+      selectFeatureFlag = null
+    }
+  }, [selectFLAG]);
+
   //THIS IS FOR UNDO/REDO UPDATING
   useEffect(() => {
     console.log("Maplayout changed")
@@ -1126,7 +1134,7 @@ export default function Map() {
         setMergedFlag(true)
 
 
-        const bufferDistance = 0.001; // adjust this value as needed
+        const bufferDistance = 0.13; // adjust this value as needed
         const bufferedPolygon1 = turf.buffer(mergeFeature.feature, bufferDistance);
         const bufferedPolygon2 = turf.buffer(mergeFeature_1.feature, bufferDistance);
 
@@ -1170,7 +1178,8 @@ export default function Map() {
         mergeFlag = 1
         setSelectSubregion(null)
         selectFeatureFlag = null
-        selectFLAG = 0
+        setSelectFLAG(0)
+        //selectFLAG = 0
       }
     } else {
       // setMaplayout()
@@ -1435,10 +1444,12 @@ export default function Map() {
       if (selectFLAG) {
         setSelectSubregion(null)
         selectFeatureFlag = null
-        selectFLAG = 0
+        setSelectFLAG(0)
+        //selectFLAG = 0
       } else {
         setSelectedFeature(null)
-        selectFLAG = 1
+        setSelectFLAG(1)
+        //selectFLAG = 1
 
         setMergeFeature(null)
         setMergeFeature_1(null)
