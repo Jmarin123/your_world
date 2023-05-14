@@ -22,6 +22,7 @@ const mapSchema = new Schema(
                 font: { type: String, required: true },
             },
         ],
+        compressionFlag : {type: Boolean, required: true}
     },
     { timestamps: true },
 )

@@ -1634,26 +1634,39 @@ export default function Map() {
   }
 
   const addProperty = () => {
-    let temp = listOfProperties;
-    temp[propertyKey] = propertyValue;
-    setListOfProperties(temp)
-    setPropertyKey("");
-    setProperyValue("");
+    if(propertyKey !== 'admin' && propertyKey !== 'fillColor' && propertyKey !== 'borderColor' && propertyKey !== 'label' && propertyKey !== "") {
+      let temp = listOfProperties;
+      temp[propertyKey] = propertyValue;
+      setListOfProperties(temp)
+      setPropertyKey("");
+      setProperyValue("");
+    } else {
+      setPropertyKey("");
+      setProperyValue("");
+    }
   }
 
   let propertyElement = (<ul>{
     Object.entries(listOfProperties).map(([property, value]) => {
-      return <li key={property}>{property}: {value}</li>
+      if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+        return <li key={property}>{property}: {value}</li>
+      } else {
+        return null;
+      }
     })
   }
   </ul>
   )
   let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
-    return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
-      <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
-      <div className="card-body">Value: {value}</div>
-      <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
-    </div>
+    if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+      return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
+        <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
+        <div className="card-body">Value: {value}</div>
+        <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
+      </div>
+    } else {
+      return null;
+    }
   });
 
   let buttonIfProperty = null;
