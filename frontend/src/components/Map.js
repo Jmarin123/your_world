@@ -38,7 +38,7 @@ let splitArray = [];
 let selectFeatureFlag = null
 let selectFLAG = 0;
 let regionToEdit = null;
-//let drawFlag = true
+let drawFlag = true
 
 export default function Map() {
   const { store } = useContext(GlobalStoreContext);
@@ -703,11 +703,11 @@ export default function Map() {
     if(selectSubregion === null && geoJsonLayer.current){
       geoJsonLayer.current.resetStyle();
       regionToEdit = null;
-      //drawFlag = true;
+      drawFlag = true;
     } else {
       let copied = JSON.parse(JSON.stringify(selectSubregion));
       regionToEdit = copied;
-      //drawFlag = false;
+      drawFlag = false;
     }
   }, [selectSubregion]);
 
@@ -728,7 +728,7 @@ export default function Map() {
           }
           return null;
         })}
-        <EditControl
+        {/* <EditControl
           position='topright'
           onEdited={handleEditable}
           onDeleted={_onDelete}
@@ -740,7 +740,7 @@ export default function Map() {
             marker: true,
             circlemarker: false
           }}
-        />
+        /> */}
 
       </FeatureGroup>)
       //setMapLayOutFLAG(1)
@@ -751,50 +751,12 @@ export default function Map() {
   //THIS IS FOR MAP MODE SWITCHING AKA NAVIGATION
   useEffect(() => {
     if(selectSubregion){
-      //drawFlag = false
+      drawFlag = false
     } else {
-      //drawFlag = true
+      drawFlag = true
     }
 
-    if (MapLayOutFLAG === 1) {
-      splitArray.length = 0
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-          onDeleted={_onDelete}
-          onCreated={_onCreated}
-          draw={{
-            polyline: false,
-            circle: false,
-            rectangle: false,
-            marker: true,
-            circlemarker: false
-          }}
-        />
-      </FeatureGroup>)
-    } else {
-      splitArray.length = 0
-      setMaplayout(newMap ? renderedMap : <div></div>)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [MapLayOutFLAG]);
-
-  //THIS IS FOR MAP COMPRESSION
-  useEffect(() => {
-    if (compressValue !== -1) {
-      splitArray.length = 0
+    if(compressValue !== -1 && MapLayOutFLAG === 1){
       let options = { tolerance: compressValue, highQuality: false };
       // eslint-disable-next-line
       newMap = turf.simplify(newMap, options);
@@ -812,6 +774,323 @@ export default function Map() {
           }
           return null;
         })}
+      </FeatureGroup>)
+      setCompressValue(-1)
+    }else if (MapLayOutFLAG === 1) {
+      splitArray.length = 0
+      setMaplayout(<div>
+        <FeatureGroup>
+          {newMap && newMap.features.map((feature, index) => {
+            if(regionToEdit){
+              if (feature.properties.admin !== regionToEdit.properties.admin) {
+                if(feature.geometry.type === 'Polygon'){
+                  console.log("WHY ARENT U SHOWING UP")
+                  return <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.85, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.4, // Set the border opacity
+                  }}
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                    <Polygon key={Math.random()} pathOptions={{
+                      fillColor: '#CCDAED',
+                      fillOpacity: 0.8, // Set the fill opacity
+                      color: '#3388FF',
+                      opacity: 0.4, // Set the border opacity
+                    }}
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                  ));
+                  return polygons;
+                }
+              } 
+            } else {
+              if(feature.geometry.type === 'Polygon'){
+                return <Polygon key={Math.random()} pathOptions={{
+                  fillColor: '#CCDAED',
+                  fillOpacity: 0.8, // Set the fill opacity
+                  color: '#3388FF',
+                  opacity: 0.5, // Set the border opacity
+                }}
+                positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+              } else if (feature.geometry.type === 'MultiPolygon') {
+                const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                  <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.8, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.5, // Set the border opacity
+                  }}
+                  positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                ));
+                return polygons;
+              }
+            }
+            return null;
+          })}
+        </FeatureGroup>
+
+
+        <FeatureGroup>
+          {newMap && newMap.features.map((feature, index) => {
+            if(regionToEdit){
+              if (feature.properties.admin === regionToEdit.properties.admin) {
+                if(feature.geometry.type === 'Polygon'){
+                  return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                    <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                  ));
+                  return polygons;
+                }
+              } 
+            }
+            return null;
+          })}
+          
+          <EditControl
+            position='topright'
+            onEdited={handleEditable}
+            onDeleted={_onDelete}
+            onCreated={_onCreated}
+            draw={{
+              polyline: false,
+              circle: false,
+              rectangle: false,
+              marker: true,
+              circlemarker: false,
+              polygon: drawFlag
+            }}
+          />
+        </FeatureGroup>
+      </div>)
+    } else {
+      splitArray.length = 0
+      setMaplayout(newMap ? renderedMap : <div></div>)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [MapLayOutFLAG]);
+
+  //THIS IS FOR MAP COMPRESSION
+  useEffect(() => {
+    if (compressValue !== -1) {
+      splitArray.length = 0
+      
+      // let options = { tolerance: compressValue, highQuality: false };
+      // // eslint-disable-next-line
+      // newMap = turf.simplify(newMap, options);
+      // //setNewMap(turf.simplify(newMap, options));
+      // store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
+      // setMaplayout(<FeatureGroup >
+      //   {newMap && newMap.features.map((feature, index) => {
+      //     if (feature.geometry.type === 'Polygon') {
+      //       return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+      //     } else if (feature.geometry.type === 'MultiPolygon') {
+      //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+      //         <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+      //       ));
+      //       return polygons;
+      //     }
+      //     return null;
+      //   })}
+      //   <EditControl
+      //     position='topright'
+      //     onEdited={handleEditable}
+      //     onDeleted={_onDelete}
+      //     onCreated={_onCreated}
+      //     draw={{
+      //       polyline: false,
+      //       circle: false,
+      //       rectangle: false,
+      //       marker: true,
+      //       circlemarker: false
+      //     }}
+      //   />
+      // </FeatureGroup>)
+
+      setMapLayOutFLAG(1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compressValue]);
+
+  //THIS IS FOR POLYGON/SUBREGION SPLITTING
+  useEffect(() => {
+    if (splitFlag > -1) {
+      setMaplayout(<div>
+        <FeatureGroup>
+            {newMap && newMap.features.map((feature, index) => {
+              if(regionToEdit){
+                if (feature.properties.admin !== regionToEdit.properties.admin) {
+                  if(feature.geometry.type === 'Polygon'){
+                    console.log("WHY ARENT U SHOWING UP")
+                    return <Polygon key={Math.random()} pathOptions={{
+                      fillColor: '#CCDAED',
+                      fillOpacity: 0.7, // Set the fill opacity
+                      color: '#3388FF',
+                      opacity: 0.3, // Set the border opacity
+                    }}
+                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                  } else if (feature.geometry.type === 'MultiPolygon') {
+                    const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                      <Polygon key={Math.random()} pathOptions={{
+                        fillColor: '#CCDAED',
+                        fillOpacity: 0.7, // Set the fill opacity
+                        color: '#3388FF',
+                        opacity: 0.3, // Set the border opacity
+                      }}
+                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                    ));
+                    return polygons;
+                  }
+                } 
+              } else {
+                if(feature.geometry.type === 'Polygon'){
+                  return <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.7, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.3, // Set the border opacity
+                  }}
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                    <Polygon key={Math.random()} pathOptions={{
+                      fillColor: '#CCDAED',
+                      fillOpacity: 0.7, // Set the fill opacity
+                      color: '#3388FF',
+                      opacity: 0.3, // Set the border opacity
+                    }}
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                  ));
+                  return polygons;
+                }
+              }
+              return null;
+            })}
+      
+        </FeatureGroup>
+
+        <FeatureGroup>
+        {newMap && newMap.features.map((feature, index) => {
+          if(regionToEdit){
+            if (feature.properties.admin === regionToEdit.properties.admin) {
+              if (feature.geometry.type === 'Polygon') {
+                let circles = []
+                circles.push(<Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin}/>)
+                for(let i = 0; i < feature.geometry.coordinates[0].length; i++){
+                  circles.push(<Circle
+                    key={Math.random()}
+                    center={feature.geometry.coordinates[0][i]}
+                    pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
+                    radius={10}
+                    eventHandlers={{ click: eventHandlers }}
+                    ifMultiPolygon={false}
+                    circleCustomProp={index}
+                    circleCustomCoordProp={i}>
+                  </Circle>)
+                }
+                return circles;
+                //return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+              } else if (feature.geometry.type === 'MultiPolygon') {
+                let circles = []
+                feature.geometry.coordinates.map((polygonCoords, polygonIndex) => {
+                  circles.push(<Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin}/>)
+                  let multiArray = polygonCoords[0]
+                  for(let i = 0; i < multiArray.length; i++){
+                    circles.push(<Circle
+                      key={Math.random()}
+                      center={multiArray[i]}
+                      pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
+                      radius={10000}
+                      eventHandlers={{ click: eventHandlers }}
+                      ifMultiPolygon={true}
+                      circleCustomProp={index + "-" + polygonIndex}
+                      circleCustomCoordProp={i}>
+                    </Circle>)
+                  }
+                  return polygonCoords;
+                });
+                return circles;
+              }
+            }
+          }
+          return null;
+        })}
+      </FeatureGroup>
+      </div>)
+    } else if (splitFlag === -2) {
+      splitArray.length = 0
+      setMaplayout(<div>
+        <FeatureGroup>
+            {newMap && newMap.features.map((feature, index) => {
+              if(regionToEdit){
+                if (feature.properties.admin !== regionToEdit.properties.admin) {
+                  if(feature.geometry.type === 'Polygon'){
+                    console.log("WHY ARENT U SHOWING UP")
+                    return <Polygon key={Math.random()} pathOptions={{
+                      fillColor: '#CCDAED',
+                      fillOpacity: 0.85, // Set the fill opacity
+                      color: '#3388FF',
+                      opacity: 0, // Set the border opacity
+                    }}
+                    positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                  } else if (feature.geometry.type === 'MultiPolygon') {
+                    const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                      <Polygon key={Math.random()} pathOptions={{
+                        fillColor: '#CCDAED',
+                        fillOpacity: 0.8, // Set the fill opacity
+                        color: '#3388FF',
+                        opacity: 0, // Set the border opacity
+                      }}
+                      positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                    ));
+                    return polygons;
+                  }
+                } 
+              } else {
+                if(feature.geometry.type === 'Polygon'){
+                  return <Polygon key={Math.random()} pathOptions={{
+                    fillColor: '#CCDAED',
+                    fillOpacity: 0.8, // Set the fill opacity
+                    color: '#3388FF',
+                    opacity: 0.5, // Set the border opacity
+                  }}
+                  positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                    <Polygon key={Math.random()} pathOptions={{
+                      fillColor: '#CCDAED',
+                      fillOpacity: 0.8, // Set the fill opacity
+                      color: '#3388FF',
+                      opacity: 0.5, // Set the border opacity
+                    }}
+                    positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
+                  ));
+                  return polygons;
+                }
+              }
+              return null;
+            })}
+      
+        </FeatureGroup>
+          
+        <FeatureGroup>
+        {newMap && newMap.features.map((feature, index) => {
+          if(regionToEdit){
+            if (feature.properties.admin === regionToEdit.properties.admin) {
+              if (feature.geometry.type === 'Polygon') {
+                return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
+              } else if (feature.geometry.type === 'MultiPolygon') {
+                const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
+                  <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
+                ));
+                return polygons;
+              }
+            }
+          }
+          return null;
+        })}
         <EditControl
           position='topright'
           onEdited={handleEditable}
@@ -822,89 +1101,11 @@ export default function Map() {
             circle: false,
             rectangle: false,
             marker: true,
-            circlemarker: false
-          }}
-        />
-      </FeatureGroup>)
-      setMapLayOutFLAG(1)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [compressValue]);
-
-  //THIS IS FOR POLYGON/SUBREGION SPLITTING
-  useEffect(() => {
-    if (splitFlag > -1) {
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            let circles = []
-            circles.push(<Polygon key={index} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />)
-            for (let i = 0; i < feature.geometry.coordinates[0].length; i++) {
-              circles.push(<Circle
-                key={Math.random()}
-                center={feature.geometry.coordinates[0][i]}
-                pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                radius={10}
-                eventHandlers={{ click: eventHandlers }}
-                ifMultiPolygon={false}
-                circleCustomProp={index}
-                circleCustomCoordProp={i}>
-              </Circle>)
-            }
-            return circles;
-            //return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            let circles = []
-            feature.geometry.coordinates.map((polygonCoords, polygonIndex) => {
-              circles.push(<Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />)
-              let multiArray = polygonCoords[0]
-              for (let i = 0; i < multiArray.length; i++) {
-                circles.push(<Circle
-                  key={Math.random()}
-                  center={multiArray[i]}
-                  pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                  radius={10}
-                  eventHandlers={{ click: eventHandlers }}
-                  ifMultiPolygon={true}
-                  circleCustomProp={index + "-" + polygonIndex}
-                  circleCustomCoordProp={i}>
-                </Circle>)
-              }
-              return polygonCoords;
-            });
-            return circles;
-          }
-          return null;
-        })}
-      </FeatureGroup>)
-    } else if (splitFlag === -2) {
-      splitArray.length = 0
-      setMaplayout(<FeatureGroup>
-        {newMap && newMap.features.map((feature, index) => {
-          if (feature.geometry.type === 'Polygon') {
-            return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} />;
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-              <Polygon key={polygonIndex} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} />
-            ));
-            return polygons;
-          }
-          return null;
-        })}
-        <EditControl
-          position='topright'
-          onEdited={handleEditable}
-          onDeleted={_onDelete}
-          onCreated={_onCreated}
-          draw={{
-            polyline: false,
-            circle: false,
-            rectangle: false,
-            marker: true
+            polygon: drawFlag
           }}
         />
       </FeatureGroup>
-
+      </div>
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1207,7 +1408,7 @@ export default function Map() {
             store.splitCurrentRegion(copiedArray, oldFeature) //SEND SPLIT INTO TRANSACTION STACK!!!
 
             splitArray.length = 0
-            store.addSubregion();
+            
             setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
             if (MapLayOutFLAG !== 1) {
               setMapLayOutFLAG(1)
