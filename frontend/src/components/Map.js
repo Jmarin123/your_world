@@ -73,7 +73,7 @@ export default function Map() {
   useEffect(() => {
     store.subregion ? setOldName(store.subregion.properties.admin) : setOldName("")
     setNewName("")
-  }, [store.subregion]);;
+  }, [store.subregion]);
 
   const style = {
     position: 'absolute',
@@ -123,9 +123,124 @@ export default function Map() {
     justifyContent: 'center',
   }
 
-  // const handleChange = (event) => {
-  //   setFont(event.target.value);
-  // };
+
+  // LEGEND-------------------------------------------------------------------->START
+  const [legendItems, setLegendItems] = useState([]);
+  console.log("store.legendColor", store.legendColor);
+  useEffect(() => {
+    if (store.currentMap && store.currentMap.dataFromMap && store.currentMap.dataFromMap.features) {
+      const uniqueFillColors = new Set();
+      const items = [];
+
+      store.currentMap.dataFromMap.features.forEach((feature) => {
+        const fillColor = feature.properties.fillColor;
+        if (!uniqueFillColors.has(fillColor)) {
+          uniqueFillColors.add(fillColor);
+          items.push({
+            color: fillColor,
+            label: feature.properties.label,
+          });
+        }
+      });
+
+      setLegendItems(items);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.legendColor]);
+
+  useEffect(() => {
+    if (store.currentMap && store.currentMap.dataFromMap && store.currentMap.dataFromMap.features) {
+      const uniqueFillColors = new Set();
+      const items = [];
+
+      store.currentMap.dataFromMap.features.forEach((feature) => {
+        const fillColor = feature.properties.fillColor;
+        if (!uniqueFillColors.has(fillColor)) {
+          uniqueFillColors.add(fillColor);
+          items.push({
+            color: fillColor,
+            label: feature.properties.label,
+          });
+        }
+      });
+
+      setLegendItems(items);
+    }
+  }, [store.currentMap]);
+
+  const handleLabelDoubleClick = (index) => {
+    const updatedItems = [...legendItems];
+    const legendItem = updatedItems[index];
+    legendItem.isEditing = true;
+
+    setLegendItems(updatedItems);
+  };
+
+  const handleLabelChange = (event, index) => {
+    const newLabel = event.target.value;
+
+    setLegendItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      updatedItems[index].label = newLabel;
+
+      // Update the feature.properties.label
+      const { dataFromMap } = store.currentMap;
+
+      const legendItem = updatedItems[index];
+      // const feature = dataFromMap.features.find(
+      //   (feature) => feature.properties.fillColor === legendItem.color
+      // );
+
+      // if (feature) {
+      //   feature.properties.label = newLabel;
+      // }
+
+      dataFromMap.features.forEach((feature) => {
+        if (feature.properties.fillColor === legendItem.color) {
+          feature.properties.label = newLabel;
+        }
+      });
+
+      return updatedItems;
+    });
+  };
+
+
+  const handleLabelBlur = (index) => {
+    const updatedItems = [...legendItems];
+    const legendItem = updatedItems[index];
+    legendItem.isEditing = false;
+
+    setLegendItems(updatedItems);
+  };
+
+  let myLegend = (
+    <div className="legend">
+      {legendItems.map((item, index) => (
+        <div key={index} className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: item.color }}></span>
+          {item.isEditing ? (
+            <input
+              type="text"
+              value={item.label}
+              onChange={(event) => handleLabelChange(event, index)}
+              onBlur={() => handleLabelBlur(index)}
+              autoFocus
+            />
+          ) : (
+            <span className="legend-label" onDoubleClick={() => handleLabelDoubleClick(index)}>
+              {item.label}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+
+
+  // LEGEND-------------------------------------------------------------------->END
+
 
   // TEXT MARKER-------------------------------------------------------------------->START
   const [markers, setMarkers] = useState([]);
@@ -167,11 +282,6 @@ export default function Map() {
     setMarkers(updatedMarkers);
   };
 
-  // const handleAddMarker = () => {
-  //   const newMarker = { lat: 0, lng: 0, value: "" };
-  //   setMarkers([...markers, newMarker]);
-  //   // console.log(markers);
-  // };
   const handleAddMarker = () => {
     let newCoordinates = [];
     if (store.currentMap) {
@@ -195,6 +305,7 @@ export default function Map() {
 
   const handleSaveMarker = () => {
     console.log(markers);
+    console.log(store.currentMap);
     // store.saveMarkers(markers);
 
     const updatedMarkers = markers.map(marker => ({
@@ -205,6 +316,7 @@ export default function Map() {
     }));
 
     store.saveMarkers(updatedMarkers);
+    store.setLegendColor();
   };
 
   const circleIcon = L.divIcon({
@@ -253,7 +365,7 @@ export default function Map() {
     borderFlag = 0;
     // backgroundFlag = 0;
     mergeFeatureFlag = null
-    
+
     colorFlag = !colorFlag
   }
 
@@ -280,7 +392,7 @@ export default function Map() {
 
     store.currentMap.dataFromMap.background = colorFill
     setBackground(colorFill)
-    setContainerKey(containerKey+1)
+    setContainerKey(containerKey + 1)
   }
 
   // COLORING -------------------------------------------------------------------->END
@@ -399,7 +511,7 @@ export default function Map() {
     }
   });
 
-  function styleMap(feature){
+  function styleMap(feature) {
     return {
       fillColor: feature.properties.fillColor || "#ff0000",
       fillOpacity: 1,
@@ -454,7 +566,7 @@ export default function Map() {
   }
 
   async function handleSaveMap() {
-    store.updateThumbnail()
+    store.updateThumbnail();
   }
 
   function useCbStable(cb) {
@@ -485,13 +597,14 @@ export default function Map() {
         setMergeFeature_1(event.target)
       }
     }
-    else if(colorFlag){
+    else if (colorFlag) {
       event.target.setStyle({
         fillColor: colorFill,
       });
       event.target.feature.properties.fillColor = colorFill
+
     }
-    else if(borderFlag){
+    else if (borderFlag) {
       event.target.setStyle({
         color: colorFill,
       });
@@ -1260,7 +1373,7 @@ export default function Map() {
         </FormControl>
 
         <div id="edit-line3"></div>
-        
+
         <br />
         <Button id="publishButton"
           type="submit"
@@ -1293,6 +1406,7 @@ export default function Map() {
           {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
           {maplayout}
           {textMarker}
+          {myLegend}
         </MapContainer>
         <MuiColorInput value={colorFill} onChange={handleColorChange} />
       </Box>
