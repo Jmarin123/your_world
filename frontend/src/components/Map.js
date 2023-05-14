@@ -8,8 +8,8 @@ import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import {
-  Explore, Save, Undo, Redo, Compress, GridView, Merge,
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title
+  Explore, Save, Undo, Redo, Compress, GridView, Merge, Public,
+  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title,
 } from '@mui/icons-material/';
 
 import SaveAsOutlined from '@mui/icons-material/SaveAsOutlined';
@@ -19,8 +19,7 @@ import Recenter from './Recenter'
 import Screenshot from './Screenshot'
 
 import "leaflet/dist/leaflet.css";
-import { MapContainer, GeoJSON, FeatureGroup, Polygon, Circle, Marker, Tooltip } from 'react-leaflet';
-// TileLayer
+import { MapContainer, GeoJSON, FeatureGroup, Polygon, TileLayer, Circle, Marker, Tooltip } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 import { ChromePicker } from 'react-color'
@@ -74,6 +73,8 @@ export default function Map() {
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [listOfProperties, setListOfProperties] = useState({});
+  
+  const [tileLayerOn, setTileLayerOn] = useState(false);
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -201,6 +202,10 @@ export default function Map() {
     alignItems: 'center',
     justifyContent: 'center',
   }
+
+  const handleToggleTileLayer = (index) => {
+    setTileLayerOn(!tileLayerOn)
+  };
 
 
   // LEGEND-------------------------------------------------------------------->START
@@ -1929,6 +1934,17 @@ export default function Map() {
           >
             <Title style={{ fontSize: "45px" }} titleAccess="Insert Text" />
           </StyledIconButton>
+          
+          <StyledIconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ marginBottom: "10px" }}
+            onClick={handleToggleTileLayer}
+
+          >
+            <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" />
+          </StyledIconButton>
 
         </Box>
         <div id="edit-line2"></div>
@@ -1996,7 +2012,7 @@ export default function Map() {
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
           <Recenter bounds={bounds} />
           <Screenshot />
-          {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+          {tileLayerOn ? <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> : <div></div>}
           {maplayout}
           {textMarker}
           {myLegend}
