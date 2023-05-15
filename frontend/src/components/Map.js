@@ -1995,7 +1995,7 @@ export default function Map() {
       </Box>
 
       <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} noValidate >
-        <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
+        <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false} center={[20, 100]} zoom={2}>
           <Recenter bounds={bounds} />
           <Screenshot />
           {tileLayerOn ? <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> : <div></div>}
