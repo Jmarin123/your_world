@@ -173,6 +173,7 @@ passwordemail = async (req, res) => {
         const uniqueString = uuidv4();
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
+            await PasswordSent.findOneAndRemove({ email: email })
             const newPasswordEmail = new PasswordSent({ uniqueHash: uniqueString, expirationDate: expiration, email: email });
             await newPasswordEmail.save();
             const encodedEmail = encodeURIComponent(email)
@@ -195,7 +196,59 @@ passwordemail = async (req, res) => {
         return res.status(200).send();
     } catch (err) {
         console.log(err);
-        res.status(500).send();
+        return res.status(500).send();
+    }
+}
+
+passwordreset = async (req, res) => {
+    try {
+        const { password, email, uniqueID } = req.body;
+        if (!email || !password || !uniqueID) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        if (password.length < 8) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter a password of at least 8 characters."
+                });
+        }
+        const existingUser = await User.findOne({ email: email });
+        const passwordUser = await PasswordSent.findOne({ email: email })
+        if (!existingUser || !passwordUser) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "User with that email does not exist"
+                });
+        } else if (passwordUser.expirationDate < Date.now()) {
+            await PasswordSent.findOneAndRemove({ _id: passwordUser._id });
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "This link no longer works"
+                });
+        } else if (uniqueID != passwordUser.uniqueHash) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Unique ID does not belong to this user"
+                });
+        } else {
+            const saltRounds = 10;
+            const salt = await bcrypt.genSalt(saltRounds);
+            const passwordHash = await bcrypt.hash(password, salt);
+            existingUser.passwordHash = passwordHash;
+            await existingUser.save();
+            await PasswordSent.findOneAndRemove({ _id: passwordUser._id });
+            return res.status(200).json({ success: true })
+        }
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
     }
 }
 
@@ -205,4 +258,5 @@ module.exports = {
     loginUser,
     logoutUser,
     passwordemail,
+    passwordreset
 }

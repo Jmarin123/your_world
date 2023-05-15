@@ -77,10 +77,19 @@ function AuthContextProvider(props) {
                 return auth;
         }
     }
-    auth.sendPasswordReset = async function (email) {
-        console.log("SENDING");
+    auth.sendPasswordEmail = async function (email) {
         const response = await api.sendPasswordEmail(email);
-        console.log(response);
+        console.log("send email", response);
+    }
+    auth.passwordReset = async function (password, email, uniqueID) {
+        let response;
+        try {
+            response = await api.passwordReset(password, email, uniqueID);
+            response = response.data
+        } catch (err) {
+            response = err.response.data;
+        }
+        return response;
     }
     auth.getLoggedIn = async function () {
         console.log("auth.getloggedin");

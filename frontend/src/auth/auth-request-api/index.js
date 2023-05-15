@@ -29,12 +29,21 @@ export const sendPasswordEmail = (email) => {
         email: email
     })
 }
+
+export const passwordReset = (password, email, uniqueID) => {
+    return api.post('auth/passwordreset', {
+        password: password,
+        email: email,
+        uniqueID: uniqueID
+    })
+}
 const apis = {
     getLoggedIn,
     registerUser,
     loginUser,
     logoutUser,
-    sendPasswordEmail
+    sendPasswordEmail,
+    passwordReset,
 }
 
 export default apis
