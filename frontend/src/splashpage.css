@@ -40,16 +40,23 @@ body {
 
 #box {
     box-sizing: border-box;
-    position: absolute;
-    width: 85%;
-    height: 70%;
-    left: 8%;
-    top: 150px;
-
+    width: 50vw;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
     background: rgba(217, 217, 217, 0.78);
     /* border: 1px solid #000000; */
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
+}
+
+#allLoginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #publicBox {
@@ -115,11 +122,11 @@ body {
 }
 
 img {
-    position: absolute;
+    /* position: absolute; */
     width: 111.26px;
     height: 113.26px;
-    left: 49%;
-    top: 15px;
+    /* left: 49%;
+    top: 15px; */
     /* max-width: 100%; */
     /* height: auto; */
 }
@@ -133,19 +140,16 @@ img {
 }
 
 #account {
-    position: absolute;
     width: 40%;
     height: 66px;
-    left: 33%;
-    top: 5%;
 
     font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 900;
-    font-size: 4vw;
+    font-size: 2.5vw;
     line-height: 59px;
     text-align: center;
-
+    margin: 10px;
     color: #000000;
 }
 
@@ -369,44 +373,31 @@ input {
 
 
 #firstName {
-    position: absolute;
-    width: 15%;
-    height: 7%;
-    left: 35%;
-    top: 24%;
+    height: 40px;
     background: #ECF2FF;
     border-radius: 5px;
     border-style: none;
 }
 
 #lastName {
-    position: absolute;
-    width: 15%;
-    height: 7%;
-    left: 55%;
-    top: 24%;
+    height: 40px;
+    margin-left: 20px;
     background: #ECF2FF;
     border-radius: 5px;
     border-style: none;
 }
 
 #username {
-    position: absolute;
     width: 21.5%;
-    height: 7%;
-    top: 39%;
-    left: 41.5%;
+    height: 9%;
     background: #ECF2FF;
     border-radius: 5px;
     border-style: none;
 }
 
 #email {
-    position: absolute;
     width: 21.5%;
-    height: 7%;
-    left: 41.5%;
-    top: 50%;
+    height: 9%;
 
     background: #ECF2FF;
     border-radius: 5px;
@@ -414,11 +405,8 @@ input {
 }
 
 #password {
-    position: absolute;
     width: 21.5%;
-    height: 7%;
-    left: 41.5%;
-    top: 61%;
+    height: 9%;
 
     background: #ECF2FF;
     border-radius: 5px;
@@ -426,11 +414,8 @@ input {
 }
 
 #repassword {
-    position: absolute;
     width: 21.5%;
-    height: 7%;
-    left: 41.5%;
-    top: 71%;
+    height: 9%;
 
     background: #ECF2FF;
     border-radius: 5px;
@@ -438,22 +423,17 @@ input {
 }
 
 #register {
-    position: absolute;
     width: 12%;
-    height: 8%;
-    left: 47%;
-    top: 85%;
+    height: 9%;
+
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
 }
 
 #login {
-    position: absolute;
-    width: 40%;
-    height: 66px;
-    left: 33%;
-    top: 5%;
+    width: 50%;
+    height: 70px;
 
     font-family: 'Italiana', serif;
     font-style: normal;
@@ -461,38 +441,39 @@ input {
     font-size: 4vw;
     line-height: 59px;
     text-align: center;
-
+    margin: 10px;
     color: #000000;
 }
 
+#earthLogoLink {
+    margin: 20px;
+}
+
 #loginButton {
-    position: absolute;
     width: 12%;
     height: 9%;
-    left: 47%;
-    top: 75%;
+    background: #FDE66B;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+#returnLogin {
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
 }
 
 #loginInput {
-    position: absolute;
     width: 21.5%;
     height: 9%;
-    top: 35%;
-    left: 41.5%;
     background: #ECF2FF;
     border-radius: 5px;
     border-style: none;
 }
 
 #loginPassword {
-    position: absolute;
     width: 21.5%;
     height: 9%;
-    left: 41.5%;
-    top: 53%;
 
     background: #ECF2FF;
     border-radius: 5px;

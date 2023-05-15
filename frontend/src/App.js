@@ -18,7 +18,7 @@ import ErrorModal from './components/ErrorModal'
 import ExportModal from './components/ExportModal'
 import SearchPage from './components/SearchPage';
 import RenameMapModal from './components/RenameMapModal';
-
+import ForgotPassword from './components/ForgotPassword'
 
 const App = () => {
   if (process.env.NODE_ENV === "production") {
@@ -38,6 +38,7 @@ const App = () => {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/map/:id" element={<Map />} />
             <Route path="/mapview/:id" element={<Mapview />} />
+            <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
           </Routes>
           {/* <RenameModal /> */}
           <RenameMapModal />

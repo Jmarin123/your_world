@@ -6,5 +6,5 @@ router.post('/register', AuthController.registerUser)
 router.post('/login', AuthController.loginUser)
 router.get('/logout', AuthController.logoutUser)
 router.get('/loggedIn', AuthController.getLoggedIn)
-
+router.post('/passwordemail', AuthController.passwordemail)
 module.exports = router

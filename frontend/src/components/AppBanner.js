@@ -144,7 +144,7 @@ export default function AppBanner() {
         // onClick={() => handleClick("/mapview-comment")}
         onClick={() => handleComment()}
     >
-        <TextsmsOutlined style={{ fontSize: "45px", float: "right" }}/>
+        <TextsmsOutlined style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
 
     const menuId = 'primary-search-account-menu';
@@ -241,7 +241,7 @@ export default function AppBanner() {
         data-cy="home-icon"
     // onClick={() => handleClick("/public")}
     >
-        <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
+        <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage} />
     </StyledIconButton>
 
     let searchIcon = <StyledIconButton
@@ -262,7 +262,7 @@ export default function AppBanner() {
     // disabled={disabled}
     // onClick={() => handleClick("/public")}
     >
-        <Search style={{ fontSize: "45px", float: "right" }}/>
+        <Search style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
     let searchfield = <Box
         // component="form"
@@ -309,7 +309,7 @@ export default function AppBanner() {
         sx={{ mr: 2, marginLeft: '5px' }}
         onClick={() => handleSearchUser()}
     >
-        <PersonOutline style={{ fontSize: "45px", float: "right" }}/>
+        <PersonOutline style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
 
     let searchByMapNameIcon = <StyledIconButton
@@ -329,7 +329,7 @@ export default function AppBanner() {
         sx={{ mr: 2 }}
         onClick={() => handleSearchProperty()}
     >
-        <Workspaces style={{ fontSize: "45px", float: "right" }}/>
+        <Workspaces style={{ fontSize: "45px", float: "right" }} />
     </StyledIconButton>
     if (location.pathname === '/public') {
         globeIcon = <StyledIconButton
@@ -338,7 +338,7 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, marginLeft: "5px", color: '#FDE66B' }}
         >
-            <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage}/>
+            <Public sx={{ paddingX: "1%" }} style={{ fontSize: "45px", float: "right" }} onClick={handlePublicMapsPage} />
         </StyledIconButton>
     }
     else if (location.pathname === '/home') {
@@ -349,7 +349,7 @@ export default function AppBanner() {
             sx={{ mr: 2, color: '#FDE66B' }}
             disabled={auth.loggedIn ? false : true}
         >
-            <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage}/>
+            <Home style={{ fontSize: "45px", float: "right" }} onClick={handleHomePage} />
         </StyledIconButton>
     }
     else if (location.pathname === '/search') {
@@ -359,13 +359,13 @@ export default function AppBanner() {
             aria-label="open drawer"
             sx={{ mr: 2, color: '#FDE66B' }}
         >
-            <Search style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage}/>
+            <Search style={{ fontSize: "45px", float: "right" }} onClick={handleSearchPage} />
         </StyledIconButton>
     }
 
     let editToolbarMenu = "";
     // if (auth.user || auth.type) {
-    if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login') {
+    if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login' && location.pathname !== '/forgotpassword') {
         editToolbarMenu =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">

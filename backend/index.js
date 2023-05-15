@@ -7,6 +7,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+
 app.use(express.urlencoded({ extended: true }))
 const corsOptions = {
     origin: 'http://localhost:3000',

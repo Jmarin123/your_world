@@ -92,12 +92,12 @@ export default function Map() {
 
   useEffect(() => {
     console.log('State variable changed:', geoJsonLayer.current);
-    if(geoJsonLayer.current){
-      if(geoJsonLayer.current.getBounds() !== null){
+    if (geoJsonLayer.current) {
+      if (geoJsonLayer.current.getBounds() !== null) {
         setBounds(geoJsonLayer.current.getBounds())
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geoJsonLayer.current]);
 
   useEffect(() => {
@@ -1686,16 +1686,17 @@ export default function Map() {
     setPropertyKey("");
     setProperyValue("");
     store.hideModals();
-    setMaplayout(newMap ? renderedMap : <div></div>)
+    setMaplayout(newMap ? renderedMap : <div></div>);
   }
 
   const handleConfirmProperty = () => {
     let temp = selectedFeature;
     temp.feature.properties = listOfProperties;
+    setSelectedFeature(temp);
     setPropertyKey("");
     setProperyValue("");
     store.hideModals();
-    setMaplayout(newMap ? renderedMap : <div></div>)
+    setMaplayout(newMap ? renderedMap : <div></div>);
   }
 
   let customPropertiesModal = <Modal
@@ -1735,52 +1736,52 @@ export default function Map() {
     </Grid>
   </Modal>
 
-    // ------------ Color Picker Related
+  // ------------ Color Picker Related
 
-    const [colorPickerOpen, setColorPickerOpen] = useState(false)
-  
-    function handleColorClick() {
-      setColorPickerOpen(!colorPickerOpen)
-    };
-    
-    function handleColorClose() {
-      setColorPickerOpen(false)
-    };
-    
-    function handleColorChange(color){
-      setColorFill(color.hex)
-    };
-  
-    const styles = {
-        color: {
-          width: '36px',
-          height: '14px',
-          borderRadius: '2px',
-          background: colorFill,
-        },
-        swatch: {
-          padding: '5px',
-          background: '#fff',
-          borderRadius: '1px',
-          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-          display: 'inline-block',
-          cursor: 'pointer',
-        },
-        popover: {
-          position: 'absolute',
-          zIndex: '2',
-        },
-        cover: {
-          position: 'fixed',
-          top: '0px',
-          right: '0px',
-          bottom: '0px',
-          left: '0px',
-        },
-    };
-  
-    // ------------ Color Picker End
-  
+  const [colorPickerOpen, setColorPickerOpen] = useState(false)
+
+  function handleColorClick() {
+    setColorPickerOpen(!colorPickerOpen)
+  };
+
+  function handleColorClose() {
+    setColorPickerOpen(false)
+  };
+
+  function handleColorChange(color) {
+    setColorFill(color.hex)
+  };
+
+  const styles = {
+    color: {
+      width: '36px',
+      height: '14px',
+      borderRadius: '2px',
+      background: colorFill,
+    },
+    swatch: {
+      padding: '5px',
+      background: '#fff',
+      borderRadius: '1px',
+      boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+      display: 'inline-block',
+      cursor: 'pointer',
+    },
+    popover: {
+      position: 'absolute',
+      zIndex: '2',
+    },
+    cover: {
+      position: 'fixed',
+      top: '0px',
+      right: '0px',
+      bottom: '0px',
+      left: '0px',
+    },
+  };
+
+  // ------------ Color Picker End
+
   return (
     <Box sx={{ flexGrow: 1 }} id="homePageBackground">
 
@@ -2003,13 +2004,13 @@ export default function Map() {
         </MapContainer>
 
         <Box>
-        <div style={ styles.swatch } onClick={ handleColorClick }>
-          <div style={ styles.color } />
-        </div>
-        { colorPickerOpen ? <div style={ styles.popover }>
-          <div style={ styles.cover } onClick={ handleColorClose }/>
-          <ChromePicker disableAlpha={true} color={ colorFill } onChange={ handleColorChange } />
-        </div> : null }
+          <div style={styles.swatch} onClick={handleColorClick}>
+            <div style={styles.color} />
+          </div>
+          {colorPickerOpen ? <div style={styles.popover}>
+            <div style={styles.cover} onClick={handleColorClose} />
+            <ChromePicker disableAlpha={true} color={colorFill} onChange={handleColorChange} />
+          </div> : null}
         </Box>
 
         <Box>
