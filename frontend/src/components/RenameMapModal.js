@@ -40,6 +40,11 @@ const buttonBox = {
 export default function RenameMapModal() {
     const { store } = useContext(GlobalStoreContext);
     const [name, setName] = useState("");
+    let oldName = "";
+    if(store.currentMap) {
+        oldName = store.currentMap.name
+    }
+    
 
     function handleConfirmRename() {
         store.changeMapName(name);
@@ -66,6 +71,7 @@ export default function RenameMapModal() {
                         <Typography id="modal-text" xs={4}>Name: </Typography>
                         <TextField id="modal-textfield" xs={12}
                             defaultValue={name}
+                            placeholder={oldName}
                             onChange={handleUpdateName}
                             data-cy="rename-map-text"
                         />
