@@ -17,6 +17,8 @@ export default function Mapview() {
     const [legendItems, setLegendItems] = useState([]);
     const [mapName, setMapName] = useState("");
     const [bounds, setBounds] = useState(null);
+    const [selectedFeature, setSelectedFeature] = useState(null)
+    const [listOfProperties, setListOfProperties] = useState({});
     
     const geoJsonLayer = useRef(null);
     
@@ -56,6 +58,14 @@ export default function Mapview() {
         }
     }, [store.currentMap]);
 
+    useEffect(() => {
+        if (selectedFeature) {
+          setListOfProperties(selectedFeature.feature.properties)
+        } else {
+          setListOfProperties({});
+        }
+      }, [selectedFeature]);
+
     let myLegend = (
         <div className="legend">
             {legendItems.map((item, index) => (
@@ -79,6 +89,18 @@ export default function Mapview() {
         </div>
     );
 
+    let propertyElement = (<ul>{
+        Object.entries(listOfProperties).map(([property, value]) => {
+          if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+            return <li key={property}>{property}: {value}</li>
+          } else {
+            return null;
+          }
+        })
+      }
+      </ul>
+    )
+
     function styleMap(feature) {
         return {
             fillColor: feature.properties.fillColor || "#ff0000",
@@ -88,7 +110,14 @@ export default function Mapview() {
         }
     }
 
+    function clickFeature(event) {
+        setSelectedFeature(event.target)
+    }
+
     function onEachCountry(country, layer) {
+        layer.on({
+            click: clickFeature,
+        });
         let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
             popupContent += country.properties.popupCoSntent;
@@ -130,7 +159,7 @@ export default function Mapview() {
                             />
                         </Tooltip>
                     </Marker>
-                ))}
+            ))}
         </GeoJSON>
     );
 
@@ -154,7 +183,17 @@ export default function Mapview() {
                     }
                     {myLegend}
                 </MapContainer>
+
+                <Box>
+                <header>
+                    <h2 id='propertiesText'>Current Region's Properties:</h2>
+                </header>
+                <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+                    {propertyElement}
+                </Box>
             </Box>
+            </Box>
+
 
 
         </Box>
@@ -189,6 +228,15 @@ export default function Mapview() {
                                     }
                                     {myLegend}
                                 </MapContainer>
+
+                                <Box>
+                                    <header>
+                                        <h2 id='propertiesText'>Current Region's Properties:</h2>
+                                    </header>
+                                    <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+                                        {propertyElement}
+                                    </Box>
+                                </Box>
                             </Box>
 
                         </Box>

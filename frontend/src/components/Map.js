@@ -1656,6 +1656,7 @@ export default function Map() {
   }
   </ul>
   )
+  
   let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
     if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
       return <div key={property} className="card" style={{ fontFamily: 'Italiana, serif', fontWeight: '900', display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "5px", alignItems: "center", padding: '1px' }}>
