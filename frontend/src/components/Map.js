@@ -73,7 +73,7 @@ export default function Map() {
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [listOfProperties, setListOfProperties] = useState({});
-  
+
   const [tileLayerOn, setTileLayerOn] = useState(false);
 
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function Map() {
 
   const handleToggleTileLayer = (index) => {
     setTileLayerOn(!tileLayerOn)
-    if(tileLayerOn) {
+    if (tileLayerOn) {
       setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px" }} titleAccess="Toggle Layer" />)
     } else {
       setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Toggle Layer" />)
@@ -605,7 +605,7 @@ export default function Map() {
     store.compressMap();
   }
   function markCompression() {
-    if(!store.currentMap.compressionFlag){
+    if (!store.currentMap.compressionFlag) {
       setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
       if (!store.compressStatus) {
         setMaplayout(<div></div>)
@@ -1633,7 +1633,7 @@ export default function Map() {
   }
 
   const addProperty = () => {
-    if(propertyKey !== 'admin' && propertyKey !== 'fillColor' && propertyKey !== 'borderColor' && propertyKey !== 'label' && propertyKey !== "") {
+    if (propertyKey !== 'admin' && propertyKey !== 'fillColor' && propertyKey !== 'borderColor' && propertyKey !== 'label' && propertyKey !== "") {
       let temp = listOfProperties;
       temp[propertyKey] = propertyValue;
       setListOfProperties(temp)
@@ -1647,7 +1647,7 @@ export default function Map() {
 
   let propertyElement = (<ul>{
     Object.entries(listOfProperties).map(([property, value]) => {
-      if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+      if (property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label') {
         return <li key={property}>{property}: {value}</li>
       } else {
         return null;
@@ -1656,9 +1656,9 @@ export default function Map() {
   }
   </ul>
   )
-  
+
   let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
-    if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+    if (property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label') {
       return <div key={property} className="card" style={{ fontFamily: 'Italiana, serif', fontWeight: '900', display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "5px", alignItems: "center", padding: '1px' }}>
         <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
         <div className="card-body">Value: {value}</div>
@@ -1994,7 +1994,7 @@ export default function Map() {
         </div>
       </Box>
 
-      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }}  noValidate >
+      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} noValidate >
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
           <Recenter bounds={bounds} />
           <Screenshot />
