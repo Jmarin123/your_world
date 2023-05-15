@@ -52,6 +52,20 @@ body {
     border-radius: 5px;
 }
 
+#box2 {
+    box-sizing: border-box;
+    width: 50vw;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    background: rgba(217, 217, 217, 0.78);
+    /* border: 1px solid #000000; */
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
 #allLoginForm {
     display: flex;
     flex-direction: column;
@@ -230,7 +244,7 @@ img {
     width: 257px;
     height: 330px;
     overflow: hidden;
-    background: #E7EDFA;
+    background: #BDCCEC;
     border-radius: 5px;
     transition: background 0.8s ease, transform 0.5s ease;
 }
@@ -424,16 +438,22 @@ input {
 }
 
 #register {
-    width: 12%;
+    width: 20%;
     height: 9%;
 
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
+    transition: background 0.9s ease, transform 0.5s ease;
+}
+
+#register:hover {
+    background: rgba(117, 96, 96, 0.75);
+    transform: scale(1.05);
 }
 
 #login {
-    width: 50%;
+    width: 70%;
     height: 70px;
 
     font-family: 'Italiana', serif;
@@ -451,11 +471,17 @@ input {
 }
 
 #loginButton {
-    width: 12%;
+    width: 20%;
     height: 9%;
     background: #FDE66B;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
+    transition: background 0.9s ease, transform 0.5s ease;
+}
+
+#loginButton:hover {
+    background: rgba(117, 96, 96, 0.75);
+    transform: scale(1.05);
 }
 
 #returnLogin {
@@ -489,6 +515,22 @@ input {
     text-align: center;
     color: #000000;
     font-size: 1.5vw;
+}
+
+#textLink {
+    font-family: 'Italiana', serif;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 26px;
+    text-align: center;
+    color: #000000;
+    font-size: 1.25vw;
+    transition: color 0.9s ease, transform 0.5s ease;
+}
+
+#textLink:hover {
+    color: rgb(40, 48, 206);
+    transform: scale(1.05);
 }
 
 #export-image-text {
@@ -678,7 +720,7 @@ input {
     width: 80%;
     height: 0px;
     left: 9%;
-    top: 69%;
+    top: 70.5%;
     border: 1px solid #000000;
 }
 
@@ -720,6 +762,16 @@ input {
     justify-content: center;
 }
 
+#propertiesText {
+    font-family: 'Italiana', serif;
+    font-weight: 800;
+}
+
+#boxOfProperties {
+    font-family: 'Italiana', serif;
+    font-weight: 800;
+}
+
 #modal-top {
     position: absolute;
     width: 423px;
@@ -731,7 +783,7 @@ input {
 }
 
 #modal-heading {
-    font-family: 'Italiana';
+    font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 900;
     font-size: 28px;
@@ -740,9 +792,16 @@ input {
 }
 
 #modal-text {
-    font-family: 'Italiana';
-    font-weight: normal;
-    font-size: 15px;
+    font-family: 'Italiana', serif;
+    font-size: 20px;
+    color: #000000;
+    font-weight: 900;
+    margin-top: 18px;
+}
+
+#modal-disclaimer {
+    font-family: 'Italiana', serif;
+    font-size: 18px;
     color: #000000;
     font-weight: 900;
 }
@@ -755,10 +814,10 @@ input {
 }
 
 #modal-button {
-    width: 78px;
-    height: 27px;
+    width: 85px;
+    height: 32px;
     background: #FDE66B;
-    font-family: 'Italiana';
+    font-family: 'Italiana', serif;
     font-weight: 600;
     color: #000000;
     font-size: 12px;

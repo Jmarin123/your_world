@@ -75,7 +75,7 @@ function Comment(props) {
     return (
 
         <Card sx={{
-            width: '102%',
+            width: '104%',
             position: 'relative',
             top: '60px',
             backgroundColor: '#D9D9D9',
@@ -131,12 +131,15 @@ function Comment(props) {
                     left: '10px',
                     height: '700px',
                     overflowY: 'auto',
+                    overflowX: 'hidden',
+                    wordWrap: 'break-word'
                 }}>
                     {reversed.map((comment, i) => (
                         <ListItem key={i} sx={{
                             borderRadius: "12px",
                             backgroundColor: "#ECF2FF",
                             margin: '8px',
+                            marginLeft: '0px',
                             fontsize: "8pt",
                             // marginTop: '1px',
                         }}>

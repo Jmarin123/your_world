@@ -93,11 +93,11 @@ export default function UploadModal() {
 
     const assignColor = (dataForMap) => {
         for (let i = 0; i < dataForMap.features.length; i++) {
-            dataForMap.features[i].properties.fillColor = "#ff0000";
-            dataForMap.features[i].properties.borderColor = "#000000";
-            dataForMap.features[i].properties.label = "Untitled";
+            dataForMap.features[i].properties.fillColor = dataForMap.features[i].properties.fillColor || "#ff0000";
+            dataForMap.features[i].properties.borderColor = dataForMap.features[i].properties.borderColor || "#000000";
+            dataForMap.features[i].properties.label = dataForMap.features[i].properties.label || "Untitled";
         }
-        dataForMap.background = "#abd2da"
+        dataForMap.background = dataForMap.background || "#abd2da";
         return dataForMap;
     }
 
@@ -128,15 +128,27 @@ export default function UploadModal() {
         store.hideModals();
     }
 
-    let uploadShpInput = (<div>
+    let uploadShpInput = (<div style={{
+            textAlign: 'center'
+        }}>
+        <br></br>
+        
         <form>
+        <Typography id="modal-text" xs={4}>Select a SHP file to upload </Typography>
             <input type="file" accept=".shp" onChange={(e) => setFile1(e.target.files[0])} data-cy='upload-shp' />
+            <br></br>
+            <br></br>
+            <Typography id="modal-text" xs={4}>Select a DBF file to upload </Typography>
             <input type="file" accept=".dbf" onChange={(e) => setFile2(e.target.files[0])} data-cy='upload-dbf' />
         </form>
     </div>)
 
-    let uploadGeojsonInput = (<div>
+    let uploadGeojsonInput = (<div style={{
+            textAlign: 'center'
+        }}>
+        <br></br>
         <form>
+            <Typography id="modal-text" xs={4}>Select a GeoJSON file to upload </Typography>
             <input type="file" accept=".geojson,.json" onChange={(e) => setFile1(e.target.files[0])} data-cy='upload-geojson' />
         </form>
     </div>)

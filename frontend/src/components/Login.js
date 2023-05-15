@@ -38,6 +38,11 @@ function Login() {
         <Button id="loginButton" type="submit" sx={{ textTransform: `none` }}>
           <p id="text">Login</p>
         </Button>
+
+        <Link to="/register">
+            <p id="textLink">Not a Member? Register Here!</p>
+        </Link>
+
         <Button
           component={Link}
           to="/forgotpassword"
@@ -45,11 +50,12 @@ function Login() {
             color: 'inherit',
             textDecoration: 'underline',
             textTransform: 'none',
-            fontWeight: 'normal',
             '&:hover': {
               textDecoration: 'underline',
               backgroundColor: 'transparent',
             },
+            fontFamily: 'Italiana, serif',
+            fontWeight: '900'
           }}
         >
           Forgot Password?

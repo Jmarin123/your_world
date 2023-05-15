@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 
 import { GlobalStoreContext } from '../store'
 
@@ -6,6 +6,7 @@ import { Box, Grid } from '@mui/material';
 
 import Comment from './Comment';
 
+import Recenter from './Recenter'
 import { MapContainer, GeoJSON, Marker, Tooltip } from 'react-leaflet';
 // TileLayer
 
@@ -15,15 +16,22 @@ export default function Mapview() {
     const [containerKey, setContainerKey] = useState(0);
     const [legendItems, setLegendItems] = useState([]);
     const [mapName, setMapName] = useState("");
+    const [bounds, setBounds] = useState(null);
+    const [selectedFeature, setSelectedFeature] = useState(null)
+    const [listOfProperties, setListOfProperties] = useState({});
+    
+    const geoJsonLayer = useRef(null);
+    
+    useEffect(() => {
+        console.log('State variable changed:', geoJsonLayer.current);
+        if (geoJsonLayer && geoJsonLayer.current) {
+        if (geoJsonLayer.current.getBounds() !== null) {
+            setBounds(geoJsonLayer.current.getBounds())
+        }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.currentMap]);
 
-    // useEffect(() => {
-    //     console.log('State variable changed:', store.currentMap);
-    //     if(store.currentMap && store.currentMap.dataFromMap.background){
-    //         setBackground(store.currentMap.dataFromMap.background)
-    //         setContainerKey(containerKey+1)
-    //     }
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [store.currentMap]);
     useEffect(() => {
         console.log('State variable changed:', store.currentMap);
         if (store.currentMap && store.currentMap.dataFromMap.background) {
@@ -50,6 +58,14 @@ export default function Mapview() {
         }
     }, [store.currentMap]);
 
+    useEffect(() => {
+        if (selectedFeature) {
+          setListOfProperties(selectedFeature.feature.properties)
+        } else {
+          setListOfProperties({});
+        }
+      }, [selectedFeature]);
+
     let myLegend = (
         <div className="legend">
             {legendItems.map((item, index) => (
@@ -73,6 +89,18 @@ export default function Mapview() {
         </div>
     );
 
+    let propertyElement = (<ul>{
+        Object.entries(listOfProperties).map(([property, value]) => {
+          if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+            return <li key={property}>{property}: {value}</li>
+          } else {
+            return null;
+          }
+        })
+      }
+      </ul>
+    )
+
     function styleMap(feature) {
         return {
             fillColor: feature.properties.fillColor || "#ff0000",
@@ -82,7 +110,14 @@ export default function Mapview() {
         }
     }
 
+    function clickFeature(event) {
+        setSelectedFeature(event.target)
+    }
+
     function onEachCountry(country, layer) {
+        layer.on({
+            click: clickFeature,
+        });
         let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
             popupContent += country.properties.popupCoSntent;
@@ -93,6 +128,7 @@ export default function Mapview() {
 
     const renderedMap = (
         <GeoJSON
+            ref={geoJsonLayer}
             style={styleMap}
             data={store.currentMap ? store.currentMap.dataFromMap.features : null}
             onEachFeature={onEachCountry}
@@ -123,7 +159,7 @@ export default function Mapview() {
                             />
                         </Tooltip>
                     </Marker>
-                ))}
+            ))}
         </GeoJSON>
     );
 
@@ -138,15 +174,26 @@ export default function Mapview() {
                 </div>
             </Box>
 
-            <Box id="mapBox" component="form" noValidate >
-                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={[20, 100]}>
+            <Box id="mapBox" component="form" style={{ height: "80vh", backgroundColor: background }} noValidate >
+                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                <Recenter bounds={bounds} />
                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                     {
                         store.currentMap ? renderedMap : <div></div>
                     }
                     {myLegend}
                 </MapContainer>
+
+                <Box>
+                <header>
+                    <h2 id='propertiesText'>Current Region's Properties:</h2>
+                </header>
+                <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+                    {propertyElement}
+                </Box>
             </Box>
+            </Box>
+
 
 
         </Box>
@@ -172,14 +219,24 @@ export default function Mapview() {
                 }
                 </div>
             </Box>
-                            <Box id="mapBox" component="form" noValidate >
-                                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} zoom={2} center={[20, 100]}>
+                            <Box id="mapBox" style={{ height: "80vh", backgroundColor: background }} noValidate >
+                                <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                                    <Recenter bounds={bounds} />
                                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                                     {
                                         store.currentMap ? renderedMap : <div></div>
                                     }
                                     {myLegend}
                                 </MapContainer>
+
+                                <Box>
+                                    <header>
+                                        <h2 id='propertiesText'>Current Region's Properties:</h2>
+                                    </header>
+                                    <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
+                                        {propertyElement}
+                                    </Box>
+                                </Box>
                             </Box>
 
                         </Box>

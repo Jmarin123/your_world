@@ -977,7 +977,7 @@ export default function Map() {
               polyline: false,
               circle: false,
               rectangle: false,
-              marker: true,
+              marker: false,
               circlemarker: false,
               polygon: drawFlag
             }}
@@ -1187,7 +1187,7 @@ export default function Map() {
               polyline: false,
               circle: false,
               rectangle: false,
-              marker: true,
+              marker: false,
               polygon: drawFlag
             }}
           />
@@ -1656,9 +1656,10 @@ export default function Map() {
   }
   </ul>
   )
+  
   let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
     if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
-      return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
+      return <div key={property} className="card" style={{ fontFamily: 'Italiana, serif', fontWeight: '900', display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "5px", alignItems: "center", padding: '1px' }}>
         <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
         <div className="card-body">Value: {value}</div>
         <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
@@ -1726,7 +1727,7 @@ export default function Map() {
         <Button id="modal-button" onClick={handleConfirmProperty}>Confirm</Button>
         <Button id="modal-button" onClick={handleCloseProperty}>Cancel</Button>
       </Grid>
-      <h6>Disclaimer: Property changes cannot be reverted</h6>
+      <h6 id='modal-disclaimer'>Disclaimer: Property changes cannot be reverted</h6>
     </Grid>
   </Modal>
 
@@ -1993,7 +1994,7 @@ export default function Map() {
         </div>
       </Box>
 
-      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
+      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }}  noValidate >
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
           <Recenter bounds={bounds} />
           <Screenshot />
@@ -2015,7 +2016,7 @@ export default function Map() {
 
         <Box>
           <header>
-            <h2>Current Region's Properties:</h2>
+            <h2 id='propertiesText'>Current Region's Properties:</h2>
           </header>
           <Box id="boxOfProperties" sx={{ overflowY: "scroll", height: "150px", border: 1 }}>
             {propertyElement}
