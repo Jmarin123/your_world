@@ -977,7 +977,7 @@ export default function Map() {
               polyline: false,
               circle: false,
               rectangle: false,
-              marker: true,
+              marker: false,
               circlemarker: false,
               polygon: drawFlag
             }}
@@ -1187,7 +1187,7 @@ export default function Map() {
               polyline: false,
               circle: false,
               rectangle: false,
-              marker: true,
+              marker: false,
               polygon: drawFlag
             }}
           />
