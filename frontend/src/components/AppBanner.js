@@ -17,7 +17,7 @@ export default function AppBanner() {
     const isMenuOpen = Boolean(anchorEl);
     const [anchorE2, setAnchorE2] = useState(null);
     const [searchByNameButton, setSearchByNameButton] = useState(<PersonOutline style={{ fontSize: "45px", float: "right" }}/>)
-    const [searchByMapNameButton, setSearchByMapNameButton] = useState(<Map style={{ fontSize: "45px", float: "right" }} />)
+    const [searchByMapNameButton, setSearchByMapNameButton] = useState(<Map style={{ fontSize: "45px", float: "right",  color: '#FDE66B' }} />)
     const [searchByMapPropertyButton, setSearchByMapPropertyButton] = useState(<Workspaces style={{ fontSize: "45px", float: "right" }}/>)
     
     const isUploadMenuOpen = Boolean(anchorE2);

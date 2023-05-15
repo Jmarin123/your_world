@@ -29,7 +29,7 @@ function Register() {
       <Link to={`/`}>
         <img src={logo} alt="earthlogo" title='Go Back' />
       </Link>
-      <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
+      <Box id="box2" component="form" noValidate onSubmit={handleSubmit} >
         <div id="account">Create an Account</div>
         <div>
           <input id='firstName' placeholder='first name' sx={{
@@ -54,6 +54,10 @@ function Register() {
         <Button id="register" type="submit" sx={{ textTransform: `none`, fontSize: '1vw' }} data-cy='registerButton' on="true">
           <p id="text">Register</p>
         </Button>
+
+        <Link to="/login">
+            <p id="textLink">Already A Member? Login Here!</p>
+        </Link>
       </Box>
     </div>
 
