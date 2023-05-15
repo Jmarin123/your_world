@@ -24,11 +24,17 @@ export const registerUser = (firstName, lastName, username, email, password, pas
         passwordVerify: passwordVerify
     })
 }
+export const sendPasswordEmail = (email) => {
+    return api.post('auth/passwordemail', {
+        email: email
+    })
+}
 const apis = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    sendPasswordEmail
 }
 
 export default apis

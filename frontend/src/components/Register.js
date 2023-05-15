@@ -25,25 +25,26 @@ function Register() {
 
 
   return (
-    <div>
+    <div id="allLoginForm">
       <Link to={`/`}>
-        <img src={logo} alt="earthlogo" title='Go Back'/>
+        <img src={logo} alt="earthlogo" title='Go Back' />
       </Link>
       <Box id="box" component="form" noValidate onSubmit={handleSubmit} >
-        <section id="account">Create an Account</section>
-
-        <input id='firstName' placeholder='first name' sx={{
-          "& fieldset": { border: 'none' },
-        }} name="firstName" data-cy='firstNameForm'></input>
-        <input id='lastName' placeholder='last name' sx={{
-          "& fieldset": { border: 'none' },
-        }} name="lastName" data-cy='lastNameForm'></input>
+        <div id="account">Create an Account</div>
+        <div>
+          <input id='firstName' placeholder='first name' sx={{
+            "& fieldset": { border: 'none' },
+          }} name="firstName" data-cy='firstNameForm'></input>
+          <input id='lastName' placeholder='last name' sx={{
+            "& fieldset": { border: 'none' },
+          }} name="lastName" data-cy='lastNameForm'></input>
+        </div>
         <input id='username' placeholder='username' sx={{
           "& fieldset": { border: 'none' },
         }} name="username"></input>
         <input id='email' placeholder='email' sx={{
           "& fieldset": { border: 'none' },
-        }} data-cy='emailForm' name="emailForm"></input>
+        }} data-cy='emailForm' name="emailForm" type='email'></input>
         <input id='password' type="password" placeholder='password' sx={{
           "& fieldset": { border: 'none' },
         }} name="password" data-cy='passwordForm'></input>

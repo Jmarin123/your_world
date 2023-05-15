@@ -20,16 +20,16 @@ function Login() {
   };
 
   return (
-    <div>
-      <Link to={`/`}>
+    <div id="allLoginForm">
+      <Link to={`/`} id='earthLogoLink'>
         <img src={logo} alt="earthlogo" title='Go Back' />
       </Link>
       <Box id="box" component="form" noValidate onSubmit={handleSubmit}>
-        <section id="login">Log into Account</section>
+        <div id="login">Log into Account</div>
 
         <input id='loginInput' placeholder='email' sx={{
           "& fieldset": { border: 'none' },
-        }} name="email" ></input>
+        }} name="email" type='email' ></input>
         <input id='loginPassword' type="password" placeholder='password' sx={{
           "& fieldset": { border: 'none' },
         }} name="password" ></input>
@@ -38,7 +38,22 @@ function Login() {
         <Button id="loginButton" type="submit" sx={{ textTransform: `none` }}>
           <p id="text">Login</p>
         </Button>
-
+        <Button
+          component={Link}
+          to="/forgotpassword"
+          sx={{
+            color: 'inherit',
+            textDecoration: 'underline',
+            textTransform: 'none',
+            fontWeight: 'normal',
+            '&:hover': {
+              textDecoration: 'underline',
+              backgroundColor: 'transparent',
+            },
+          }}
+        >
+          Forgot Password?
+        </Button>
       </Box>
     </div>
   );

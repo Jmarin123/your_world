@@ -1,6 +1,16 @@
 const auth = require('../auth')
 const User = require('../models/user-model')
+const PasswordSent = require('../models/password-sent')
 const bcrypt = require('bcryptjs')
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.emailUser,
+        pass: process.env.emailPassword
+    }
+});
 
 getLoggedIn = async (req, res) => {
     try {
@@ -150,9 +160,49 @@ registerUser = async (req, res) => {
     }
 }
 
+passwordemail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        const now = Date.now();
+        const expiration = now + (24 * 60 * 60 * 1000);
+        const uniqueString = uuidv4();
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            const newPasswordEmail = new PasswordSent({ uniqueHash: uniqueString, expirationDate: expiration, email: email });
+            await newPasswordEmail.save();
+            const encodedEmail = encodeURIComponent(email)
+            const textReset = "This link expires after 24 hours: " + process.env.REACT_APP_API_URL + "resetpassword" + "?email=" + encodedEmail + "&key=" + uniqueString;
+            const mailOptions = {
+                from: '"Your World" <yourworld.donotreply@gmail.com>',
+                to: `${email}`,
+                subject: 'Password Reset',
+                text: textReset
+            };
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    // do something useful
+                }
+            });
+        }
+        return res.status(200).send();
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    passwordemail,
 }
