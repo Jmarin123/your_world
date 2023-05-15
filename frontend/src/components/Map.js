@@ -1089,7 +1089,7 @@ export default function Map() {
                         key={Math.random()}
                         center={multiArray[i]}
                         pathOptions={{ fillColor: 'black', color: 'black', fillOpacity: 1 }}
-                        radius={10000}
+                        radius={10}
                         eventHandlers={{ click: eventHandlers }}
                         ifMultiPolygon={true}
                         circleCustomProp={index + "-" + polygonIndex}
@@ -1818,7 +1818,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Redo style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
+            <Redo style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
           <div id="edit-line4"></div>
@@ -2023,6 +2023,7 @@ export default function Map() {
           </Box>
           {buttonIfProperty}
         </Box>
+
       </Box>
       {modal}
       {compressModal}
