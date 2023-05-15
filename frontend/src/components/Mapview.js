@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 
 import { GlobalStoreContext } from '../store'
 
@@ -6,6 +6,7 @@ import { Box, Grid } from '@mui/material';
 
 import Comment from './Comment';
 
+import Recenter from './Recenter'
 import { MapContainer, GeoJSON, Marker, Tooltip } from 'react-leaflet';
 // TileLayer
 
@@ -15,15 +16,20 @@ export default function Mapview() {
     const [containerKey, setContainerKey] = useState(0);
     const [legendItems, setLegendItems] = useState([]);
     const [mapName, setMapName] = useState("");
+    const [bounds, setBounds] = useState(null);
+    
+    const geoJsonLayer = useRef(null);
+    
+    useEffect(() => {
+        console.log('State variable changed:', geoJsonLayer.current);
+        if (geoJsonLayer && geoJsonLayer.current) {
+        if (geoJsonLayer.current.getBounds() !== null) {
+            setBounds(geoJsonLayer.current.getBounds())
+        }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store.currentMap]);
 
-    // useEffect(() => {
-    //     console.log('State variable changed:', store.currentMap);
-    //     if(store.currentMap && store.currentMap.dataFromMap.background){
-    //         setBackground(store.currentMap.dataFromMap.background)
-    //         setContainerKey(containerKey+1)
-    //     }
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [store.currentMap]);
     useEffect(() => {
         console.log('State variable changed:', store.currentMap);
         if (store.currentMap && store.currentMap.dataFromMap.background) {
@@ -93,6 +99,7 @@ export default function Mapview() {
 
     const renderedMap = (
         <GeoJSON
+            ref={geoJsonLayer}
             style={styleMap}
             data={store.currentMap ? store.currentMap.dataFromMap.features : null}
             onEachFeature={onEachCountry}
@@ -138,8 +145,9 @@ export default function Mapview() {
                 </div>
             </Box>
 
-            <Box id="mapBox" component="form" noValidate >
-                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey} zoom={2} center={[20, 100]}>
+            <Box id="mapBox" component="form" style={{ height: "80vh", backgroundColor: background }} noValidate >
+                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                <Recenter bounds={bounds} />
                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                     {
                         store.currentMap ? renderedMap : <div></div>
@@ -172,8 +180,9 @@ export default function Mapview() {
                 }
                 </div>
             </Box>
-                            <Box id="mapBox" component="form" noValidate >
-                                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} zoom={2} center={[20, 100]}>
+                            <Box id="mapBox" style={{ height: "80vh", backgroundColor: background }} noValidate >
+                                <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                                    <Recenter bounds={bounds} />
                                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                                     {
                                         store.currentMap ? renderedMap : <div></div>
