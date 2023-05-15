@@ -75,7 +75,7 @@ function Comment(props) {
     return (
 
         <Card sx={{
-            width: '102%',
+            width: '104%',
             position: 'relative',
             top: '60px',
             backgroundColor: '#D9D9D9',
