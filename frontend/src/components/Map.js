@@ -1993,7 +1993,7 @@ export default function Map() {
         </div>
       </Box>
 
-      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
+      <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }}  noValidate >
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
           <Recenter bounds={bounds} />
           <Screenshot />
