@@ -1818,7 +1818,7 @@ export default function Map() {
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
           >
-            <Redo style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Redo" onClick={handleRedo} />
+            <Redo style={{ fontSize: "45px" }} titleAccess="Redo" onClick={handleRedo} />
           </StyledIconButton>
 
           <div id="edit-line4"></div>
