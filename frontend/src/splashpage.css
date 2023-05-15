@@ -762,6 +762,16 @@ input {
     justify-content: center;
 }
 
+#propertiesText {
+    font-family: 'Italiana', serif;
+    font-weight: 800;
+}
+
+#boxOfProperties {
+    font-family: 'Italiana', serif;
+    font-weight: 800;
+}
+
 #modal-top {
     position: absolute;
     width: 423px;
@@ -773,7 +783,7 @@ input {
 }
 
 #modal-heading {
-    font-family: 'Italiana';
+    font-family: 'Italiana', serif;
     font-style: normal;
     font-weight: 900;
     font-size: 28px;
@@ -782,9 +792,16 @@ input {
 }
 
 #modal-text {
-    font-family: 'Italiana';
-    font-weight: normal;
-    font-size: 15px;
+    font-family: 'Italiana', serif;
+    font-size: 20px;
+    color: #000000;
+    font-weight: 900;
+    margin-top: 18px;
+}
+
+#modal-disclaimer {
+    font-family: 'Italiana', serif;
+    font-size: 18px;
     color: #000000;
     font-weight: 900;
 }
@@ -797,10 +814,10 @@ input {
 }
 
 #modal-button {
-    width: 78px;
-    height: 27px;
+    width: 85px;
+    height: 32px;
     background: #FDE66B;
-    font-family: 'Italiana';
+    font-family: 'Italiana', serif;
     font-weight: 600;
     color: #000000;
     font-size: 12px;
