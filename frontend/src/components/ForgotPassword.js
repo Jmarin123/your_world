@@ -11,7 +11,7 @@ export default function ForgotPassword() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         console.log("password reseting: ", formData.get("email"))
-        auth.sendPasswordReset(formData.get("email"));
+        auth.sendPasswordEmail(formData.get("email"));
         setSubmitted(true);
     }
     let presentedPage = null;
@@ -26,14 +26,14 @@ export default function ForgotPassword() {
         </Box>)
     } else {
         presentedPage = (<Box id="box" component="form" onSubmit={handleSubmit}>
-            <div id="login">Reset Your Password</div>
+            <div id="login">Forgot Password</div>
 
             <input id='loginInput' placeholder='email' sx={{
                 "& fieldset": { border: 'none' },
             }} name="email" type="email" required ></input>
 
             <Button id="returnLogin" type="submit" sx={{ textTransform: `none` }}>
-                <p id="text">Reset Pasword</p>
+                <p id="text">Send Email</p>
             </Button>
         </Box>)
     }
