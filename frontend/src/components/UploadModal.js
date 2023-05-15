@@ -92,12 +92,19 @@ export default function UploadModal() {
     }
 
     const assignColor = (dataForMap) => {
-        for (let i = 0; i < dataForMap.features.length; i++) {
-            dataForMap.features[i].properties.fillColor = dataForMap.features[i].properties.fillColor || "#ff0000";
-            dataForMap.features[i].properties.borderColor = dataForMap.features[i].properties.borderColor || "#000000";
-            dataForMap.features[i].properties.label = dataForMap.features[i].properties.label || "Untitled";
+        if(dataForMap.features){
+            for (let i = 0; i < dataForMap.features.length; i++) {
+                dataForMap.features[i].properties.fillColor = dataForMap.features[i].properties.fillColor || "#ff0000";
+                dataForMap.features[i].properties.borderColor = dataForMap.features[i].properties.borderColor || "#000000";
+                dataForMap.features[i].properties.label = dataForMap.features[i].properties.label || "Untitled";
+            }
+            dataForMap.background = dataForMap.background || "#abd2da";
         }
-        dataForMap.background = dataForMap.background || "#abd2da";
+        else{
+            dataForMap.type = "FeatureCollection"
+            dataForMap.features = []
+            dataForMap.background = dataForMap.background || "#abd2da";
+        }
         return dataForMap;
     }
 

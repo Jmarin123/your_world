@@ -146,7 +146,7 @@ export default function Mapview() {
             </Box>
 
             <Box id="mapBox" component="form" style={{ height: "80vh", backgroundColor: background }} noValidate >
-                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} key={containerKey} center={[20, 100]} zoom={2}>
                 <Recenter bounds={bounds} />
                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                     {
@@ -181,7 +181,7 @@ export default function Mapview() {
                 </div>
             </Box>
                             <Box id="mapBox" style={{ height: "80vh", backgroundColor: background }} noValidate >
-                                <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey}>
+                                <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} center={[20, 100]} zoom={2}>
                                     <Recenter bounds={bounds} />
                                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
                                     {
