@@ -48,9 +48,11 @@ export default function RenameMapModal() {
 
     function handleConfirmRename() {
         store.changeMapName(name);
+        setName("")
     }
     function handleCloseModal(event) {
         store.hideModals();
+        setName("")
     }
     function handleUpdateName(event) {
         setName(event.target.value);
