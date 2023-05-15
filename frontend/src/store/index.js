@@ -728,6 +728,7 @@ function GlobalStoreContextProvider(props) {
                 return store;
         }
     }
+
     store.setLegendColor = function () {
         console.log("store.setLegendColor");
         storeReducer({
@@ -735,6 +736,9 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.setCompressionFlag = function () {
+        store.currentMap.compressionFlag = true;
+    }
 
     store.compressMap = function () {
         storeReducer({
@@ -879,6 +883,7 @@ function GlobalStoreContextProvider(props) {
             publish: { isPublished: false, publishedDate: new Date() },
             image: "temp",
             markers: [], // Add an empty array for the markers
+            compressionFlag: false
         };
         console.log(payload);
         const response = await api.createMap(payload);
@@ -992,6 +997,10 @@ function GlobalStoreContextProvider(props) {
                 const ownerName = pair.owner.toLowerCase();
                 return store.search !== "" && ownerName === store.search.toLowerCase() && pair.publish.isPublished;
             });
+        } else if (store.filterSearch === "property" && store.search !== "") {        
+            screenList = store.idNamePairs.filter(pair => {
+                return store.search !== "" && pair.uniqueProperties.indexOf(store.search) > -1 && pair.publish.isPublished;
+            });
         } else {
             console.log("3");
             console.log(store.search);
@@ -1046,7 +1055,6 @@ function GlobalStoreContextProvider(props) {
                     firstUpload: false,
                 }
             });
-
         }
     }
 
@@ -1081,6 +1089,10 @@ function GlobalStoreContextProvider(props) {
                 payload: { currentMap: newMap.data.map, firstUpload: false }
             });
         }
+    }
+
+    store.redirectToHome = function () {
+        navigate("/");
     }
 
     store.openCommentView = function () {
@@ -1186,6 +1198,7 @@ function GlobalStoreContextProvider(props) {
                 publish: { isPublished: false, publishedDate: new Date() },
                 image: map.image,
                 markers: map.markers,
+                compressionFlag: false
             };
             const re = await api.createMap(payload);
             if (re.status === 201) {

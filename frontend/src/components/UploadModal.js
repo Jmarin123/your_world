@@ -110,7 +110,7 @@ export default function UploadModal() {
             assignName(object)
             assignColor(object)
 
-            let options = { tolerance: 0.002, highQuality: false };
+            let options = { tolerance: 0.001, highQuality: false };
             // eslint-disable-next-line
             let newMap = turf.simplify(object, options);
 

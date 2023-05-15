@@ -46,7 +46,8 @@ export default function HomePage() {
             <Box id="publicBox" sx={{
                         overflowY: 'auto',
                         overflowX: 'hidden'
-                    }}component="form" noValidate >
+                    }}
+                    component="form" noValidate >
                 <section id="public">Your Maps</section>
 
 

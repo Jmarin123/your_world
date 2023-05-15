@@ -144,7 +144,7 @@ export default function MapCard(props) {
     // console.log(auth.user.email);
     // console.log(map.ownerEmail);
     // console.log(auth.email === map.ownerEmail);
-    let publishedMapCard = <ListItem id='published-listItemMapCard'>
+    let publishedMapCard = <ListItem id='published-listItemMapCard' title={idNamePair.name}>
         <div
             id="mapCard1"
             key={idNamePair._id}
@@ -225,7 +225,7 @@ export default function MapCard(props) {
         </div>
     </ListItem >
 
-    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' >
+    let unpublishedMapCard = <ListItem id='unpublished-listItemMapCard' title={idNamePair.name} >
         <div
             key={idNamePair._id}
             id="mapCard2"

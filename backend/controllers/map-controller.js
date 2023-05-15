@@ -94,6 +94,7 @@ createMap = async (req, res) => {
             .lean();
 
         mapToReturn.dataFromMap = mapToReturn.dataFromMap.dataFromMap;
+        mapToReturn.compressionFlag = false;
         res.status(201).json({ map: mapToReturn });
     } catch (err) {
         console.log(err);
@@ -173,6 +174,7 @@ getAllMaps = async (req, res) => {
                 publish: map.publish,
                 markers: map.markers,
                 uniqueProperties: map.uniqueProperties,
+                compressionFlag: map.compressionFlag
             };
         });
 
@@ -243,6 +245,7 @@ updateMap = async (req, res) => {
         map.publish = body.map.publish || map.publish;
         map.image = body.map.image || map.image;
         map.markers = body.map.markers || map.markers;
+        map.compressionFlag = body.map.compressionFlag || map.compressionFlag;
 
         console.log("markers array:", body.map.markers);
 

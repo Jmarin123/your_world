@@ -7,20 +7,19 @@ import { styled } from '@mui/material/styles';
 import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Box, MenuItem, FormControl, Select, Button, Modal, Typography, Grid, TextField, IconButton } from '@mui/material';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
+import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import {
   Explore, Save, Undo, Redo, Compress, GridView, Merge,
-  ColorLens, FormatColorFill, BorderColor, EmojiFlags, Title
+  ColorLens, FormatColorFill, BorderColor, Title,
 } from '@mui/icons-material/';
 
 import SaveAsOutlined from '@mui/icons-material/SaveAsOutlined';
 
-import Statusbar from './Statusbar';
 import Recenter from './Recenter'
 import Screenshot from './Screenshot'
 
 import "leaflet/dist/leaflet.css";
-import { MapContainer, GeoJSON, FeatureGroup, Polygon, Circle, Marker, Tooltip } from 'react-leaflet';
-// TileLayer
+import { MapContainer, GeoJSON, FeatureGroup, Polygon, TileLayer, Circle, Marker, Tooltip } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw"
 import * as turf from '@turf/turf';
 import { ChromePicker } from 'react-color'
@@ -74,6 +73,8 @@ export default function Map() {
   const geoJsonLayer = useRef(null);
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [listOfProperties, setListOfProperties] = useState({});
+  
+  const [tileLayerOn, setTileLayerOn] = useState(false);
 
   useEffect(() => {
     console.log('State variable changed:', store.currentMap);
@@ -201,6 +202,15 @@ export default function Map() {
     alignItems: 'center',
     justifyContent: 'center',
   }
+
+  const handleToggleTileLayer = (index) => {
+    setTileLayerOn(!tileLayerOn)
+    if(tileLayerOn) {
+      setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px" }} titleAccess="Toggle Layer" />)
+    } else {
+      setToggleLayerButton(<MapRoundedIcon style={{ fontSize: "45px", color: "#FDE66B" }} titleAccess="Toggle Layer" />)
+    }
+  };
 
 
   // LEGEND-------------------------------------------------------------------->START
@@ -595,10 +605,12 @@ export default function Map() {
     store.compressMap();
   }
   function markCompression() {
-    setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
-    if (!store.compressStatus) {
-      setMaplayout(<div></div>)
-      store.markCompression()
+    if(!store.currentMap.compressionFlag){
+      setSplitButton(<GridView style={{ fontSize: "45px" }} titleAccess="Split" onClick={handleSplit} />)
+      if (!store.compressStatus) {
+        setMaplayout(<div></div>)
+        store.markCompression()
+      }
     }
   }
   //PERMANENTLY CHANGE MAP COMPRESSION MODAL AND FUNCTIONS----------------------------------------->END
@@ -983,39 +995,7 @@ export default function Map() {
   useEffect(() => {
     if (compressValue !== -1) {
       splitArray.length = 0
-
-      // let options = { tolerance: compressValue, highQuality: false };
-      // // eslint-disable-next-line
-      // newMap = turf.simplify(newMap, options);
-      // //setNewMap(turf.simplify(newMap, options));
-      // store.currentMap.dataFromMap = turf.simplify(store.currentMap.dataFromMap, options)
-      // setMaplayout(<FeatureGroup >
-      //   {newMap && newMap.features.map((feature, index) => {
-      //     if (feature.geometry.type === 'Polygon') {
-      //       return <Polygon key={Math.random()} positions={feature.geometry.coordinates[0]} myCustomKeyProp={index + ""} polyName={feature.properties.admin} />;
-      //     } else if (feature.geometry.type === 'MultiPolygon') {
-      //       const polygons = feature.geometry.coordinates.map((polygonCoords, polygonIndex) => (
-      //         <Polygon key={Math.random()} positions={polygonCoords[0]} myCustomKeyProp={index + "-" + polygonIndex} polyName={feature.properties.admin} />
-      //       ));
-      //       return polygons;
-      //     }
-      //     return null;
-      //   })}
-      //   <EditControl
-      //     position='topright'
-      //     onEdited={handleEditable}
-      //     onDeleted={_onDelete}
-      //     onCreated={_onCreated}
-      //     draw={{
-      //       polyline: false,
-      //       circle: false,
-      //       rectangle: false,
-      //       marker: true,
-      //       circlemarker: false
-      //     }}
-      //   />
-      // </FeatureGroup>)
-
+      store.setCompressionFlag();
       setMapLayOutFLAG(1)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1235,7 +1215,7 @@ export default function Map() {
         setMergedFlag(true)
 
 
-        const bufferDistance = 0.15; // adjust this value as needed
+        const bufferDistance = 0.1; // adjust this value as needed
         const bufferedPolygon1 = turf.buffer(firstMerge.feature, bufferDistance);
         const bufferedPolygon2 = turf.buffer(secondMerge.feature, bufferDistance);
 
@@ -1633,6 +1613,7 @@ export default function Map() {
   const [mergeButton, setMergeButton] = useState(<Merge style={{ fontSize: "45px" }} titleAccess="Merge" onClick={handleMerge} />)
   const [colorSubregionButton, setColorSubregionButton] = useState(<ColorLens style={{ fontSize: "45px" }} titleAccess="Color Subregion" />)
   const [colorBorderButton, setColorBorderButton] = useState(<BorderColor style={{ fontSize: "45px" }} titleAccess="Color Border" />)
+  const [toggleLayerButton, setToggleLayerButton] = useState(<MapRoundedIcon style={{ fontSize: "45px" }} titleAccess="Toggle Layer" />)
 
 
   const openPropertyModal = () => {
@@ -1652,26 +1633,39 @@ export default function Map() {
   }
 
   const addProperty = () => {
-    let temp = listOfProperties;
-    temp[propertyKey] = propertyValue;
-    setListOfProperties(temp)
-    setPropertyKey("");
-    setProperyValue("");
+    if(propertyKey !== 'admin' && propertyKey !== 'fillColor' && propertyKey !== 'borderColor' && propertyKey !== 'label' && propertyKey !== "") {
+      let temp = listOfProperties;
+      temp[propertyKey] = propertyValue;
+      setListOfProperties(temp)
+      setPropertyKey("");
+      setProperyValue("");
+    } else {
+      setPropertyKey("");
+      setProperyValue("");
+    }
   }
 
   let propertyElement = (<ul>{
     Object.entries(listOfProperties).map(([property, value]) => {
-      return <li key={property}>{property}: {value}</li>
+      if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+        return <li key={property}>{property}: {value}</li>
+      } else {
+        return null;
+      }
     })
   }
   </ul>
   )
   let cardProperties = Object.entries(listOfProperties).map(([property, value]) => {
-    return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
-      <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
-      <div className="card-body">Value: {value}</div>
-      <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
-    </div>
+    if(property !== 'admin' && property !== 'fillColor' && property !== 'borderColor' && property !== 'label'){
+      return <div key={property} className="card" style={{ display: "flex", flexDirection: "row", margin: "20px", justifyContent: "space-between", backgroundColor: "#d6bfbf", borderRadius: "30px", alignItems: "center" }}>
+        <div className="card-header" style={{ margin: "0px 20px" }}>Property: {property}</div>
+        <div className="card-body">Value: {value}</div>
+        <button style={removePropertyStyle} onClick={() => handleDeleteProperty(property)} type='button'>x</button>
+      </div>
+    } else {
+      return null;
+    }
   });
 
   let buttonIfProperty = null;
@@ -1906,8 +1900,10 @@ export default function Map() {
             color="inherit"
             aria-label="open drawer"
             sx={{ flex: "1 0 50%", marginBottom: "10px" }}
+            onClick={handleToggleTileLayer}
           >
-            <EmojiFlags style={{ fontSize: "45px" }} titleAccess="Edit Legends" />
+            {toggleLayerButton}
+            {/* <Public style={{ fontSize: "45px" }} titleAccess="Insert Text" /> */}
           </StyledIconButton>
 
           <StyledIconButton
@@ -1990,14 +1986,18 @@ export default function Map() {
       </Box>
 
       <Box id="statusBoxEdit">
-        <Statusbar />
+        <div id="map-statusbar">
+          {
+            store ? store.currentMap.name : ""
+          }
+        </div>
       </Box>
 
       <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
         <MapContainer style={{ height: "80vh", backgroundColor: background }} key={containerKey} doubleClickZoom={false}>
           <Recenter bounds={bounds} />
           <Screenshot />
-          {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+          {tileLayerOn ? <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> : <div></div>}
           {maplayout}
           {textMarker}
           {myLegend}
