@@ -5,7 +5,9 @@ const Recenter = ({bounds}) => {
     const map = useMap();
     useEffect(() => {
         if(bounds !== null){
-            map.fitBounds(bounds, { animate: false, })
+            if(bounds._northEast && bounds._southWest){
+                map.fitBounds(bounds, { animate: false, })
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [bounds]);

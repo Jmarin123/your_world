@@ -65,7 +65,7 @@ export default function ExportModal() {
             downloadLink.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.geojson';
             downloadLink.click();
         }
-        else if (format === "SHZ") {
+        else if (format === "DBF+SHP") {
             const response = await fetch('https://ogre.adc4gis.com/convertJson', {
                 method: 'POST',
                 headers: {
@@ -79,7 +79,7 @@ export default function ExportModal() {
             const urlObject = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = urlObject;
-            link.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.shz';
+            link.download = (store.mapMarkedForExport.map_name).split(' ').join('_') + '.zip';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -128,7 +128,7 @@ export default function ExportModal() {
                                     label="Format"
                                     onChange={handleChange}
                                 >
-                                    <MenuItem value={'SHZ'}>SHZ</MenuItem>
+                                    <MenuItem value={'DBF+SHP'}>DBF+SHP</MenuItem>
                                     <MenuItem value={'GeoJSON'}>GeoJSON</MenuItem>
                                 </Select>
                             </FormControl>
