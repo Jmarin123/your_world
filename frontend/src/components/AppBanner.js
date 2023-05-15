@@ -384,7 +384,7 @@ export default function AppBanner() {
 
     let editToolbarMenu = "";
     // if (auth.user || auth.type) {
-    if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login' && location.pathname !== '/forgotpassword') {
+    if (location.pathname !== '/' && location.pathname !== '/register' && location.pathname !== '/login' && location.pathname !== '/forgotpassword' && location.pathname !== "/resetpassword") {
         editToolbarMenu =
             (<Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" id="appBar">

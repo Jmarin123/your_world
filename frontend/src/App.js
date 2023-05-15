@@ -19,7 +19,7 @@ import ExportModal from './components/ExportModal'
 import SearchPage from './components/SearchPage';
 import RenameMapModal from './components/RenameMapModal';
 import ForgotPassword from './components/ForgotPassword'
-
+import ResetPassword from './components/ResetPassword'
 const App = () => {
   if (process.env.NODE_ENV === "production") {
     console.log = function () { }
@@ -38,7 +38,8 @@ const App = () => {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/map/:id" element={<Map />} />
             <Route path="/mapview/:id" element={<Mapview />} />
-            <Route path='/forgotpassword' element={<ForgotPassword />}></Route>
+            <Route path='/forgotpassword' element={<ForgotPassword />} />
+            <Route path='/resetpassword' element={<ResetPassword />} />
           </Routes>
           {/* <RenameModal /> */}
           <RenameMapModal />
