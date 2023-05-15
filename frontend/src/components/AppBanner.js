@@ -16,6 +16,10 @@ export default function AppBanner() {
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const [anchorE2, setAnchorE2] = useState(null);
+    const [searchByNameButton, setSearchByNameButton] = useState(<PersonOutline style={{ fontSize: "45px", float: "right" }}/>)
+    const [searchByMapNameButton, setSearchByMapNameButton] = useState(<Map style={{ fontSize: "45px", float: "right" }} />)
+    const [searchByMapPropertyButton, setSearchByMapPropertyButton] = useState(<Workspaces style={{ fontSize: "45px", float: "right" }}/>)
+    
     const isUploadMenuOpen = Boolean(anchorE2);
     const location = useLocation();
     const navigate = useNavigate();
@@ -73,6 +77,9 @@ export default function AppBanner() {
         store.setFilterSearch("users");
         console.log(store.filterSearch);
         setLabel("Search by first and last name")
+        setSearchByNameButton(<PersonOutline style={{ fontSize: "45px", float: "right", color: '#FDE66B'}}/>)
+        setSearchByMapNameButton(<Map style={{ fontSize: "45px", float: "right"}}/>)
+        setSearchByMapPropertyButton(<Workspaces style={{ fontSize: "45px", float: "right"}}/>)
     }
 
     const handleSearchMap = () => {
@@ -80,6 +87,9 @@ export default function AppBanner() {
         setS("");
         store.setFilterSearch("mapname");
         setLabel("Search by map name")
+        setSearchByNameButton(<PersonOutline style={{ fontSize: "45px", float: "right"}}/>)
+        setSearchByMapNameButton(<Map style={{ fontSize: "45px", float: "right", color: '#FDE66B'}}/>)
+        setSearchByMapPropertyButton(<Workspaces style={{ fontSize: "45px", float: "right"}}/>)
     }
 
     const handleSearchProperty = () => {
@@ -87,6 +97,9 @@ export default function AppBanner() {
         setS("");
         store.setFilterSearch("property");
         setLabel("Search by map properties")
+        setSearchByNameButton(<PersonOutline style={{ fontSize: "45px", float: "right"}}/>)
+        setSearchByMapNameButton(<Map style={{ fontSize: "45px", float: "right"}}/>)
+        setSearchByMapPropertyButton(<Workspaces style={{ fontSize: "45px", float: "right", color: '#FDE66B'}}/>)
     }
 
     function handleComment() {
@@ -312,7 +325,8 @@ export default function AppBanner() {
         sx={{ mr: 2, marginLeft: '5px' }}
         onClick={() => handleSearchUser()}
     >
-        <PersonOutline style={{ fontSize: "45px", float: "right" }}/>
+        {searchByNameButton}
+        {/* <PersonOutline style={{ fontSize: "45px", float: "right" }}/> */}
     </StyledIconButton>
 
     let searchByMapNameIcon = <StyledIconButton
@@ -322,7 +336,8 @@ export default function AppBanner() {
         sx={{ mr: 2 }}
         onClick={() => handleSearchMap()}
     >
-        <Map style={{ fontSize: "45px", float: "right" }} />
+        {searchByMapNameButton}
+        {/* <Map style={{ fontSize: "45px", float: "right" }} /> */}
     </StyledIconButton>
 
     let searchByMapProperty = <StyledIconButton
@@ -332,7 +347,8 @@ export default function AppBanner() {
         sx={{ mr: 2 }}
         onClick={() => handleSearchProperty()}
     >
-        <Workspaces style={{ fontSize: "45px", float: "right" }}/>
+        {searchByMapPropertyButton}
+        {/* <Workspaces style={{ fontSize: "45px", float: "right" }}/> */}
     </StyledIconButton>
     if (location.pathname === '/public') {
         globeIcon = <StyledIconButton
