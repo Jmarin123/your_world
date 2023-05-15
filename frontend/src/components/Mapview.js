@@ -5,7 +5,6 @@ import { GlobalStoreContext } from '../store'
 import { Box, Grid } from '@mui/material';
 
 import Comment from './Comment';
-import Statusbar from './Statusbar';
 
 import { MapContainer, GeoJSON, Marker, Tooltip } from 'react-leaflet';
 // TileLayer
@@ -15,6 +14,7 @@ export default function Mapview() {
     const [background, setBackground] = useState("#AAD3DF");
     const [containerKey, setContainerKey] = useState(0);
     const [legendItems, setLegendItems] = useState([]);
+    const [mapName, setMapName] = useState("");
 
     // useEffect(() => {
     //     console.log('State variable changed:', store.currentMap);
@@ -29,6 +29,7 @@ export default function Mapview() {
         if (store.currentMap && store.currentMap.dataFromMap.background) {
             setBackground(store.currentMap.dataFromMap.background);
             setContainerKey((prevKey) => prevKey + 1);
+            setMapName(store.currentMap.name)
         }
         if (store.currentMap && store.currentMap.dataFromMap.features) {
             const uniqueFillColors = new Set();
@@ -44,7 +45,7 @@ export default function Mapview() {
                     });
                 }
             });
-
+            setMapName(store.currentMap.name)
             setLegendItems(items);
         }
     }, [store.currentMap]);
@@ -84,7 +85,7 @@ export default function Mapview() {
     function onEachCountry(country, layer) {
         let popupContent = `${country.properties.admin}`;
         if (country.properties && country.properties.popupContent) {
-            popupContent += country.properties.popupContent;
+            popupContent += country.properties.popupCoSntent;
         }
 
         layer.bindPopup(popupContent);
@@ -128,8 +129,13 @@ export default function Mapview() {
 
     let mapViewMenu =
         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
+
             <Box id="statusBoxEdit">
-                <Statusbar />
+                <div id="map-statusbar">
+                {
+                    mapName
+                }
+                </div>
             </Box>
 
             <Box id="mapBox" component="form" noValidate >
@@ -159,9 +165,13 @@ export default function Mapview() {
                         }}
                     >
                         <Box sx={{ flexGrow: 1 }} id="homePageBackground">
-                            <Box id="statusBoxEdit">
-                                <Statusbar />
-                            </Box>
+                        <Box id="statusBoxEdit">
+                <div id="map-statusbar">
+                {
+                    mapName
+                }
+                </div>
+            </Box>
                             <Box id="mapBox" component="form" noValidate >
                                 <MapContainer id="mapContainer" style={{ height: "80vh", backgroundColor: background }} zoom={2} center={[20, 100]}>
                                     {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}

@@ -15,7 +15,6 @@ import {
 
 import SaveAsOutlined from '@mui/icons-material/SaveAsOutlined';
 
-import Statusbar from './Statusbar';
 import Recenter from './Recenter'
 import Screenshot from './Screenshot'
 
@@ -1986,7 +1985,11 @@ export default function Map() {
       </Box>
 
       <Box id="statusBoxEdit">
-        <Statusbar />
+        <div id="map-statusbar">
+          {
+            store ? store.currentMap.name : ""
+          }
+        </div>
       </Box>
 
       <Box id="mapBoxEdit" style={{ height: "80vh", backgroundColor: background }} component="form" noValidate >
